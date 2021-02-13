@@ -26,10 +26,13 @@ export default function Home() {
 
   const getResult = async () => {
     setIsLoading(true);
-    await axios.post(appUrl, { inputState }).then(({ data }) => {
-      setResultState(data);
-      setIsLoading(false);
-    });
+    await axios
+      .post(appUrl, { inputState })
+      .then(({ data }) => {
+        setResultState(data);
+        setIsLoading(false);
+      })
+      .catch((e) => setResultState({ e }));
   };
 
   React.useEffect(() => {
