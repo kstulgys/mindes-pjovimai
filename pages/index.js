@@ -3,6 +3,11 @@ import Head from "next/head";
 import { Box, Stack, Button, Text, Input } from "@chakra-ui/react";
 import axios from "axios";
 
+const appUrl =
+  process.env.NODE_ENV === "development"
+    ? "http://localhost:3000/api/hello"
+    : "https://mindes-pjovimai.vercel.app/api/hello";
+
 export default function Home({ output1D, input }) {
   const [isLoading, setIsLoading] = React.useState(true);
   const [inputState, setInputState] = React.useState({
@@ -19,11 +24,12 @@ export default function Home({ output1D, input }) {
 
   const getResult = async () => {
     setIsLoading(true);
-    await axios.post("http://localhost:3000/api/hello", { inputState }).then(({ data }) => {
+    await axios.post(appUrl, { inputState }).then(({ data }) => {
       setResultState(data);
       setIsLoading(false);
     });
   };
+  console.log(process.env.NODE_ENV === "development");
 
   React.useEffect(() => {
     getResult();
