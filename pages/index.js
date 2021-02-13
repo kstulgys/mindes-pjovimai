@@ -30,9 +30,13 @@ export default function Home() {
       .post(appUrl, { inputState })
       .then(({ data }) => {
         setResultState(data);
-        setIsLoading(false);
       })
-      .catch((e) => setResultState({ e }));
+      .catch((e) => {
+        setResultState({ e });
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
   };
 
   React.useEffect(() => {
