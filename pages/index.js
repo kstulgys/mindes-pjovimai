@@ -55,7 +55,7 @@ export default function Home() {
               </Button>
             </Stack>
           </Stack>
-          <Stack flex='0.5'>
+          <Stack flex='0.5' overflowX='auto'>
             <Stack isInline spacing='20' fontSize='xs'>
               <Box>
                 <Text fontSize='3xl' fontWeight='bold' pb='5'>
