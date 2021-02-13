@@ -31,8 +31,8 @@ export default function Home() {
       .then(({ data }) => {
         setResultState(data);
       })
-      .catch((e) => {
-        setResultState({ e });
+      .catch(({ message }) => {
+        setResultState(message);
       })
       .finally(() => {
         setIsLoading(false);
