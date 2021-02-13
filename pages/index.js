@@ -1,14 +1,16 @@
 import React from "react";
-import Head from "next/head";
 import { Box, Stack, Button, Text, Input } from "@chakra-ui/react";
 import axios from "axios";
+import { Layout } from "../components";
+import { useRouter } from "next/router";
 
 const appUrl =
   process.env.NODE_ENV === "development"
     ? "http://localhost:3000/api/hello"
     : "https://mindes-pjovimai.vercel.app/api/hello";
 
-export default function Home({ output1D, input }) {
+export default function Home() {
+  const router = useRouter();
   const [isLoading, setIsLoading] = React.useState(true);
   const [inputState, setInputState] = React.useState({
     bladeSize: 0.1,
@@ -29,45 +31,13 @@ export default function Home({ output1D, input }) {
       setIsLoading(false);
     });
   };
-  console.log(process.env.NODE_ENV === "development");
 
   React.useEffect(() => {
     getResult();
   }, []);
 
   return (
-    <Box>
-      <Head>
-        <title>Create Next App</title>
-        <link rel='icon' href='/favicon.ico' />
-      </Head>
-
-      <Stack as='nav' bg='gray.900'>
-        <Stack
-          maxW='7xl'
-          mx='auto'
-          width='full'
-          color='white'
-          spacing='6'
-          isInline
-          boxShadow='base'
-          p='4'
-          bg='gray.900'
-        >
-          <Box flex='1'></Box>
-          <Button variant='unstyled'>Pricing</Button>
-          <Button
-            variant='outline'
-            borderWidth='2px'
-            _hover={{
-              color: "gray.900",
-              bg: "white",
-            }}
-          >
-            Log in
-          </Button>
-        </Stack>
-      </Stack>
+    <Layout>
       <Box as='main' maxW='7xl' mx='auto' width='full' py='20'>
         <Stack isInline spacing='32'>
           <Stack flex='0.5'>
@@ -96,7 +66,7 @@ export default function Home({ output1D, input }) {
           </Stack>
         </Stack>
       </Box>
-    </Box>
+    </Layout>
   );
 }
 
@@ -202,30 +172,3 @@ function Cut1DInputs({ setInputState, inputState }) {
     </Stack>
   );
 }
-
-// export async function getServerSideProps(context) {
-//   let output1D = {};
-
-//   const input = {
-//     bladeSize: 0.1,
-//     stockSizes1D: [{ size: 15, cost: 1 }],
-//     input1D: [
-//       { size: 7, count: 5 },
-//       { size: 2, count: 4 },
-//       { size: 3, count: 16 },
-//     ],
-//   };
-
-//   // if (typeof window === "undefined") {
-//   const { bladeSize, stockSizes1D, input1D } = input;
-//   output1D = howToCutBoards1D({
-//     stockSizes: stockSizes1D,
-//     bladeSize,
-//     requiredCuts: input1D,
-//   });
-//   // }
-
-//   return {
-//     props: { output1D, input }, // will be passed to the page component as props
-//   };
-// }
