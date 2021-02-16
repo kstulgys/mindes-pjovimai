@@ -3,12 +3,82 @@ import { Box, Stack, Button, Text, Input } from "@chakra-ui/react";
 import axios from "axios";
 import { Layout } from "../components";
 import { useRouter } from "next/router";
+// import jexcel from "jexcel";
 
+const JexcelComponent = (props) => {
+  const jexcelRef = React.useRef(null);
+
+  React.useEffect(() => {
+    var data = [
+      ["800", "3"],
+      ["300", "9"],
+      ["500", "2"],
+    ];
+    window.jexcel(jexcelRef.current, {
+      data: data,
+      minDimensions: [2, 3],
+      defaultColWidth: 200,
+      csvHeaders: true,
+      tableOverflow: true,
+      columns: [
+        { type: "numeric", title: "Length" },
+        { type: "numeric", title: "Quantity" },
+      ],
+      updateTable: function (instance, cell, col, row, val, label, cellName) {
+        console.log({ instance, cell, col, row, val, label, cellName });
+      },
+    });
+  }, []);
+
+  const addRow = () => {
+    jexcelRef.current.jexcel.insertRow();
+  };
+
+  const download = () => {
+    jexcelRef.current.jexcel.download();
+  };
+
+  return (
+    <Box>
+      <Box ref={jexcelRef} boxShadow='none' />
+      <Stack>
+        {/* <Box>
+          <Button onClick={addRow}>Add Row</Button>
+        </Box> */}
+        <Box mt='6'>
+          <Button onClick={download}>Download</Button>
+        </Box>
+      </Stack>
+    </Box>
+  );
+};
+
+import dynamic from "next/dynamic";
+
+const ReactDataGrid = dynamic(() => import("react-data-grid"), { ssr: false });
 // function main() {
 //   let binSize = 10;
 //   let sizes = [6, 1, 5, 5, 5, 4, 2, 2, 7];
 //   const result = bestFit(binSize, sizes);
 // }
+
+const columns = [
+  { key: "id", name: "ID" },
+  { key: "title", name: "Title" },
+  { key: "count", name: "Count" },
+];
+
+const rows = [
+  { id: 0, title: "row1", count: 20 },
+  { id: 1, title: "row1", count: 40 },
+  { id: 2, title: "row1", count: 60 },
+];
+
+function HelloWorld() {
+  return (
+    <ReactDataGrid columns={columns} rowGetter={(i) => rows[i]} rowsCount={3} minHeight={150} />
+  );
+}
 
 function bestFit(binSize, sizes, bladeSize) {
   const bins = {};
@@ -107,6 +177,7 @@ export default function Home() {
               setInputState={setInputState}
               inputState={inputState}
             />
+            <JexcelComponent />
             {/* <Stack py='10'>
               <Button  onClick={getResult}>
                 Get Result

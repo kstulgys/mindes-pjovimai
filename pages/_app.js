@@ -1,4 +1,6 @@
 import "../styles/globals.css";
+// import "../node_modules/jexcel/dist/jexcel.css";
+
 import { ChakraProvider } from "@chakra-ui/react";
 
 function MyApp({ Component, pageProps }) {
