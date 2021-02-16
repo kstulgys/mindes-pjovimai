@@ -232,7 +232,7 @@ function Cut1DInputs({ setInputState, inputState, resultLoss }) {
       </Stack>
       <Box width='full'>
         <Button width='full' variant='unstyled'>
-          Loss: {resultLoss}
+          Loss: {resultLoss.toFixed(2)}
         </Button>
       </Box>
     </Stack>
