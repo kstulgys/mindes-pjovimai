@@ -40,12 +40,6 @@ function bestFit(binSize, sizes, bladeSize) {
   return bins;
 }
 
-function getLoss(bins) {
-  return Object.values(bins).reduce((acc, next) => {
-    return (acc += next.capacity);
-  }, 0);
-}
-
 // const parts = [
 //   { size: 1560, quantity: 3 },
 //   { size: 610, quantity: 4 },
@@ -77,6 +71,7 @@ export default function Home() {
     ],
   });
   const [resultState, setResultState] = React.useState({});
+  const [resultLoss, setResultLoss] = React.useState(0);
 
   React.useEffect(() => {
     const sortedSizes = inputState.input1D.reduce((acc, next) => {
@@ -91,12 +86,23 @@ export default function Home() {
     setResultState(bins);
   }, [inputState]);
 
+  React.useEffect(() => {
+    const loss = Object.values(resultState).reduce((acc, next) => {
+      return (acc += next.capacity);
+    }, 0);
+    setResultLoss(loss);
+  }, [resultState]);
+
   return (
     <Layout>
       <Box as='main' maxW='7xl' mx='auto' width='full' py='20'>
         <Stack isInline spacing='32'>
           <Stack flex='0.5'>
-            <Cut1DInputs setInputState={setInputState} inputState={inputState} />
+            <Cut1DInputs
+              resultLoss={resultLoss}
+              setInputState={setInputState}
+              inputState={inputState}
+            />
             {/* <Stack py='10'>
               <Button  onClick={getResult}>
                 Get Result
@@ -125,7 +131,7 @@ export default function Home() {
   );
 }
 
-function Cut1DInputs({ setInputState, inputState }) {
+function Cut1DInputs({ setInputState, inputState, resultLoss }) {
   const handleAddStock = () => {
     setInputState((prev) => ({
       ...prev,
@@ -224,6 +230,11 @@ function Cut1DInputs({ setInputState, inputState }) {
           </Button>
         </Box>
       </Stack>
+      <Box width='full'>
+        <Button width='full' variant='unstyled'>
+          Loss: {resultLoss}
+        </Button>
+      </Box>
     </Stack>
   );
 }
