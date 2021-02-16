@@ -14,7 +14,11 @@ function bestFit(binSize, sizes, bladeSize) {
   const bins = {};
 
   sizes.forEach((size, index) => {
-    const foundBin = Object.entries(bins).find(([key, value], index) => value.capacity >= size);
+    // const foundBin = Object.entries(bins).find(([key, value], index) => value.capacity >= size);
+    const foundBin =
+      Object.entries(bins)
+        .filter(([key, value], index) => value.capacity >= size)
+        .sort(([key1, value1], [key2, value2]) => value1.capacity - value2.capacity)[0] || null;
 
     if (foundBin) {
       const [key, value] = foundBin;
