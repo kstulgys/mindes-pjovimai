@@ -3,19 +3,32 @@ import { Box, Stack, Button, Text, Input } from "@chakra-ui/react";
 import axios from "axios";
 import { Layout } from "../components";
 import { useRouter } from "next/router";
-// import jexcel from "jexcel";
 
-const JexcelComponent = (props) => {
+function getSortedSizes(sizes) {
+  const sortedSizes = sizes.reduce((acc, [length, qty]) => {
+    const res = Array(qty)
+      .fill(null)
+      .map((_) => length);
+    return [...acc, ...res];
+  }, []);
+  sortedSizes.sort((a, b) => b - a);
+
+  return sortedSizes;
+}
+
+function useExcel() {
+  const [sortedSizes, setSizes] = React.useState([]);
   const jexcelRef = React.useRef(null);
 
   React.useEffect(() => {
-    var data = [
-      ["800", "3"],
-      ["300", "9"],
-      ["500", "2"],
-    ];
     window.jexcel(jexcelRef.current, {
-      data: data,
+      data: [
+        [1560, 3],
+        [610, 4],
+        [520, 2],
+        [700, 2],
+        [180, 10],
+      ],
       minDimensions: [2, 3],
       defaultColWidth: 200,
       csvHeaders: true,
@@ -24,34 +37,76 @@ const JexcelComponent = (props) => {
         { type: "numeric", title: "Length" },
         { type: "numeric", title: "Quantity" },
       ],
-      updateTable: function (instance, cell, col, row, val, label, cellName) {
-        console.log({ instance, cell, col, row, val, label, cellName });
+      // updateTable: function (instance, cell, col, row, val, label, cellName) {
+      //   console.log({ instance, cell, col, row, val, label, cellName });
+      // },
+      onafterchanges: () => {
+        const sizes = jexcelRef.current.jexcel.getData();
+        const sorted = getSortedSizes(sizes);
+        setSizes(sorted);
+      },
+      onload: () => {
+        const sizes = jexcelRef.current.jexcel.getData();
+        const sorted = getSortedSizes(sizes);
+        setSizes(sorted);
       },
     });
   }, []);
 
-  const addRow = () => {
-    jexcelRef.current.jexcel.insertRow();
+  const getData = () => {
+    jexcelRef.current.jexcel.getData();
   };
 
-  const download = () => {
-    jexcelRef.current.jexcel.download();
-  };
+  return { jexcelRef, sortedSizes };
+}
 
-  return (
-    <Box>
-      <Box ref={jexcelRef} boxShadow='none' />
-      <Stack>
-        {/* <Box>
-          <Button onClick={addRow}>Add Row</Button>
-        </Box> */}
-        <Box mt='6'>
-          <Button onClick={download}>Download</Button>
-        </Box>
-      </Stack>
-    </Box>
-  );
-};
+// const JexcelComponent = (props) => {
+//   const jexcelRef = React.useRef(null);
+
+//   React.useEffect(() => {
+//     var data = [
+//       ["800", "3"],
+//       ["300", "9"],
+//       ["500", "2"],
+//     ];
+//     window.jexcel(jexcelRef.current, {
+//       data: data,
+//       minDimensions: [2, 3],
+//       defaultColWidth: 200,
+//       csvHeaders: true,
+//       tableOverflow: true,
+//       columns: [
+//         { type: "numeric", title: "Length" },
+//         { type: "numeric", title: "Quantity" },
+//       ],
+//       updateTable: function (instance, cell, col, row, val, label, cellName) {
+//         console.log({ instance, cell, col, row, val, label, cellName });
+//       },
+//     });
+//   }, []);
+
+//   const addRow = () => {
+//     jexcelRef.current.jexcel.insertRow();
+//   };
+
+//   const download = () => {
+//     jexcelRef.current.jexcel.download();
+//   };
+
+//   return (
+//     <Box>
+//       <Box ref={jexcelRef} />
+//       <Stack>
+//         {/* <Box>
+//           <Button onClick={addRow}>Add Row</Button>
+//         </Box> */}
+//         <Box mt='6'>
+//           <Button onClick={download}>Download</Button>
+//         </Box>
+//       </Stack>
+//     </Box>
+//   );
+// };
 
 import dynamic from "next/dynamic";
 
@@ -73,12 +128,6 @@ const rows = [
   { id: 1, title: "row1", count: 40 },
   { id: 2, title: "row1", count: 60 },
 ];
-
-function HelloWorld() {
-  return (
-    <ReactDataGrid columns={columns} rowGetter={(i) => rows[i]} rowsCount={3} minHeight={150} />
-  );
-}
 
 function bestFit(binSize, sizes, bladeSize) {
   const bins = {};
@@ -147,18 +196,13 @@ export default function Home() {
   const [resultState, setResultState] = React.useState({});
   const [resultLoss, setResultLoss] = React.useState(0);
 
-  React.useEffect(() => {
-    const sortedSizes = inputState.input1D.reduce((acc, next) => {
-      const res = Array(next.count)
-        .fill(null)
-        .map((_) => next.size);
-      return [...acc, ...res];
-    }, []);
-    sortedSizes.sort((a, b) => b - a);
+  const { jexcelRef, sortedSizes } = useExcel();
 
+  React.useEffect(() => {
+    console.log({ sortedSizes });
     const bins = bestFit(inputState.stockSizes1D[0].size, sortedSizes, inputState.bladeSize);
     setResultState(bins);
-  }, [inputState]);
+  }, [inputState, sortedSizes]);
 
   React.useEffect(() => {
     const loss = Object.values(resultState).reduce((acc, next) => {
@@ -172,12 +216,14 @@ export default function Home() {
       <Box as='main' maxW='7xl' mx='auto' width='full' py='20'>
         <Stack isInline spacing='32'>
           <Stack flex='0.5'>
-            <Cut1DInputs
-              resultLoss={resultLoss}
-              setInputState={setInputState}
-              inputState={inputState}
-            />
-            <JexcelComponent />
+            <Cut1DInputs setInputState={setInputState} inputState={inputState} />
+            <Text>Required Cuts</Text>
+            <Box ref={jexcelRef} />
+            <Box width='full'>
+              <Button width='full' variant='unstyled'>
+                Loss: {resultLoss.toFixed(2)}
+              </Button>
+            </Box>
             {/* <Stack py='10'>
               <Button  onClick={getResult}>
                 Get Result
@@ -186,12 +232,12 @@ export default function Home() {
           </Stack>
           <Stack flex='0.5' overflowX='auto'>
             <Stack isInline spacing='20' fontSize='xs'>
-              <Box>
+              {/* <Box>
                 <Text fontSize='3xl' fontWeight='bold' pb='5'>
                   Input
                 </Text>
                 <pre>{JSON.stringify(inputState, null, 2)}</pre>
-              </Box>
+              </Box> */}
               <Box>
                 <Text fontSize='3xl' fontWeight='bold' pb='5'>
                   Output
@@ -206,7 +252,7 @@ export default function Home() {
   );
 }
 
-function Cut1DInputs({ setInputState, inputState, resultLoss }) {
+function Cut1DInputs({ setInputState, inputState }) {
   const handleAddStock = () => {
     setInputState((prev) => ({
       ...prev,
@@ -270,8 +316,7 @@ function Cut1DInputs({ setInputState, inputState, resultLoss }) {
         </Box> */}
       </Stack>
       <Stack>
-        <Text>Required Cuts</Text>
-        {inputState.input1D.map(({ size, count }, index) => {
+        {/* {inputState.input1D.map(({ size, count }, index) => {
           const handleChange = (e) => {
             const { name, value } = e.target;
             const copy = [...inputState.input1D];
@@ -298,18 +343,13 @@ function Cut1DInputs({ setInputState, inputState, resultLoss }) {
               />
             </Stack>
           );
-        })}
-        <Box width='full'>
+        })} */}
+        {/* <Box width='full'>
           <Button width='full' onClick={handleAddCut}>
             +
           </Button>
-        </Box>
+        </Box> */}
       </Stack>
-      <Box width='full'>
-        <Button width='full' variant='unstyled'>
-          Loss: {resultLoss.toFixed(2)}
-        </Button>
-      </Box>
     </Stack>
   );
 }
