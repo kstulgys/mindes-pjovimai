@@ -6,9 +6,9 @@ import { useRouter } from "next/router";
 
 function getSortedSizes(sizes) {
   const sortedSizes = sizes.reduce((acc, [length, qty]) => {
-    const res = Array(qty)
+    const res = Array(+qty)
       .fill(null)
-      .map((_) => length);
+      .map((_) => +length);
     return [...acc, ...res];
   }, []);
   sortedSizes.sort((a, b) => b - a);
