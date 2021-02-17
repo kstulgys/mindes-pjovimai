@@ -184,7 +184,7 @@ export default function Home() {
   const router = useRouter();
   // const [isLoading, setIsLoading] = React.useState(true);
   const [inputState, setInputState] = React.useState({
-    bladeSize: 0.1,
+    bladeSize: 10,
     stockSizes1D: [{ size: 6500, cost: 1 }],
     input1D: [
       {
@@ -214,7 +214,7 @@ export default function Home() {
   return (
     <Layout>
       <Box as='main' maxW='7xl' mx='auto' width='full' py='20'>
-        <Stack isInline spacing='32'>
+        <Stack isInline flexDir={["column", "row"]} spacing='16'>
           <Stack flex='0.5'>
             <Cut1DInputs setInputState={setInputState} inputState={inputState} />
             <Text>Required Cuts</Text>
@@ -242,7 +242,39 @@ export default function Home() {
                 <Text fontSize='3xl' fontWeight='bold' pb='5'>
                   Output
                 </Text>
-                <pre>{JSON.stringify(resultState, null, 2)}</pre>
+                {/* <pre>{JSON.stringify(JSON.stringify(resultState[0].items), null, 4)}</pre> */}
+                <pre>
+                  {JSON.stringify(
+                    Object.values(resultState).map((en, index) => ({
+                      no: JSON.stringify(index + 1),
+                      waste: JSON.stringify(en.capacity),
+                      lengths: JSON.stringify(en.items),
+                      summary: en.items.reduce((acc, next, idx) => {
+                        acc["total-length"] =
+                          acc["total-length"] === undefined ? next : acc["total-length"] + next;
+                        acc["total-count"] =
+                          acc["total-count"] === undefined ? 1 : acc["total-count"] + 1;
+                        if (!acc[next]) {
+                          acc[next] = 1;
+                        } else {
+                          acc[next] += 1;
+                        }
+                        return acc;
+                      }, {}),
+                    })),
+                    null,
+                    2
+                  )}
+                </pre>
+                {/* <pre>
+                  {JSON.stringify(
+                    Object.values(resultState).reduce((acc, { items }) => {
+                      return [...acc, ...items];
+                    }, []).length,
+                    null,
+                    2
+                  )}
+                </pre> */}
               </Box>
             </Stack>
           </Stack>

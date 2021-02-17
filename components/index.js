@@ -22,8 +22,8 @@ export function Layout({ children }) {
           type='text/css'
         /> */}
       </Head>
-      <Navigation />
-      <Box>{children}</Box>
+      {/* <Navigation /> */}
+      <Box px='4'>{children}</Box>
     </Box>
   );
 }
