@@ -23,7 +23,9 @@ export function Layout({ children }) {
         /> */}
       </Head>
       {/* <Navigation /> */}
-      <Box px='4'>{children}</Box>
+      <Box px='4' bg='gray.100' minH='100vh' width='full'>
+        {children}
+      </Box>
     </Box>
   );
 }

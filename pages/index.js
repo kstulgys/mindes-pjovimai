@@ -1,8 +1,24 @@
 import React from "react";
-import { Box, Stack, Button, Text, Input } from "@chakra-ui/react";
+import {
+  Box,
+  Stack,
+  Button,
+  Text,
+  Input,
+  Icon,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
+  useDisclosure,
+} from "@chakra-ui/react";
 import axios from "axios";
 import { Layout } from "../components";
 import { useRouter } from "next/router";
+import { FiUser, FiSettings, FiFolder } from "react-icons/fi";
 
 function getSortedSizes(sizes) {
   const sortedSizes = sizes.reduce((acc, [length, qty]) => {
@@ -133,11 +149,10 @@ function bestFit(binSize, sizes, bladeSize) {
   const bins = {};
 
   sizes.forEach((size, index) => {
-    // const foundBin = Object.entries(bins).find(([key, value], index) => value.capacity >= size);
     const foundBin =
       Object.entries(bins)
-        .filter(([key, value], index) => value.capacity >= size)
-        .sort(([key1, value1], [key2, value2]) => value1.capacity - value2.capacity)[0] || null;
+        .filter(([key, value], index) => value.capacity >= size) // => visi kandidatai = > []
+        .sort(([key1, value1], [key2, value2]) => value1.capacity - value2.capacity)[0] || null; // => []
 
     if (foundBin) {
       const [key, value] = foundBin;
@@ -171,9 +186,39 @@ function bestFit(binSize, sizes, bladeSize) {
 //   { size: 180, quantity: 10 },
 // ];
 
-// const cutSize = 10;
+function ManuItemModal({ icon, title }) {
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  return (
+    <>
+      <Button onClick={onOpen} variant='unstyled'>
+        <Icon as={icon} fontSize='2xl' />
+      </Button>
+      <Modal isOpen={isOpen} onClose={onClose}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>{title}</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum
+            has been the industry's standard dummy text ever since the 1500s, when an unknown
+            printer took a galley of type and scrambled it to make a type specimen book. It has
+            survived not only five centuries, but also the leap into electronic typesetting,
+            remaining essentially unchanged. It was popularised in the 1960s with the release of
+            Letraset sheets containing Lorem Ipsum passages, and more recently with desktop
+            publishing software like Aldus PageMaker including versions of Lorem Ipsum.
+          </ModalBody>
 
-// const binSize = 1000;
+          <ModalFooter>
+            <Button colorScheme='blue' mr={3} onClick={onClose}>
+              Close
+            </Button>
+            <Button variant='ghost'>Secondary Action</Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+    </>
+  );
+}
 
 // const appUrl =
 //   process.env.NODE_ENV === "development"
@@ -211,71 +256,73 @@ export default function Home() {
     setResultLoss(loss);
   }, [resultState]);
 
+  // FiUser, FiSettings, FiFolder
+
   return (
     <Layout>
-      <Box as='main' maxW='7xl' mx='auto' width='full' py='20'>
-        <Stack isInline flexDir={["column", "row"]} spacing='16'>
-          <Stack flex='0.5'>
+      <Box as='main' maxW='7xl' mx='auto' width='full' py={["4", "20"]} position='relative'>
+        <Stack position='absolute' top='0' left='-32' zIndex='20' pt='20'>
+          <Stack width='20' boxShadow='base' rounded='md' bg='white' alignItems='center' py='4'>
+            <ManuItemModal icon={FiFolder} title='Projects' />
+            <ManuItemModal icon={FiSettings} title='Settings' />
+            <ManuItemModal icon={FiUser} title='User' />
+          </Stack>
+        </Stack>
+        <Stack direction={["column", "row"]} spacing='12' width='full'>
+          <Stack width={["100%", "50%"]} bg='white' p='6' rounded='md' boxShadow='base'>
             <Cut1DInputs setInputState={setInputState} inputState={inputState} />
             <Text>Required Cuts</Text>
-            <Box ref={jexcelRef} />
+            <Box overflowX='auto'>
+              <Box ref={jexcelRef} />
+            </Box>
             <Box width='full'>
               <Button width='full' variant='unstyled'>
                 Loss: {resultLoss.toFixed(2)}
               </Button>
             </Box>
-            {/* <Stack py='10'>
-              <Button  onClick={getResult}>
-                Get Result
-              </Button>
-            </Stack> */}
           </Stack>
-          <Stack flex='0.5' overflowX='auto'>
-            <Stack isInline spacing='20' fontSize='xs'>
-              {/* <Box>
-                <Text fontSize='3xl' fontWeight='bold' pb='5'>
-                  Input
-                </Text>
-                <pre>{JSON.stringify(inputState, null, 2)}</pre>
-              </Box> */}
-              <Box>
-                <Text fontSize='3xl' fontWeight='bold' pb='5'>
-                  Output
-                </Text>
-                {/* <pre>{JSON.stringify(JSON.stringify(resultState[0].items), null, 4)}</pre> */}
-                <pre>
-                  {JSON.stringify(
-                    Object.values(resultState).map((en, index) => ({
-                      no: JSON.stringify(index + 1),
-                      waste: JSON.stringify(en.capacity),
-                      lengths: JSON.stringify(en.items),
-                      summary: en.items.reduce((acc, next, idx) => {
-                        acc["total-length"] =
-                          acc["total-length"] === undefined ? next : acc["total-length"] + next;
-                        acc["total-count"] =
-                          acc["total-count"] === undefined ? 1 : acc["total-count"] + 1;
-                        if (!acc[next]) {
-                          acc[next] = 1;
-                        } else {
-                          acc[next] += 1;
-                        }
-                        return acc;
-                      }, {}),
-                    })),
-                    null,
-                    2
-                  )}
-                </pre>
-                {/* <pre>
-                  {JSON.stringify(
-                    Object.values(resultState).reduce((acc, { items }) => {
-                      return [...acc, ...items];
-                    }, []).length,
-                    null,
-                    2
-                  )}
-                </pre> */}
-              </Box>
+          <Stack spacing='6' width={["100%", "50%"]}>
+            <Stack isInline spacing='6'>
+              <Box width='33%' height='32' bg='white' rounded='md' boxShadow='base' />
+              <Box width='33%' height='32' bg='white' rounded='md' boxShadow='base' />
+              <Box width='33%' height='32' bg='white' rounded='md' boxShadow='base' />
+            </Stack>
+            <Stack>
+              <Stack
+                isInline
+                fontSize='xs'
+                bg='white'
+                p='6'
+                rounded='md'
+                boxShadow='base'
+                overflowX='auto'
+              >
+                <Box>
+                  <Box Box as='pre'>
+                    {JSON.stringify(
+                      Object.values(resultState).map((en, index) => ({
+                        no: JSON.stringify(index + 1),
+                        waste: JSON.stringify(en.capacity),
+                        lengths: JSON.stringify(en.items),
+                        summary: en.items.reduce((acc, next, idx) => {
+                          acc["total-length"] =
+                            acc["total-length"] === undefined ? next : acc["total-length"] + next;
+                          acc["total-count"] =
+                            acc["total-count"] === undefined ? 1 : acc["total-count"] + 1;
+                          if (!acc[next]) {
+                            acc[next] = 1;
+                          } else {
+                            acc[next] += 1;
+                          }
+                          return acc;
+                        }, {}),
+                      })),
+                      null,
+                      2
+                    )}
+                  </Box>
+                </Box>
+              </Stack>
             </Stack>
           </Stack>
         </Stack>
