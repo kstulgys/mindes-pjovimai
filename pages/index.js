@@ -260,8 +260,8 @@ export default function Home() {
 
   return (
     <Layout>
-      <Box as='main' maxW='7xl' mx='auto' width='full' py={["4", "20"]} position='relative'>
-        <Stack position='absolute' top='0' left='-32' zIndex='20' pt='20'>
+      <Box as='main' maxW='7xl' mx='auto' width='full' py={["4", "16"]} position='relative'>
+        <Stack position='absolute' top='0' left='-32' zIndex='20' pt='16'>
           <Stack width='20' boxShadow='base' rounded='md' bg='white' alignItems='center' py='4'>
             <ManuItemModal icon={FiFolder} title='Projects' />
             <ManuItemModal icon={FiSettings} title='Settings' />
