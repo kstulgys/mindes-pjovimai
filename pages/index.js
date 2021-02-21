@@ -261,8 +261,8 @@ export default function Home() {
   return (
     <Layout>
       <Box as='main' maxW='7xl' mx='auto' width='full' py={["4", "16"]} position='relative'>
-        <Stack position='absolute' top='0' left='-32' zIndex='20' pt='16'>
-          <Stack width='20' boxShadow='base' rounded='md' bg='white' alignItems='center' py='4'>
+        <Stack position='absolute' top='0' left='-28' zIndex='20' pt='16'>
+          <Stack width='16' boxShadow='base' rounded='md' bg='white' alignItems='center' py='4'>
             <ManuItemModal icon={FiFolder} title='Projects' />
             <ManuItemModal icon={FiSettings} title='Settings' />
             <ManuItemModal icon={FiUser} title='User' />
@@ -298,7 +298,25 @@ export default function Home() {
                 overflowX='auto'
               >
                 <Box>
-                  <Box Box as='pre'>
+                  {/* {JSON.stringify(resultState, null, 2)} */}
+                  {Object.entries(resultState).map(([key, value], index) => {
+                    return (
+                      <Stack isInline py='1' spacing='0' alignItems='center'>
+                        <Box width='8'>
+                          <Text>{+key + 1}</Text>
+                        </Box>
+                        {value.items.map((item) => {
+                          if (item === inputState.bladeSize) return null;
+                          return (
+                            <Box border='1px solid' px='2' py='1'>
+                              <Text>{item}</Text>
+                            </Box>
+                          );
+                        })}
+                      </Stack>
+                    );
+                  })}
+                  {/* <Box Box as='pre'>
                     {JSON.stringify(
                       Object.values(resultState).map((en, index) => ({
                         no: JSON.stringify(index + 1),
@@ -320,7 +338,7 @@ export default function Home() {
                       null,
                       2
                     )}
-                  </Box>
+                  </Box> */}
                 </Box>
               </Stack>
             </Stack>
