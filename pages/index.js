@@ -42,9 +42,16 @@ function useExcel() {
         [1560, 3],
         [610, 4],
         [520, 2],
-        [700, 2],
-        [180, 10],
+        // [700, 2],
+        // [180, 0],
       ],
+      // data: [
+      //   [1560, 3],
+      //   [610, 4],
+      //   [520, 2],
+      //   [700, 2],
+      //   [180, 10],
+      // ],
       minDimensions: [2, 3],
       defaultColWidth: 200,
       csvHeaders: true,
@@ -74,6 +81,30 @@ function useExcel() {
   };
 
   return { jexcelRef, sortedSizes };
+}
+
+function* permute(permutation) {
+  var length = permutation.length,
+    c = Array(length).fill(0),
+    i = 1,
+    k,
+    p;
+
+  yield permutation.slice();
+  while (i < length) {
+    if (c[i] < i) {
+      k = i % 2 && c[i];
+      p = permutation[i];
+      permutation[i] = permutation[k];
+      permutation[k] = p;
+      ++c[i];
+      i = 1;
+      yield permutation.slice();
+    } else {
+      c[i] = 0;
+      ++i;
+    }
+  }
 }
 
 // const JexcelComponent = (props) => {
@@ -124,9 +155,6 @@ function useExcel() {
 //   );
 // };
 
-import dynamic from "next/dynamic";
-
-const ReactDataGrid = dynamic(() => import("react-data-grid"), { ssr: false });
 // function main() {
 //   let binSize = 10;
 //   let sizes = [6, 1, 5, 5, 5, 4, 2, 2, 7];
@@ -175,6 +203,8 @@ function bestFit(binSize, sizes, bladeSize) {
     }
   });
 
+  const wasteTotal = Object.values(bins).reduce((acc, { capacity }) => (acc += capacity), 0);
+  bins.wasteTotal = wasteTotal;
   return bins;
 }
 
@@ -186,39 +216,39 @@ function bestFit(binSize, sizes, bladeSize) {
 //   { size: 180, quantity: 10 },
 // ];
 
-function ManuItemModal({ icon, title }) {
-  const { isOpen, onOpen, onClose } = useDisclosure();
-  return (
-    <>
-      <Button onClick={onOpen} variant='unstyled'>
-        <Icon as={icon} fontSize='2xl' />
-      </Button>
-      <Modal isOpen={isOpen} onClose={onClose}>
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>{title}</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>
-            Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum
-            has been the industry's standard dummy text ever since the 1500s, when an unknown
-            printer took a galley of type and scrambled it to make a type specimen book. It has
-            survived not only five centuries, but also the leap into electronic typesetting,
-            remaining essentially unchanged. It was popularised in the 1960s with the release of
-            Letraset sheets containing Lorem Ipsum passages, and more recently with desktop
-            publishing software like Aldus PageMaker including versions of Lorem Ipsum.
-          </ModalBody>
+// function ManuItemModal({ icon, title }) {
+//   const { isOpen, onOpen, onClose } = useDisclosure();
+//   return (
+//     <>
+//       <Button onClick={onOpen} variant='unstyled'>
+//         <Icon as={icon} fontSize='2xl' />
+//       </Button>
+//       <Modal isOpen={isOpen} onClose={onClose}>
+//         <ModalOverlay />
+//         <ModalContent>
+//           <ModalHeader>{title}</ModalHeader>
+//           <ModalCloseButton />
+//           <ModalBody>
+//             Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum
+//             has been the industry's standard dummy text ever since the 1500s, when an unknown
+//             printer took a galley of type and scrambled it to make a type specimen book. It has
+//             survived not only five centuries, but also the leap into electronic typesetting,
+//             remaining essentially unchanged. It was popularised in the 1960s with the release of
+//             Letraset sheets containing Lorem Ipsum passages, and more recently with desktop
+//             publishing software like Aldus PageMaker including versions of Lorem Ipsum.
+//           </ModalBody>
 
-          <ModalFooter>
-            <Button colorScheme='blue' mr={3} onClick={onClose}>
-              Close
-            </Button>
-            <Button variant='ghost'>Secondary Action</Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
-    </>
-  );
-}
+//           <ModalFooter>
+//             <Button colorScheme='blue' mr={3} onClick={onClose}>
+//               Close
+//             </Button>
+//             <Button variant='ghost'>Secondary Action</Button>
+//           </ModalFooter>
+//         </ModalContent>
+//       </Modal>
+//     </>
+//   );
+// }
 
 // const appUrl =
 //   process.env.NODE_ENV === "development"
@@ -240,14 +270,14 @@ export default function Home() {
   });
   const [resultState, setResultState] = React.useState({});
   const [resultLoss, setResultLoss] = React.useState(0);
+  const permCount = React.useRef(0);
 
   const { jexcelRef, sortedSizes } = useExcel();
 
-  React.useEffect(() => {
-    console.log({ sortedSizes });
-    const bins = bestFit(inputState.stockSizes1D[0].size, sortedSizes, inputState.bladeSize);
-    setResultState(bins);
-  }, [inputState, sortedSizes]);
+  // React.useEffect(() => {
+  //   const bins = bestFit(inputState.stockSizes1D[0].size, sortedSizes, inputState.bladeSize);
+  //   setResultState(bins);
+  // }, [inputState, sortedSizes]);
 
   React.useEffect(() => {
     const loss = Object.values(resultState).reduce((acc, next) => {
@@ -256,17 +286,29 @@ export default function Home() {
     setResultLoss(loss);
   }, [resultState]);
 
-  // FiUser, FiSettings, FiFolder
+  const getResult = () => {
+    let bestResult = { wasteTotal: Infinity };
+
+    // Memory efficient iteration through permutations:
+    for (let permutation of permute([...sortedSizes])) {
+      const bins = bestFit(inputState.stockSizes1D[0].size, permutation, inputState.bladeSize);
+      if (bins.wasteTotal < bestResult.wasteTotal) {
+        bestResult = bins;
+      }
+      permCount.current++;
+    }
+    setResultState(bestResult);
+  };
 
   return (
     <Layout>
       <Box as='main' maxW='7xl' mx='auto' width='full' py={["4", "16"]} position='relative'>
         <Stack position='absolute' top='0' left='-28' zIndex='20' pt='16'>
-          <Stack width='16' boxShadow='base' rounded='md' bg='white' alignItems='center' py='4'>
+          {/* <Stack width='16' boxShadow='base' rounded='md' bg='white' alignItems='center' py='4'>
             <ManuItemModal icon={FiFolder} title='Projects' />
             <ManuItemModal icon={FiSettings} title='Settings' />
             <ManuItemModal icon={FiUser} title='User' />
-          </Stack>
+          </Stack> */}
         </Stack>
         <Stack direction={["column", "row"]} spacing='12' width='full'>
           <Stack width={["100%", "50%"]} bg='white' p='6' rounded='md' boxShadow='base'>
@@ -276,8 +318,14 @@ export default function Home() {
               <Box ref={jexcelRef} />
             </Box>
             <Box width='full'>
+              <Button onClick={getResult} width='full'>
+                Get Result
+              </Button>
               <Button width='full' variant='unstyled'>
-                Loss: {resultLoss.toFixed(2)}
+                Permutations checked: {permCount.current}
+              </Button>
+              <Button width='full' variant='unstyled'>
+                Waste: {!resultState.wasteTotal ? 0 : resultState.wasteTotal.toFixed(2)}
               </Button>
             </Box>
           </Stack>
@@ -299,7 +347,7 @@ export default function Home() {
               >
                 <Box>
                   {/* {JSON.stringify(resultState, null, 2)} */}
-                  {Object.entries(resultState).map(([key, value], index) => {
+                  {/* {Object.entries(resultState).map(([key, value], index) => {
                     return (
                       <Stack isInline py='1' spacing='0' alignItems='center'>
                         <Box width='8'>
@@ -315,9 +363,10 @@ export default function Home() {
                         })}
                       </Stack>
                     );
-                  })}
-                  {/* <Box Box as='pre'>
-                    {JSON.stringify(
+                  })} */}
+                  <Box Box as='pre'>
+                    {JSON.stringify(resultState, null, 2)}
+                    {/* {JSON.stringify(
                       Object.values(resultState).map((en, index) => ({
                         no: JSON.stringify(index + 1),
                         waste: JSON.stringify(en.capacity),
@@ -337,8 +386,8 @@ export default function Home() {
                       })),
                       null,
                       2
-                    )}
-                  </Box> */}
+                    )} */}
+                  </Box>
                 </Box>
               </Stack>
             </Stack>
