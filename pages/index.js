@@ -46,16 +46,9 @@ function useExcel() {
         [1560, 3],
         [610, 4],
         [520, 2],
-        // [700, 2],
-        // [180, 0],
+        [700, 2],
+        [180, 10],
       ],
-      // data: [
-      //   [1560, 3],
-      //   [610, 4],
-      //   [520, 2],
-      //   [700, 2],
-      //   [180, 10],
-      // ],
       minDimensions: [2, 3],
       defaultColWidth: 200,
       csvHeaders: true,
@@ -225,6 +218,22 @@ export default function Home() {
     setResultState(bestBins);
   };
 
+  function getFormatedResult(bins) {
+    let formattedResult = {};
+    Object.entries(bins).forEach(([key, value]) => {
+      if (!value.items) return;
+      const filtered = value.items.filter((item) => item !== inputState.bladeSize);
+      const itemsStringified = JSON.stringify(filtered);
+      if (!formattedResult[itemsStringified]) {
+        formattedResult[itemsStringified] = 1;
+      } else {
+        formattedResult[itemsStringified] += 1;
+      }
+    });
+    formattedResult.wasteTotal = bins.wasteTotal;
+    return formattedResult;
+  }
+
   return (
     <Layout>
       <Box as='main' maxW='7xl' mx='auto' width='full' py={["4", "16"]} position='relative'>
@@ -246,9 +255,9 @@ export default function Home() {
               <Button onClick={getResult} width='full'>
                 Get Result
               </Button>
-              <Button width='full' variant='unstyled'>
+              {/* <Button width='full' variant='unstyled'>
                 Permutations checked: {permCount.current}
-              </Button>
+              </Button> */}
               <Button width='full' variant='unstyled'>
                 Waste: {!resultState.wasteTotal ? 0 : resultState.wasteTotal.toFixed(2)}
               </Button>
@@ -290,14 +299,12 @@ export default function Home() {
                     );
                   })} */}
 
-                  <Box Box as='pre' mr='20'>
+                  {/* <Box Box as='pre' mr='20'>
                     <Text>BFD</Text>
                     {JSON.stringify(worstState, null, 2)}
-                  </Box>
+                  </Box> */}
                   <Box Box as='pre'>
-                    <Text>BFD improved</Text>
-                    {JSON.stringify(resultState, null, 2)}
-
+                    {JSON.stringify(getFormatedResult(resultState), null, 2)}
                     {/* {JSON.stringify(
                       Object.values(resultState).map((en, index) => ({
                         no: JSON.stringify(index + 1),
