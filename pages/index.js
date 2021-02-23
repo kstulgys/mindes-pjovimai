@@ -19,8 +19,7 @@ import axios from "axios";
 import { Layout } from "../components";
 import { useRouter } from "next/router";
 import { FiUser, FiSettings, FiFolder } from "react-icons/fi";
-import { GPU } from "gpu.js";
-import Amplify, { API } from "aws-amplify";
+// import Amplify, { API } from "aws-amplify";
 // import awsconfig from './aws-exports';
 
 // Amplify.configure(awsconfig);
