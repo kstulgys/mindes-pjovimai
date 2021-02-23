@@ -1,0 +1,35 @@
+{
+    "paths": [
+        {
+            "name": "/calculate",
+            "lambdaFunction": "cutoptimiser",
+            "privacy": {
+                "open": true
+            },
+            "policyResourceName": "/calculate"
+        }
+    ],
+    "resourceName": "apibabfb84a",
+    "apiName": "apibabfb84a",
+    "functionArns": [
+        {
+            "lambdaFunction": "cutoptimiser"
+        }
+    ],
+    "privacy": {
+        "auth": 0,
+        "unauth": 0,
+        "authRoleName": "amplify-cutoptimiser-dev-221256-authRole",
+        "unAuthRoleName": "amplify-cutoptimiser-dev-221256-unauthRole"
+    },
+    "dependsOn": [
+        {
+            "category": "function",
+            "resourceName": "cutoptimiser",
+            "attributes": [
+                "Name",
+                "Arn"
+            ]
+        }
+    ]
+}
