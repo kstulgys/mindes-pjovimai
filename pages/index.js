@@ -95,12 +95,23 @@ function bestFit(binSize, sizes, bladeSize) {
 
     if (foundBin) {
       const [key, value] = foundBin;
+
+      // const foundSameItems = Object.entries(bins).find(
+      //   ([key, { items }], index) => JSON.stringify(items) === JSON.stringify(value.items)
+      // );
+
+      // if (foundSameItems){
+
+      // }
+
       bins[key].capacity = +(value.capacity - size).toFixed(2);
       bins[key].items.push(size);
       if (bins[key].capacity >= bladeSize) {
         bins[key].capacity = +(bins[key].capacity - bladeSize).toFixed(2);
         bins[key].items.push(bladeSize);
       }
+      bins[key].stockLength = binSize;
+      bins[key].capacityPercent = Math.round((value.capacity * 100) / binSize);
     } else {
       const nextIdx = Object.values(bins).length;
       bins[nextIdx] = {
@@ -111,11 +122,14 @@ function bestFit(binSize, sizes, bladeSize) {
         bins[nextIdx].capacity = +(bins[nextIdx].capacity - bladeSize).toFixed(2);
         bins[nextIdx].items.push(bladeSize);
       }
+      bins[nextIdx].stockLength = binSize;
+      bins[nextIdx].capacityPercent = Math.round((bins[nextIdx].capacity * 100) / binSize);
     }
   });
 
   const wasteTotal = Object.values(bins).reduce((acc, { capacity }) => (acc += capacity), 0);
   bins.wasteTotal = wasteTotal;
+  bins.bladeSize = bladeSize;
   return bins;
 }
 
@@ -218,19 +232,71 @@ export default function Home() {
     setResultState(bestBins);
   };
 
-  function getFormatedResult(bins) {
+  function getFormatedResult(bins, bladeSize) {
     let formattedResult = {};
-    Object.entries(bins).forEach(([key, value]) => {
-      if (!value.items) return;
-      const filtered = value.items.filter((item) => item !== inputState.bladeSize);
-      const itemsStringified = JSON.stringify(filtered);
-      if (!formattedResult[itemsStringified]) {
-        formattedResult[itemsStringified] = 1;
+
+    Object.entries(bins).forEach(([keyCurrent, values]) => {
+      if (formattedResult[JSON.stringify(values.items)]) {
+        formattedResult[JSON.stringify(values.items)].count++;
       } else {
-        formattedResult[itemsStringified] += 1;
+        if (!values.items) return;
+        formattedResult[JSON.stringify(values.items)] = {
+          ...values,
+          items: values.items.filter((item) => item !== bladeSize),
+          count: 1,
+        };
       }
+      // const foundSameItem = Object.entries(formattedResult).find(
+      //   ([key, { items }], index) => JSON.stringify(items) === JSON.stringify(items)
+      // );
+
+      // if (foundSameItem) {
+      //   const [key, val] = foundSameItem;
+      //   formattedResult[key].count += 1;
+      // }
+
+      // if (!formattedResult[keyCurrent]) {
+      //   formattedResult[keyCurrent] = { ...values, count: 1 };
+      // }
+
+      // [...Object.entries(formattedResult)].forEach(([key, values]) => {
+      //   if (!values.items) return;
+
+      //   if (itemsStringify === JSON.stringify(values.items)) {
+      //     if (formattedResult[key].count) {
+      //       formattedResult[key].count++;
+      //     } else {
+      //       formattedResult[key].count = 1;
+      //     }
+      //     delete bins[keyCurrent];
+      //   }
+      // });
+      // formattedResult[keyCurrent] = { ...bins[keyCurrent] };
+
+      // const foundBin = Object.entries(formattedResult).find(
+      //   ([key, value], index) => JSON.stringify(value.items) === itemsStringify
+      // );
+
+      // if (foundBin) {
+      //   // const [key, value] = foundBin;
+      //   if (formattedResult[keyCurrent].count) {
+      //     formattedResult[keyCurrent].count++;
+      //   } else {
+      //     formattedResult[keyCurrent].count = 1;
+      //   }
+      // }
+
+      // if (!value.items) return;
+      // const filtered = value.items.filter((item) => item !== inputState.bladeSize);
+      // const itemsStringified = JSON.stringify(filtered);
+      // if (!formattedResult[itemsStringified]) {
+      //   formattedResult[itemsStringified] = 1;
+      // } else {
+      //   formattedResult[itemsStringified] += 1;
+      // }
     });
-    formattedResult.wasteTotal = bins.wasteTotal;
+    // formattedResult.wasteTotal = bins.wasteTotal;
+    console.log({ formattedResult });
     return formattedResult;
   }
 
@@ -279,33 +345,46 @@ export default function Home() {
                 boxShadow='base'
                 overflowX='auto'
               >
-                <Stack isInline>
-                  {/* {JSON.stringify(resultState, null, 2)} */}
-                  {/* {Object.entries(resultState).map(([key, value], index) => {
-                    return (
-                      <Stack isInline py='1' spacing='0' alignItems='center'>
-                        <Box width='8'>
-                          <Text>{+key + 1}</Text>
-                        </Box>
-                        {value.items.map((item) => {
-                          if (item === inputState.bladeSize) return null;
-                          return (
-                            <Box border='1px solid' px='2' py='1'>
-                              <Text>{item}</Text>
-                            </Box>
-                          );
-                        })}
-                      </Stack>
-                    );
-                  })} */}
-
-                  {/* <Box Box as='pre' mr='20'>
-                    <Text>BFD</Text>
-                    {JSON.stringify(worstState, null, 2)}
-                  </Box> */}
+                <Stack width='full'>
+                  <Stack isInline width='full'>
+                    <Box width='20%'>
+                      <Text>Quantity</Text>
+                    </Box>
+                    <Box width='20%'>
+                      <Text>Stock length</Text>
+                    </Box>
+                    <Box width='50%'>
+                      <Text>Cut list</Text>
+                    </Box>
+                    <Box width='10%'>
+                      <Text>Waste</Text>
+                    </Box>
+                  </Stack>
+                  {/* {Object.entries(getFormatedResult(resultState, inputState.bladeSize)).map(
+                    ([key, value]) => {
+                      return <Text>{key}</Text>;
+                    }
+                  )} */}
                   <Box Box as='pre'>
-                    {JSON.stringify(getFormatedResult(resultState), null, 2)}
-                    {/* {JSON.stringify(
+                    {JSON.stringify(getFormatedResult(resultState, inputState.bladeSize), null, 2)}
+                  </Box>
+
+                  {/* <Stack isInline width='full'>
+                    <Box width='20%'>
+                      <Text>1</Text>
+                    </Box>
+                    <Box width='20%'>
+                      <Text>6500</Text>
+                    </Box>
+                    <Stack width='50%'>
+                      <Text>123</Text>
+                    </Stack>
+                    <Box width='10%'>
+                      <Text>20</Text>
+                    </Box>
+                  </Stack> */}
+                  {/* <Box Box as='pre'>
+                  {/* {JSON.stringify(
                       Object.values(resultState).map((en, index) => ({
                         no: JSON.stringify(index + 1),
                         waste: JSON.stringify(en.capacity),
@@ -326,7 +405,7 @@ export default function Home() {
                       null,
                       2
                     )} */}
-                  </Box>
+                  {/* </Box> */}
                 </Stack>
               </Stack>
             </Stack>
