@@ -274,46 +274,45 @@ export default function AppPage() {
             </Box>
           </Stack>
           <Stack spacing='6' width={["100%", "50%"]}>
-            <Stack isInline spacing='6'>
+            <Stack isInline spacing='6' width='full'>
               <Box width='33%' height='32' bg='white' rounded='md' boxShadow='base' />
               <Box width='33%' height='32' bg='white' rounded='md' boxShadow='base' />
               <Box width='33%' height='32' bg='white' rounded='md' boxShadow='base' />
             </Stack>
-            <Stack>
-              <Stack
-                isInline
-                fontSize='xs'
-                bg='white'
-                p='6'
-                rounded='md'
-                boxShadow='base'
-                overflowX='auto'
-              >
-                <Stack width='full'>
-                  <Stack isInline width='full'>
-                    <Box width='20%'>
-                      <Text>Quantity</Text>
-                    </Box>
-                    <Box width='20%'>
-                      <Text>Stock length</Text>
-                    </Box>
-                    <Box width='50%'>
-                      <Text>Cut list</Text>
-                    </Box>
-                    <Box width='10%'>
-                      <Text>Waste</Text>
-                    </Box>
-                  </Stack>
-                  {/* {Object.entries(getFormatedResult(resultState, inputState.bladeSize)).map(
+            <Stack
+              isInline
+              fontSize='xs'
+              bg='white'
+              p='6'
+              rounded='md'
+              boxShadow='base'
+              overflowX='auto'
+            >
+              <Stack width='full'>
+                <Stack isInline width='full'>
+                  <Box width='20%'>
+                    <Text>Quantity</Text>
+                  </Box>
+                  <Box width='20%'>
+                    <Text>Stock length</Text>
+                  </Box>
+                  <Box width='50%'>
+                    <Text>Cut list</Text>
+                  </Box>
+                  <Box width='10%'>
+                    <Text>Waste</Text>
+                  </Box>
+                </Stack>
+                {/* {Object.entries(getFormatedResult(resultState, inputState.bladeSize)).map(
                     ([key, value]) => {
                       return <Text>{key}</Text>;
                     }
                   )} */}
-                  <Box Box as='pre'>
-                    {JSON.stringify(getFormatedResult(resultState, inputState.bladeSize), null, 2)}
-                  </Box>
+                <Box Box as='pre'>
+                  {JSON.stringify(getFormatedResult(resultState, inputState.bladeSize), null, 2)}
+                </Box>
 
-                  {/* <Stack isInline width='full'>
+                {/* <Stack isInline width='full'>
                     <Box width='20%'>
                       <Text>1</Text>
                     </Box>
@@ -327,7 +326,7 @@ export default function AppPage() {
                       <Text>20</Text>
                     </Box>
                   </Stack> */}
-                  {/* <Box Box as='pre'>
+                {/* <Box Box as='pre'>
                   {/* {JSON.stringify(
                       Object.values(resultState).map((en, index) => ({
                         no: JSON.stringify(index + 1),
@@ -349,8 +348,7 @@ export default function AppPage() {
                       null,
                       2
                     )} */}
-                  {/* </Box> */}
-                </Stack>
+                {/* </Box> */}
               </Stack>
             </Stack>
           </Stack>

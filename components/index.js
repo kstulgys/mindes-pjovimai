@@ -42,7 +42,7 @@ export function Layout({ children }) {
         /> */}
       </Head>
       {/* <Navigation /> */}
-      <Stack isInline bg='gray.100' minH='100vh' width='full' spacing='0'>
+      <Stack isInline bg='gray.200' minH='100vh' width='full' spacing='0'>
         <SideNavBar />
         <Box width='full' px={[4, 24]}>
           {children}
@@ -59,13 +59,14 @@ function SideNavBar() {
 
   return (
     <Stack
+      display={["none", "flex"]}
       width='16'
       boxShadow='base'
       bg='gray.900'
       alignItems='center'
-      py='5'
       pt='10'
       color='white'
+      spacing='3'
     >
       <ManuItemModal icon={FiFolder} title='Projects' />
       <ManuItemModal icon={FiSettings} title='Settings' />
