@@ -53,6 +53,10 @@ export function Layout({ children }) {
 }
 
 function SideNavBar() {
+  const router = useRouter();
+
+  if (router.pathname === "/") return null;
+
   return (
     <Stack
       width='16'
