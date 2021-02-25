@@ -25,16 +25,16 @@ import NextLink from "next/link";
 export default function IndexPage() {
   return (
     <Layout>
-      <Stack maxW='8xl' width='full' mx='auto' py='64' alignItems='center'>
+      <Stack maxW='8xl' width='full' mx='auto' py={[20, 64]} alignItems='center'>
         <Box>
           <Text maxW='xl' textAlign='center' fontSize='5xl' fontWeight='bold'>
-            Try the best Stock Cutting Optimisation App
+            The best Stock Cutting Optimisation App
           </Text>
         </Box>
-        <Box pt='6'>
+        <Box pt='4'>
           <NextLink href='/app' passHref>
             <Button bg='gray.900' color='white' size='lg' _hover={{}}>
-              Try the App
+              try the App
             </Button>
           </NextLink>
         </Box>
