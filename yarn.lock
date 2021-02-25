@@ -2219,6 +2219,23 @@ acorn@^7.1.1:
   resolved "https://registry.yarnpkg.com/acorn/-/acorn-7.4.1.tgz#feaed255973d2e77555b83dbc08851a6c63520fa"
   integrity sha512-nQyp0o1/mNdbTO1PO6kHkwSrmgZ0MT/jCCpNiwbUjGoRN4dlBhqJtoQuCnEOKzgTVwg0ZWiCoQy6SxMebQVh8A==
 
+ag-grid-community@^25.1.0:
+  version "25.1.0"
+  resolved "https://registry.yarnpkg.com/ag-grid-community/-/ag-grid-community-25.1.0.tgz#7e132835789586900e0dd24d18cb71d68e09106f"
+  integrity sha512-sKJp6SZG8J50OlOeECtrLFSp/iwdx1mcG0+BmIkHsXmWoyXv5ZaTJyVg1/hMk6s3JVTm1ipg6LepbTaigWEL2A==
+
+ag-grid-enterprise@^25.1.0:
+  version "25.1.0"
+  resolved "https://registry.yarnpkg.com/ag-grid-enterprise/-/ag-grid-enterprise-25.1.0.tgz#4edac3cc7b2aee9bb285634de5d79c575dd0b007"
+  integrity sha512-Q+LO/orMGNcwTUD40ncyUMCUdY2iMmqL7R9KaUNrwZzDVecyBY4vg3UrLxCmui7qSkOizkD/uSZ6MoNMCnwXBA==
+
+ag-grid-react@^25.1.0:
+  version "25.1.0"
+  resolved "https://registry.yarnpkg.com/ag-grid-react/-/ag-grid-react-25.1.0.tgz#a045071802eabf426a0a652558f7f2e508e63a26"
+  integrity sha512-9xboQWDde2oANitsI/RbsS/rMFVLzXLGyteEBjxSyKGrGDOwAK6XHgvfbGSBL2yWVrYDUD5HRHCdfNejO4FPGA==
+  dependencies:
+    prop-types "^15.6.2"
+
 agent-base@6:
   version "6.0.2"
   resolved "https://registry.yarnpkg.com/agent-base/-/agent-base-6.0.2.tgz#49fff58577cfee3f37176feab4c22e00f86d7f77"
@@ -4607,7 +4624,7 @@ promise@^7.1.1:
   dependencies:
     asap "~2.0.3"
 
-prop-types@15.7.2, prop-types@^15.6.2, prop-types@^15.7.2:
+prop-types@15.7.2, prop-types@^15.5.10, prop-types@^15.6.2, prop-types@^15.7.2:
   version "15.7.2"
   resolved "https://registry.yarnpkg.com/prop-types/-/prop-types-15.7.2.tgz#52c41e75b8c87e72b9d9360e0206b99dcbffa6c5"
   integrity sha512-8QQikdH7//R2vurIJSutZ1smHYTcLpRWEOlHnzcWHmBYrOGUysKwSsrC89BCiFj3CbrfJ/nXFdJepOVrY1GCHQ==
@@ -4758,6 +4775,13 @@ react-focus-lock@2.4.1:
     react-clientside-effect "^1.2.2"
     use-callback-ref "^1.2.1"
     use-sidecar "^1.0.1"
+
+react-html-table-to-excel@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/react-html-table-to-excel/-/react-html-table-to-excel-2.0.0.tgz#c5b183121e4a07b47ce936337150dabb60f6012e"
+  integrity sha1-xbGDEh5KB7R86TYzcVDau2D2AS4=
+  dependencies:
+    prop-types "^15.5.10"
 
 react-icons@^4.2.0:
   version "4.2.0"

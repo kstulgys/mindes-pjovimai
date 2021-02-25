@@ -1,9 +1,25 @@
 import React from "react";
-import { Box, Stack, Button, Text, Input } from "@chakra-ui/react";
+import {
+  Box,
+  Stack,
+  Button,
+  Text,
+  Input,
+  Table,
+  Thead,
+  Tbody,
+  Tfoot,
+  Tr,
+  Th,
+  Td,
+  TableCaption,
+} from "@chakra-ui/react";
 import axios from "axios";
 import { Layout } from "../components";
 import { useRouter } from "next/router";
 import { FiUser, FiSettings, FiFolder } from "react-icons/fi";
+// import ReactHTMLTableToExcel from "react-html-table-to-excel";
+// import { GridExample } from "../components/ag-grid";
 // import Amplify, { API } from "aws-amplify";
 // import awsconfig from './aws-exports';
 
@@ -112,9 +128,7 @@ function bestFit(binSize, sizes, bladeSize) {
     }
   });
 
-  const wasteTotal = Object.values(bins).reduce((acc, { capacity }) => (acc += capacity), 0);
-  bins.wasteTotal = wasteTotal;
-  bins.bladeSize = bladeSize;
+  //   const wasteTotal = Object.values(bins).reduce((acc, { capacity }) => (acc += capacity), 0);
   return bins;
 }
 
@@ -197,83 +211,48 @@ export default function AppPage() {
           count: 1,
         };
       }
-      // const foundSameItem = Object.entries(formattedResult).find(
-      //   ([key, { items }], index) => JSON.stringify(items) === JSON.stringify(items)
-      // );
-
-      // if (foundSameItem) {
-      //   const [key, val] = foundSameItem;
-      //   formattedResult[key].count += 1;
-      // }
-
-      // if (!formattedResult[keyCurrent]) {
-      //   formattedResult[keyCurrent] = { ...values, count: 1 };
-      // }
-
-      // [...Object.entries(formattedResult)].forEach(([key, values]) => {
-      //   if (!values.items) return;
-
-      //   if (itemsStringify === JSON.stringify(values.items)) {
-      //     if (formattedResult[key].count) {
-      //       formattedResult[key].count++;
-      //     } else {
-      //       formattedResult[key].count = 1;
-      //     }
-      //     delete bins[keyCurrent];
-      //   }
-      // });
-      // formattedResult[keyCurrent] = { ...bins[keyCurrent] };
-
-      // const foundBin = Object.entries(formattedResult).find(
-      //   ([key, value], index) => JSON.stringify(value.items) === itemsStringify
-      // );
-
-      // if (foundBin) {
-      //   // const [key, value] = foundBin;
-      //   if (formattedResult[keyCurrent].count) {
-      //     formattedResult[keyCurrent].count++;
-      //   } else {
-      //     formattedResult[keyCurrent].count = 1;
-      //   }
-      // }
-
-      // if (!value.items) return;
-      // const filtered = value.items.filter((item) => item !== inputState.bladeSize);
-      // const itemsStringified = JSON.stringify(filtered);
-      // if (!formattedResult[itemsStringified]) {
-      //   formattedResult[itemsStringified] = 1;
-      // } else {
-      //   formattedResult[itemsStringified] += 1;
-      // }
     });
-    // formattedResult.wasteTotal = bins.wasteTotal;
-    console.log({ formattedResult });
     return formattedResult;
   }
+
+  function getSummary(data) {
+    const result = getFormatedResult(data);
+    return Object.entries(result).reduce(
+      (acc, [key, { count, capacity, items, stockLength, capacityPercent }]) => {
+        acc.totalCount += count;
+        acc.stocks[stockLength] = acc.stocks[stockLength] ? acc.stocks[stockLength] + count : count;
+        acc.wastePercent[stockLength] = acc.wastePercent[stockLength]
+          ? acc.wastePercent[stockLength] + capacityPercent
+          : capacityPercent;
+        acc.wasteLength[stockLength] = acc.wasteLength[stockLength]
+          ? acc.wasteLength[stockLength] + capacity
+          : capacity;
+
+        return acc;
+      },
+      { totalCount: 0, stocks: {}, wastePercent: {}, wasteLength: {} }
+    );
+  }
+
+  const summary = getSummary(resultState);
 
   return (
     <Layout>
       <Box as='main' mx='auto' width='full' py={["12"]}>
-        <Stack direction={["column", "row"]} spacing='12' width='full'>
-          <Stack width={["100%", "50%"]} bg='white' p='6' rounded='md' boxShadow='base'>
+        <Stack direction={["column", "row"]} spacing='6' width='full'>
+          <Stack width={["100%", "40%"]} bg='white' p='6' rounded='md' boxShadow='base'>
             <Cut1DInputs setInputState={setInputState} inputState={inputState} />
             <Text>Required Cuts</Text>
             <Box overflowX='auto'>
               <Box ref={jexcelRef} />
             </Box>
             <Box width='full'>
-              <Button onClick={getResult} width='full'>
+              <Button onClick={getResult} width='full' bg='gray.900' color='white' _hover={{}}>
                 Get Result
-              </Button>
-              {/* <Button width='full' variant='unstyled'>
-                Permutations checked: {permCount.current}
-              </Button> */}
-              <Button width='full' variant='unstyled'>
-                Waste: {!resultState.wasteTotal ? 0 : resultState.wasteTotal.toFixed(2)}
               </Button>
             </Box>
           </Stack>
-          <Stack spacing='6' width={["100%", "50%"]}>
+          <Stack spacing='6' width={["100%", "60%"]}>
             <Stack isInline spacing='6' width='full'>
               <Box width='33%' height='32' bg='white' rounded='md' boxShadow='base' />
               <Box width='33%' height='32' bg='white' rounded='md' boxShadow='base' />
@@ -289,67 +268,132 @@ export default function AppPage() {
               overflowX='auto'
             >
               <Stack width='full'>
-                <Stack isInline width='full'>
-                  <Box width='20%'>
-                    <Text>Quantity</Text>
-                  </Box>
-                  <Box width='20%'>
-                    <Text>Stock length</Text>
-                  </Box>
-                  <Box width='50%'>
-                    <Text>Cut list</Text>
-                  </Box>
-                  <Box width='10%'>
-                    <Text>Waste</Text>
-                  </Box>
-                </Stack>
-                {/* {Object.entries(getFormatedResult(resultState, inputState.bladeSize)).map(
-                    ([key, value]) => {
-                      return <Text>{key}</Text>;
-                    }
-                  )} */}
-                <Box Box as='pre'>
-                  {JSON.stringify(getFormatedResult(resultState, inputState.bladeSize), null, 2)}
-                </Box>
-
-                {/* <Stack isInline width='full'>
-                    <Box width='20%'>
-                      <Text>1</Text>
-                    </Box>
-                    <Box width='20%'>
-                      <Text>6500</Text>
-                    </Box>
-                    <Stack width='50%'>
-                      <Text>123</Text>
-                    </Stack>
-                    <Box width='10%'>
-                      <Text>20</Text>
-                    </Box>
-                  </Stack> */}
-                {/* <Box Box as='pre'>
-                  {/* {JSON.stringify(
-                      Object.values(resultState).map((en, index) => ({
-                        no: JSON.stringify(index + 1),
-                        waste: JSON.stringify(en.capacity),
-                        lengths: JSON.stringify(en.items),
-                        summary: en.items.reduce((acc, next, idx) => {
-                          acc["total-length"] =
-                            acc["total-length"] === undefined ? next : acc["total-length"] + next;
-                          acc["total-count"] =
-                            acc["total-count"] === undefined ? 1 : acc["total-count"] + 1;
-                          if (!acc[next]) {
-                            acc[next] = 1;
+                <Table size='sm' id='table-to-xls'>
+                  <Thead>
+                    <Tr>
+                      <Th px='2'>Quantity</Th>
+                      <Th px='2'>Stock length</Th>
+                      <Th px='2'>Cut list</Th>
+                      <Th px='2'>Waste</Th>
+                      <Th px='2'></Th>
+                    </Tr>
+                  </Thead>
+                  <Tbody>
+                    {Object.entries(getFormatedResult(resultState, inputState.bladeSize)).map(
+                      ([key, { count, capacity, items, stockLength, capacityPercent }]) => {
+                        let level = 0;
+                        const tr = items.reduce((acc, next, idx) => {
+                          if ((idx + 1) % 9 === 0) {
+                            level++;
+                          }
+                          if (!acc[level]) {
+                            acc[level] = [next];
                           } else {
-                            acc[next] += 1;
+                            acc[level].push(next);
                           }
                           return acc;
-                        }, {}),
-                      })),
-                      null,
-                      2
-                    )} */}
-                {/* </Box> */}
+                        }, []);
+
+                        return (
+                          <Tr key={key}>
+                            <Td px='2'>{count}</Td>
+                            <Td px='2'>{stockLength}</Td>
+                            {/* <Td px='2' maxW='xs'>
+                              <Box display='inline-flex' flexWrap='wrap'> */}
+                            <Td px='2' pb='1'>
+                              {tr.map((itemArr, idx) => {
+                                return (
+                                  <Tr key={idx} p='0'>
+                                    {itemArr.map((item) => {
+                                      return (
+                                        <Td p='0' m='0'>
+                                          <Box
+                                            px='1'
+                                            mb='1'
+                                            mr='1'
+                                            border='1px solid'
+                                            borderColor='gray.900'
+                                            rounded='sm'
+                                          >
+                                            <Text>{item}</Text>
+                                          </Box>
+                                        </Td>
+                                      );
+                                    })}
+                                  </Tr>
+                                );
+                              })}
+                            </Td>
+                            <Td px='2'>{capacity}</Td>
+                            <Td px='2'>{capacityPercent} %</Td>
+                          </Tr>
+                        );
+                      }
+                    )}
+                  </Tbody>
+
+                  <Tfoot>
+                    <Tr>
+                      {Object.entries(summary.stocks).map(([key, value]) => {
+                        return (
+                          <>
+                            <Th px='2'>
+                              <Text>
+                                {value} x {key}
+                              </Text>
+                            </Th>
+                            <Th px='2'>
+                              <Text>{Math.round(+value * +key)}</Text>
+                            </Th>
+                          </>
+                        );
+                      })}
+                      <Th px='2'></Th>
+                      {Object.entries(summary.wasteLength).map(([key, value]) => {
+                        return (
+                          <Th px='2'>
+                            <Text>
+                              {key} - {value}
+                            </Text>
+                            <Text>
+                              {Math.round((value * 200) / (+key * +summary.stocks[key]))}%/200m
+                            </Text>
+                          </Th>
+                        );
+                      })}
+                      {Object.entries(summary.wastePercent).map(([key, value]) => {
+                        return (
+                          <Th px='2'>
+                            <Text>
+                              {key} - {value} %
+                            </Text>
+                          </Th>
+                        );
+                      })}
+                    </Tr>
+                  </Tfoot>
+                </Table>
               </Stack>
+            </Stack>
+            <Stack isInline spacing='4'>
+              <Box>
+                <Button bg='gray.900' color='white' boxShadow='base' _hover={{}}>
+                  Export XLS
+                </Button>
+              </Box>
+              <Box>
+                <Button bg='gray.900' color='white' boxShadow='base' _hover={{}}>
+                  Export PDF
+                </Button>
+              </Box>
+              {/* <ReactHTMLTableToExcel
+                id='test-table-xls-button'
+                className='download-table-xls-button'
+                table='table-to-xls'
+                filename='tablexls'
+                sheet='tablexls'
+                buttonText='Download as XLS'
+              /> */}
             </Stack>
           </Stack>
         </Stack>
@@ -459,3 +503,18 @@ function Cut1DInputs({ setInputState, inputState }) {
     </Stack>
   );
 }
+
+// function TableRow({ items }) {
+//   return (
+//     <Tr>
+//       {items.map((item, i) => {
+//         if (i + (1 % 7) !== 0) {
+//           return <Td>{item}</Td>;
+//         }else {
+//             const
+//             return TableRow({ items })
+//         }
+//       })}
+//     </Tr>
+//   );
+// }

@@ -28,7 +28,7 @@ export default function IndexPage() {
       <Stack maxW='8xl' width='full' mx='auto' py={[20, 64]} alignItems='center'>
         <Box>
           <Text maxW='xl' textAlign='center' fontSize='5xl' fontWeight='bold'>
-            The best Stock Cutting Optimisation App
+            Stock Cutting Optimisation App
           </Text>
         </Box>
         <Box pt='4'>
