@@ -1,20 +1,5 @@
 import React from "react";
-import {
-  Box,
-  Stack,
-  Button,
-  Text,
-  Input,
-  Icon,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalFooter,
-  ModalBody,
-  ModalCloseButton,
-  useDisclosure,
-} from "@chakra-ui/react";
+import { Box, Stack, Button, Text, Input } from "@chakra-ui/react";
 import axios from "axios";
 import { Layout } from "../components";
 import { useRouter } from "next/router";
@@ -131,40 +116,6 @@ function bestFit(binSize, sizes, bladeSize) {
   bins.wasteTotal = wasteTotal;
   bins.bladeSize = bladeSize;
   return bins;
-}
-
-function ManuItemModal({ icon, title }) {
-  const { isOpen, onOpen, onClose } = useDisclosure();
-  return (
-    <>
-      <Button onClick={onOpen} variant='unstyled'>
-        <Icon as={icon} fontSize='2xl' />
-      </Button>
-      <Modal isOpen={isOpen} onClose={onClose}>
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>{title}</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>
-            Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum
-            has been the industry's standard dummy text ever since the 1500s, when an unknown
-            printer took a galley of type and scrambled it to make a type specimen book. It has
-            survived not only five centuries, but also the leap into electronic typesetting,
-            remaining essentially unchanged. It was popularised in the 1960s with the release of
-            Letraset sheets containing Lorem Ipsum passages, and more recently with desktop
-            publishing software like Aldus PageMaker including versions of Lorem Ipsum.
-          </ModalBody>
-
-          <ModalFooter>
-            <Button colorScheme='blue' mr={3} onClick={onClose}>
-              Close
-            </Button>
-            <Button variant='ghost'>Secondary Action</Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
-    </>
-  );
 }
 
 // const appUrl =
@@ -302,14 +253,7 @@ export default function AppPage() {
 
   return (
     <Layout>
-      <Box as='main' maxW='7xl' mx='auto' width='full' py={["4", "16"]} position='relative'>
-        <Stack position='absolute' top='0' left='-28' zIndex='20' pt='16'>
-          <Stack width='16' boxShadow='base' rounded='md' bg='white' alignItems='center' py='4'>
-            <ManuItemModal icon={FiFolder} title='Projects' />
-            <ManuItemModal icon={FiSettings} title='Settings' />
-            <ManuItemModal icon={FiUser} title='User' />
-          </Stack>
-        </Stack>
+      <Box as='main' mx='auto' width='full' py={["12"]}>
         <Stack direction={["column", "row"]} spacing='12' width='full'>
           <Stack width={["100%", "50%"]} bg='white' p='6' rounded='md' boxShadow='base'>
             <Cut1DInputs setInputState={setInputState} inputState={inputState} />
