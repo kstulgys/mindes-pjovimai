@@ -2,7 +2,7 @@ import "../styles/globals.css";
 
 import { ChakraProvider } from "@chakra-ui/react";
 import Amplify from 'aws-amplify'
-import config from '../src/aws-exports'
+import config from '../aws-exports'
 Amplify.configure({
   ...config,
   ssr: true
