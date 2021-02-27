@@ -20,6 +20,7 @@ import React from "react";
 import axios from "axios";
 import { FiUser, FiSettings, FiFolder } from "react-icons/fi";
 import NextLink from "next/link";
+import { Auth } from 'aws-amplify'
 
 export function Layout({ children }) {
   return (
@@ -79,7 +80,10 @@ function ManuItemModal({ icon, title }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   return (
     <>
-      <Button onClick={onOpen} variant='unstyled'>
+      <Button 
+      onClick={()=>Auth.signOut()}
+      // onClick={onOpen} 
+      variant='unstyled'>
         <Icon as={icon} fontSize='3xl' />
       </Button>
       <Modal isOpen={isOpen} onClose={onClose}>

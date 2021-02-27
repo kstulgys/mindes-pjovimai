@@ -18,12 +18,11 @@ import axios from "axios";
 import { Layout } from "../components";
 import { useRouter } from "next/router";
 import { FiUser, FiSettings, FiFolder } from "react-icons/fi";
-// import ReactHTMLTableToExcel from "react-html-table-to-excel";
-// import { GridExample } from "../components/ag-grid";
-// import Amplify, { API } from "aws-amplify";
-// import awsconfig from './aws-exports';
+import { Auth } from 'aws-amplify'
+import { withAuthenticator, AmplifySignOut, AmplifyAuthenticator, AmplifyChatbot } from '@aws-amplify/ui-react'
 
-// Amplify.configure(awsconfig);
+
+
 
 function getSortedSizes(sizes) {
   const sortedSizes = sizes.reduce((acc, [length, qty]) => {
@@ -42,6 +41,7 @@ function useExcel() {
   const jexcelRef = React.useRef(null);
 
   React.useEffect(() => {
+    if(!Boolean(window.jexcel)) return
     window.jexcel(jexcelRef.current, {
       data: [
         [1560, 3],
@@ -137,7 +137,8 @@ function bestFit(binSize, sizes, bladeSize) {
 //     ? "http://localhost:3000/api/hello"
 //     : "https://mindes-pjovimai.vercel.app/api/hello";
 
-export default function AppPage() {
+function AppPage() {
+  const user = useProtectedClient()
   const router = useRouter();
   // const [isLoading, setIsLoading] = React.useState(true);
   const [inputState, setInputState] = React.useState({
@@ -153,8 +154,16 @@ export default function AppPage() {
   const [resultState, setResultState] = React.useState({});
   const [worstState, setWorstState] = React.useState({});
   const permCount = React.useRef(0);
-
   const { jexcelRef, sortedSizes } = useExcel();
+
+  if (!user){
+    return (
+      <Box bg='gray.900'>
+        <AmplifyAuthenticator/>
+      </Box>
+    )
+  }
+
 
   const getResult = () => {
     // axios
@@ -386,18 +395,15 @@ export default function AppPage() {
                   Export PDF
                 </Button>
               </Box>
-              {/* <ReactHTMLTableToExcel
-                id='test-table-xls-button'
-                className='download-table-xls-button'
-                table='table-to-xls'
-                filename='tablexls'
-                sheet='tablexls'
-                buttonText='Download as XLS'
-              /> */}
             </Stack>
           </Stack>
         </Stack>
       </Box>
+      {/* <AmplifyChatbot
+        botName="yourBotName"
+        botTitle="My ChatBot"
+        welcomeMessage="Hello, how can I help you?"
+      /> */}
     </Layout>
   );
 }
@@ -504,17 +510,45 @@ function Cut1DInputs({ setInputState, inputState }) {
   );
 }
 
-// function TableRow({ items }) {
-//   return (
-//     <Tr>
-//       {items.map((item, i) => {
-//         if (i + (1 % 7) !== 0) {
-//           return <Td>{item}</Td>;
-//         }else {
-//             const
-//             return TableRow({ items })
-//         }
-//       })}
-//     </Tr>
-//   );
-// }
+function useProtectedClient(){
+    const [user, setUser] = React.useState(null)
+
+    React.useEffect(() => {
+      Auth.currentAuthenticatedUser()
+        .then(user => setUser(user))
+        .catch(() => setUser(null))
+    }, [])
+
+  return user
+}
+
+// function withAuth(WrappedComponent) {
+//   const user = useProtectedClient()
+
+//   if (!user){
+//     return (
+//       <AmplifyAuthenticator>
+//         <div>
+//           My App
+//           <AmplifySignOut />
+//         </div>
+//       </AmplifyAuthenticator>
+//     )
+//   }
+
+//   return <WrappedComponent/>
+// } 
+
+//   return <WrappedComponent/>
+  // return class extends React.Component {
+  //   componentDidUpdate(prevProps) {
+  //     console.log('Current props: ', this.props);
+  //     console.log('Previous props: ', prevProps);
+  //   }
+  //   render() {
+  //     // Wraps the input component in a container, without mutating it. Good!
+  //     return <WrappedComponent {...this.props} />;
+  //   }
+  // }
+
+export default AppPage

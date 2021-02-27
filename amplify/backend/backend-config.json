@@ -1,0 +1,17 @@
+{
+  "auth": {
+    "cutoptimiser0a977add": {
+      "service": "Cognito",
+      "providerPlugin": "awscloudformation",
+      "dependsOn": [],
+      "customAuth": false
+    }
+  },
+  "hosting": {
+    "amplifyhosting": {
+      "service": "amplifyhosting",
+      "type": "cicd",
+      "lastPushTimeStamp": "2021-02-27T22:42:12.805Z"
+    }
+  }
+}

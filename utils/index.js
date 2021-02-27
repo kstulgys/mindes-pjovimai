@@ -1,17 +1,37 @@
-// $scope.project = $localStorage.$default({
-//     name:'Default Project',
-//     alg:4,
-//     cutSize: 10,
-//     parts: [
-//       {size:1560, quantity:3},
-//       {size:610, quantity:4},
-//       {size:520, quantity:2},
-//       {size:700, quantity:2},
-//       {size:180, quantity:10},
-//     ],
-//     stockLength:3000,
-//     units:'mm'
-//   });
+// import React from 'react'
+// import { Auth } from 'aws-amplify'
+
+
+// function useProtectedClient(){
+//     const [user, setUser] = React.useState(null)
+//     const router = useRouter()
+
+//     React.useEffect(() => {
+//       Auth.currentAuthenticatedUser()
+//         .then(user => setUser(user))
+//         .catch(() => router.push('/auth'))
+//     }, [])
+
+//   return user
+// }
+
+// function withAuth(WrappedComponent) {
+//   const user = useProtectedClient()
+
+//   if (!user){
+//     return 
+//   }
+//   // return class extends React.Component {
+//   //   componentDidUpdate(prevProps) {
+//   //     console.log('Current props: ', this.props);
+//   //     console.log('Previous props: ', prevProps);
+//   //   }
+//   //   render() {
+//   //     // Wraps the input component in a container, without mutating it. Good!
+//   //     return <WrappedComponent {...this.props} />;
+//   //   }
+//   // }
+// }
 
 const algorithms = [
   { method: "next_fit", name: "Next Fit" },
