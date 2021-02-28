@@ -4,18 +4,6 @@ import { withAuthenticator, AmplifySignOut, AmplifyAuthenticator, AmplifyChatbot
 import { useRouter } from 'next/router'
 
 
-function AuthPage() {
-    const router = useRouter()
-    React.useEffect(() => {
-      Auth.currentAuthenticatedUser()
-        .then(user => router.push('/app'))
-        .catch(() => {})
-    }, [])
-  return null
-}
-
-export default withAuthenticator(AuthPage)
-
 export async function getServerSideProps({ req, res }) {
     const { Auth } = withSSRContext({ req });
     try {
@@ -29,6 +17,20 @@ export async function getServerSideProps({ req, res }) {
     } catch (err) {}
     return {props: {}}
 }
+
+
+function AuthPage() {
+    const router = useRouter()
+    React.useEffect(() => {
+      Auth.currentAuthenticatedUser()
+        .then(user => router.push('/app'))
+        .catch(() => {})
+    }, [])
+  return null
+}
+
+export default withAuthenticator(AuthPage)
+
 
 
 
