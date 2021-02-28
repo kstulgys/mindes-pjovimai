@@ -18,10 +18,8 @@ import axios from "axios";
 import { Layout } from "../components";
 import { useRouter } from "next/router";
 import { FiUser, FiSettings, FiFolder } from "react-icons/fi";
-import { Auth } from 'aws-amplify'
+import { Auth, withSSRContext } from 'aws-amplify'
 import { withAuthenticator, AmplifySignOut, AmplifyAuthenticator, AmplifyChatbot } from '@aws-amplify/ui-react'
-
-
 
 
 function getSortedSizes(sizes) {
@@ -38,11 +36,15 @@ function getSortedSizes(sizes) {
 
 function useExcel() {
   const [sortedSizes, setSizes] = React.useState([]);
+  const [count, rerender] = React.useState(1);
   const jexcelRef = React.useRef(null);
 
   React.useEffect(() => {
-    if(!Boolean(window.jexcel)) return
-    window.jexcel(jexcelRef.current, {
+    if(!window.jspreadsheet) {
+      return rerender(prev=>prev+1)
+    } 
+
+    window.jspreadsheet(jexcelRef.current, {
       data: [
         [1560, 3],
         [610, 4],
@@ -72,7 +74,7 @@ function useExcel() {
         setSizes(sorted);
       },
     });
-  }, []);
+  }, [count]);
 
   return { jexcelRef, sortedSizes };
 }
@@ -137,8 +139,8 @@ function bestFit(binSize, sizes, bladeSize) {
 //     ? "http://localhost:3000/api/hello"
 //     : "https://mindes-pjovimai.vercel.app/api/hello";
 
-function AppPage() {
-  const user = useProtectedClient()
+function AppPage({user}) {
+  // const user = useProtectedClient()
   const router = useRouter();
   // const [isLoading, setIsLoading] = React.useState(true);
   const [inputState, setInputState] = React.useState({
@@ -156,13 +158,13 @@ function AppPage() {
   const permCount = React.useRef(0);
   const { jexcelRef, sortedSizes } = useExcel();
 
-  if (!user){
-    return (
-      <Box bg='gray.900'>
-        <AmplifyAuthenticator/>
-      </Box>
-    )
-  }
+  // if (!user){
+  //   return (
+  //     <Box bg='gray.900'>
+  //       <AmplifyAuthenticator/>
+  //     </Box>
+  //   )
+  // }
 
 
   const getResult = () => {
@@ -253,7 +255,7 @@ function AppPage() {
             <Cut1DInputs setInputState={setInputState} inputState={inputState} />
             <Text>Required Cuts</Text>
             <Box overflowX='auto'>
-              <Box ref={jexcelRef} />
+              <Box ref={jexcelRef} id='spreadsheet'/>
             </Box>
             <Box width='full'>
               <Button onClick={getResult} width='full' bg='gray.900' color='white' _hover={{}}>
@@ -292,7 +294,7 @@ function AppPage() {
                       ([key, { count, capacity, items, stockLength, capacityPercent }]) => {
                         let level = 0;
                         const tr = items.reduce((acc, next, idx) => {
-                          if ((idx + 1) % 9 === 0) {
+                          if ((idx) % 8 === 0) {
                             level++;
                           }
                           if (!acc[level]) {
@@ -365,7 +367,7 @@ function AppPage() {
                               {key} - {value}
                             </Text>
                             <Text>
-                              {Math.round((value * 200) / (+key * +summary.stocks[key]))}%/200m
+                              {Math.round((value * 200) / (+key * +summary.stocks[key]))}/200m
                             </Text>
                           </Th>
                         );
@@ -510,17 +512,17 @@ function Cut1DInputs({ setInputState, inputState }) {
   );
 }
 
-function useProtectedClient(){
-    const [user, setUser] = React.useState(null)
+// function useProtectedClient(){
+//     const [user, setUser] = React.useState(null)
 
-    React.useEffect(() => {
-      Auth.currentAuthenticatedUser()
-        .then(user => setUser(user))
-        .catch(() => setUser(null))
-    }, [])
+//     React.useEffect(() => {
+//       Auth.currentAuthenticatedUser()
+//         .then(user => setUser(user))
+//         .catch(() => setUser(null))
+//     }, [])
 
-  return user
-}
+//   return user
+// }
 
 // function withAuth(WrappedComponent) {
 //   const user = useProtectedClient()
@@ -552,3 +554,19 @@ function useProtectedClient(){
   // }
 
 export default AppPage
+
+export async function getServerSideProps({ req, res }) {
+  const { Auth } = withSSRContext({ req })
+  try {
+    const user = await Auth.currentAuthenticatedUser()
+    return {props: {user: JSON.stringify(user)}}
+  } catch (err) {
+    return {
+      redirect: {
+        destination: '/auth',
+        permanent: false,
+      },
+    }
+  }
+}
+

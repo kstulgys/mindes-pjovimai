@@ -3932,6 +3932,13 @@ json5@^1.0.1:
   dependencies:
     minimist "^1.2.0"
 
+jspreadsheet-ce@^4.6.0:
+  version "4.6.0"
+  resolved "https://registry.yarnpkg.com/jspreadsheet-ce/-/jspreadsheet-ce-4.6.0.tgz#38514e25ff87f53e6c5ee33665d696d6002eed3f"
+  integrity sha512-kLDO+PmwLmpDj0ltCKwBLXGN4eZV3zyt/MWAmWtA8zl8oonrYg53Z1eChaXWFrMwGNnu1DqgChBfPppa5XYZjg==
+  dependencies:
+    jsuites "^4.0.0"
+
 jsprim@^1.2.2:
   version "1.4.1"
   resolved "https://registry.yarnpkg.com/jsprim/-/jsprim-1.4.1.tgz#313e66bc1e5cc06e438bc1b7499c2e5c56acb6a2"
@@ -3951,6 +3958,11 @@ jsuites@^3.4.0:
   version "3.9.9"
   resolved "https://registry.yarnpkg.com/jsuites/-/jsuites-3.9.9.tgz#ceda5e2f77540fba143677b8d84f3c6e79885729"
   integrity sha512-uciw/BeIu6cU3+n+hBfoQQ1hgP4R/DAif2fwJwkJmu8lZ5AWeYW5xGQhVVmrCN/MPFSVkIF6ioHX6kC9Uj9AJw==
+
+jsuites@^4.0.0:
+  version "4.1.2"
+  resolved "https://registry.yarnpkg.com/jsuites/-/jsuites-4.1.2.tgz#97353591b27bdbf9fd2a695034c5609731c1eab4"
+  integrity sha512-U+6piUuCJvBj8OK89eTfF4WCGkJovaF/jzHotU1R2P2o1BJTm+gruUJpKFWHwoFHIOyrQENds4RnZ6DpEwa7Qg==
 
 just-extend@^4.0.2:
   version "4.1.1"
