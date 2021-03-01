@@ -21,6 +21,7 @@ import axios from "axios";
 import { FiUser, FiSettings, FiFolder, FiLogOut } from "react-icons/fi";
 import NextLink from "next/link";
 import { Auth } from 'aws-amplify'
+import { withAuthenticator, AmplifySignOut, AmplifyAuthenticator, AmplifyChatbot } from '@aws-amplify/ui-react'
 
 export function Layout({ children }) {
   return (
@@ -40,6 +41,9 @@ export function Layout({ children }) {
           {children}
         </Box>
       </Stack>
+      {/* <Box position='fixed' bottom='0' right='0'>
+        <AmplifyChatbot/>
+      </Box> */}
     </Box>
   );
 }

@@ -20,6 +20,7 @@ import { useRouter } from "next/router";
 import { FiUser, FiSettings, FiFolder } from "react-icons/fi";
 import { Auth, withSSRContext } from 'aws-amplify'
 import { withAuthenticator, AmplifySignOut, AmplifyAuthenticator, AmplifyChatbot } from '@aws-amplify/ui-react'
+import { useAuthUser } from "../utils";
 
 
 function getSortedSizes(sizes) {
@@ -36,14 +37,34 @@ function getSortedSizes(sizes) {
 
 function useExcel() {
   const [sortedSizes, setSizes] = React.useState([]);
-  const [count, rerender] = React.useState(1);
+  const [count, rerender] = React.useState(0);
   const jexcelRef = React.useRef(null);
+  const [showTable, setShowTable] = React.useState(false);
+  const intervalRef = React.useRef()
 
   React.useEffect(() => {
-    if(!window.jspreadsheet) {
-      return rerender(prev=>prev+1)
+    if (window.jspreadsheet && jexcelRef.current) {
+      setShowTable(true)
+      return () => {
+        clearInterval(intervalRef.current)
+      } 
+    }
+    if (!intervalRef.current) {
+      intervalRef.current = setInterval(()=> {
+        console.count('rerendering')
+        rerender(prev => prev+1)
+      },200)
     } 
+  }, [count])
 
+  React.useEffect(() => {
+    return () => {
+      clearInterval(intervalRef.current)
+    } 
+  },[])
+
+  React.useEffect(() => {
+    if(!showTable) return
     window.jspreadsheet(jexcelRef.current, {
       data: [
         [1560, 3],
@@ -74,7 +95,7 @@ function useExcel() {
         setSizes(sorted);
       },
     });
-  }, [count]);
+  }, [showTable]);
 
   return { jexcelRef, sortedSizes };
 }
@@ -134,29 +155,26 @@ function bestFit(binSize, sizes, bladeSize) {
   return bins;
 }
 
-// const appUrl =
-//   process.env.NODE_ENV === "development"
-//     ? "http://localhost:3000/api/hello"
-//     : "https://mindes-pjovimai.vercel.app/api/hello";
+const defaultInputState = {
+  bladeSize: 10,
+  stockSizes1D: [{ size: 6500 }],
+  input1D: [
+    {
+      size: 300,
+      count: 5,
+    },
+  ],
+}
 
-function AppPage({user}) {
-  // const user = useProtectedClient()
+function AppPage() {
+  const {isLoading, user} = useAuthUser()
   const router = useRouter();
-  // const [isLoading, setIsLoading] = React.useState(true);
-  const [inputState, setInputState] = React.useState({
-    bladeSize: 10,
-    stockSizes1D: [{ size: 6500, cost: 1 }],
-    input1D: [
-      {
-        size: 300,
-        count: 5,
-      },
-    ],
-  });
+
+  const [inputState, setInputState] = React.useState(defaultInputState);
   const [resultState, setResultState] = React.useState({});
-  const [worstState, setWorstState] = React.useState({});
-  const permCount = React.useRef(0);
   const { jexcelRef, sortedSizes } = useExcel();
+
+  if(isLoading) return null
 
   // if (!user){
   //   return (
@@ -176,8 +194,6 @@ function AppPage({user}) {
     //   .catch((error) => console.log({ error }));
 
     let bestBins = bestFit(inputState.stockSizes1D[0].size, sortedSizes, inputState.bladeSize);
-
-    setWorstState(bestBins);
 
     sortedSizes.forEach((size, index) => {
       const sizesWithoutOne = sortedSizes.filter((sizeItem, idx) => idx !== index);
@@ -250,6 +266,18 @@ function AppPage({user}) {
   return (
     <Layout>
       <Box as='main' mx='auto' width='full' py={["12"]}>
+        <Stack isInline spacing='4' mb='6'>
+          <Box>
+            <Button width='32' bg='gray.900' color='white' boxShadow='base' _hover={{}}>
+              1D
+            </Button>
+          </Box>
+          <Box>
+            <Button width='32' bg='white' color='gray.900' boxShadow='base'  _hover={{}}>
+              2D
+            </Button>
+          </Box>
+        </Stack>
         <Stack direction={["column", "row"]} spacing='6' width='full'>
           <Stack width={["100%", "40%"]} bg='white' p='6' rounded='md' boxShadow='base'>
             <Cut1DInputs setInputState={setInputState} inputState={inputState} />
@@ -292,46 +320,16 @@ function AppPage({user}) {
                   <Tbody>
                     {Object.entries(getFormatedResult(resultState, inputState.bladeSize)).map(
                       ([key, { count, capacity, items, stockLength, capacityPercent }]) => {
-                        let level = 0;
-                        const tr = items.reduce((acc, next, idx) => {
-                          if ((idx) % 8 === 0) {
-                            level++;
-                          }
-                          if (!acc[level]) {
-                            acc[level] = [next];
-                          } else {
-                            acc[level].push(next);
-                          }
-                          return acc;
-                        }, []);
-
                         return (
                           <Tr key={key}>
                             <Td px='2'>{count}</Td>
                             <Td px='2'>{stockLength}</Td>
-                            {/* <Td px='2' maxW='xs'>
-                              <Box display='inline-flex' flexWrap='wrap'> */}
-                            <Td px='2' pb='1'>
-                              {tr.map((itemArr, idx) => {
+                            <Td px='1' maxW='md' display='flex' flexWrap='wrap'>
+                              {items.map((item) => {
                                 return (
-                                  <Tr key={idx} p='0'>
-                                    {itemArr.map((item) => {
-                                      return (
-                                        <Td p='0' m='0'>
-                                          <Box
-                                            px='1'
-                                            mb='1'
-                                            mr='1'
-                                            border='1px solid'
-                                            borderColor='gray.900'
-                                            rounded='sm'
-                                          >
-                                            <Text>{item}</Text>
-                                          </Box>
-                                        </Td>
-                                      );
-                                    })}
-                                  </Tr>
+                                  <Box rounded='sm' border='1px solid' m='1' px='1' borderColor='gray.600' color='gray.600'>
+                                    {item}
+                                  </Box>
                                 );
                               })}
                             </Td>
@@ -388,12 +386,12 @@ function AppPage({user}) {
             </Stack>
             <Stack isInline spacing='4'>
               <Box>
-                <Button bg='gray.900' color='white' boxShadow='base' _hover={{}}>
+                <Button width='32' bg='gray.900' color='white' boxShadow='base' _hover={{}}>
                   Export XLS
                 </Button>
               </Box>
               <Box>
-                <Button bg='gray.900' color='white' boxShadow='base' _hover={{}}>
+                <Button width='32' bg='gray.900' color='white' boxShadow='base' _hover={{}}>
                   Export PDF
                 </Button>
               </Box>
@@ -512,6 +510,8 @@ function Cut1DInputs({ setInputState, inputState }) {
   );
 }
 
+
+
 // function useProtectedClient(){
 //     const [user, setUser] = React.useState(null)
 
@@ -555,18 +555,18 @@ function Cut1DInputs({ setInputState, inputState }) {
 
 export default AppPage
 
-export async function getServerSideProps({ req, res }) {
-  const { Auth } = withSSRContext({ req })
-  try {
-    const user = await Auth.currentAuthenticatedUser()
-    return {props: {user: JSON.stringify(user)}}
-  } catch (err) {
-    return {
-      redirect: {
-        destination: '/auth',
-        permanent: false,
-      },
-    }
-  }
-}
+// export async function getServerSideProps({ req, res }) {
+//   const { Auth } = withSSRContext({ req })
+//   try {
+//     const user = await Auth.currentAuthenticatedUser()
+//     return {props: {user: JSON.stringify(user)}}
+//   } catch (err) {
+//     return {
+//       redirect: {
+//         destination: '/auth',
+//         permanent: false,
+//       },
+//     }
+//   }
+// }
 
