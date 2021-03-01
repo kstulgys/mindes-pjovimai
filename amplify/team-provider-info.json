@@ -1,28 +1,52 @@
 {
-  "dev": {
-    "awscloudformation": {
-      "AuthRoleName": "amplify-cutoptimiser-dev-213100-authRole",
-      "UnauthRoleArn": "arn:aws:iam::177887227607:role/amplify-cutoptimiser-dev-213100-unauthRole",
-      "AuthRoleArn": "arn:aws:iam::177887227607:role/amplify-cutoptimiser-dev-213100-authRole",
-      "Region": "eu-central-1",
-      "DeploymentBucketName": "amplify-cutoptimiser-dev-213100-deployment",
-      "UnauthRoleName": "amplify-cutoptimiser-dev-213100-unauthRole",
-      "StackName": "amplify-cutoptimiser-dev-213100",
-      "StackId": "arn:aws:cloudformation:eu-central-1:177887227607:stack/amplify-cutoptimiser-dev-213100/54230900-7932-11eb-b1c1-0a0be5bfe536",
-      "AmplifyAppId": "dvjbglmeltxef"
-    },
-    "categories": {
-      "auth": {
-        "cutoptimiser0a977add": {},
-        "cutoptimiser": {},
-        "cutoptimiser14fe74a0": {}
-      },
-      "hosting": {
-        "amplifyhosting": {
-          "appId": "dvjbglmeltxef",
-          "type": "cicd"
+    "dev": {
+        "awscloudformation": {
+            "AuthRoleName": "amplify-cutoptimiser-dev-213100-authRole",
+            "UnauthRoleArn": "arn:aws:iam::177887227607:role/amplify-cutoptimiser-dev-213100-unauthRole",
+            "AuthRoleArn": "arn:aws:iam::177887227607:role/amplify-cutoptimiser-dev-213100-authRole",
+            "Region": "eu-central-1",
+            "DeploymentBucketName": "amplify-cutoptimiser-dev-213100-deployment",
+            "UnauthRoleName": "amplify-cutoptimiser-dev-213100-unauthRole",
+            "StackName": "amplify-cutoptimiser-dev-213100",
+            "StackId": "arn:aws:cloudformation:eu-central-1:177887227607:stack/amplify-cutoptimiser-dev-213100/54230900-7932-11eb-b1c1-0a0be5bfe536",
+            "AmplifyAppId": "dvjbglmeltxef"
+        },
+        "categories": {
+            "auth": {
+                "cutoptimiser0a977add": {},
+                "cutoptimiser": {},
+                "cutoptimiser14fe74a0": {}
+            },
+            "hosting": {
+                "amplifyhosting": {
+                    "appId": "dvjbglmeltxef",
+                    "type": "cicd"
+                }
+            }
         }
-      }
+    },
+    "prod": {
+        "awscloudformation": {
+            "AuthRoleName": "amplify-cutoptimiser-prod-175502-authRole",
+            "UnauthRoleArn": "arn:aws:iam::177887227607:role/amplify-cutoptimiser-prod-175502-unauthRole",
+            "AuthRoleArn": "arn:aws:iam::177887227607:role/amplify-cutoptimiser-prod-175502-authRole",
+            "Region": "eu-central-1",
+            "DeploymentBucketName": "amplify-cutoptimiser-prod-175502-deployment",
+            "UnauthRoleName": "amplify-cutoptimiser-prod-175502-unauthRole",
+            "StackName": "amplify-cutoptimiser-prod-175502",
+            "StackId": "arn:aws:cloudformation:eu-central-1:177887227607:stack/amplify-cutoptimiser-prod-175502/867868d0-7aa6-11eb-b5ac-022a0fb61e6a",
+            "AmplifyAppId": "dvjbglmeltxef"
+        },
+        "categories": {
+            "auth": {
+                "cutoptimiser14fe74a0": {}
+            },
+            "hosting": {
+                "amplifyhosting": {
+                    "appId": "dvjbglmeltxef",
+                    "type": "cicd"
+                }
+            }
+        }
     }
-  }
 }
