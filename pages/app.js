@@ -120,14 +120,6 @@ function bestFit(binSize, sizes, bladeSize) {
     if (foundBin) {
       const [key, value] = foundBin;
 
-      // const foundSameItems = Object.entries(bins).find(
-      //   ([key, { items }], index) => JSON.stringify(items) === JSON.stringify(value.items)
-      // );
-
-      // if (foundSameItems){
-
-      // }
-
       bins[key].capacity = +(value.capacity - size).toFixed(2);
       bins[key].items.push(size);
       if (bins[key].capacity >= bladeSize) {
