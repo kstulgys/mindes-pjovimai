@@ -69,12 +69,12 @@ export function getSortedSizes(sizes) {
 // }
 
 export const getResult1D = (sizes, stockSize, bladeSize) => {
-  let bestBins = bestFitDecreasing(stockSize, sizes, bladeSize)
+  let bestBins: any = bestFitDecreasing(stockSize, sizes, bladeSize)
 
   sizes.forEach((size, index) => {
-    const sizesWithoutOne = sizes.filter((sizeItem, idx) => idx !== index)
-    const currentBins = bestFitDecreasing(stockSize, sizesWithoutOne, bladeSize)
-    const foundBin = findStockWithLowestCapacity(currentBins, size)
+    const sizesWithoutOne: any = sizes.filter((sizeItem, idx) => idx !== index)
+    const currentBins: any = bestFitDecreasing(stockSize, sizesWithoutOne, bladeSize)
+    const foundBin: any = findStockWithLowestCapacity(currentBins, size)
 
     if (foundBin) {
       const [key, value] = foundBin
@@ -91,10 +91,10 @@ export const getResult1D = (sizes, stockSize, bladeSize) => {
   return bestBins
 }
 
-function getFormatedResult(bins, bladeSize) {
-  const formattedResult = {}
+function getFormatedResult(bins: any, bladeSize): any {
+  const formattedResult: any = {}
 
-  Object.entries(bins).forEach(([keyCurrent, values]) => {
+  Object.entries(bins as any).forEach(([keyCurrent, values]: any) => {
     if (formattedResult[JSON.stringify(values.items)]) {
       formattedResult[JSON.stringify(values.items)].count++
     } else {
@@ -109,27 +109,27 @@ function getFormatedResult(bins, bladeSize) {
   return formattedResult
 }
 
-function getSummary(data) {
-  const result = getFormatedResult(data)
-  return Object.entries(result).reduce(
-    (acc, [key, { count, capacity, items, stockLength, capacityPercent }]) => {
-      acc.totalCount += count
-      acc.stocks[stockLength] = acc.stocks[stockLength] ? acc.stocks[stockLength] + count : count
-      acc.wastePercent[stockLength] = acc.wastePercent[stockLength]
-        ? acc.wastePercent[stockLength] + capacityPercent
-        : capacityPercent
-      acc.wasteLength[stockLength] = acc.wasteLength[stockLength]
-        ? acc.wasteLength[stockLength] + capacity
-        : capacity
+// function getSummary(data: any) {
+//   const result: any = getFormatedResult(data)
+//   return Object.entries(result).reduce(
+//     (acc, [key, { count, capacity, items, stockLength, capacityPercent }]) => {
+//       acc.totalCount += count
+//       acc.stocks[stockLength] = acc.stocks[stockLength] ? acc.stocks[stockLength] + count : count
+//       acc.wastePercent[stockLength] = acc.wastePercent[stockLength]
+//         ? acc.wastePercent[stockLength] + capacityPercent
+//         : capacityPercent
+//       acc.wasteLength[stockLength] = acc.wasteLength[stockLength]
+//         ? acc.wasteLength[stockLength] + capacity
+//         : capacity
 
-      return acc
-    },
-    { totalCount: 0, stocks: {}, wastePercent: {}, wasteLength: {} }
-  )
-}
+//       return acc
+//     },
+//     { totalCount: 0, stocks: {}, wastePercent: {}, wasteLength: {} }
+//   )
+// }
 
-function bestFitDecreasing(stockSize, sizes, bladeSize) {
-  let result = {}
+function bestFitDecreasing(stockSize: any, sizes: any, bladeSize: any) {
+  let result: any = {}
   // go through each size
   sizes.forEach((size, index) => {
     const stockItem = findStockWithLowestCapacity(result, size)
@@ -169,8 +169,8 @@ function addBladeSize(result, stockItem, bladeSize) {
 }
 
 function findStockWithLowestCapacity(result, size) {
-  const stockItem = Object.entries(result)
-    .filter(([key, value], index) => value.capacity >= size)
-    .sort(([key1, value1], [key2, value2]) => value1.capacity - value2.capacity)[0]
+  const stockItem: any = Object.entries(result)
+    .filter(([key, value]: any, index) => value.capacity >= size)
+    .sort(([key1, value1]: any, [key2, value2]: any) => value1.capacity - value2.capacity)[0]
   return stockItem
 }
