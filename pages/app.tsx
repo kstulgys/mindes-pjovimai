@@ -21,29 +21,12 @@ import { useRouter } from 'next/router'
 import { useAuthUser } from '../utils'
 import { Jexcel } from '../components/Jexcel'
 import { useStore } from '../store'
-
-// const parts = [
-//   { size: 1560, quantity: 3 },
-//   { size: 610, quantity: 4 },
-//   { size: 520, quantity: 2 },
-//   { size: 700, quantity: 2 },
-//   { size: 180, quantity: 10 },
-// ];
-
-const defaultInputState = {
-  bladeSize: 10,
-  stockSizes1D: [{ size: 6500, enabled: true }],
-  input1D: [
-    {
-      size: 300,
-      count: 5,
-    },
-  ],
-}
+import { DragHandleIcon, CloseIcon } from '@chakra-ui/icons'
+// import { IconName } from "react-icons/fi";
 
 function AppPage() {
   const { isLoading, user } = useAuthUser()
-  const { handleGetResult } = useStore()
+  const handleGetResult = useStore((store) => store.handleGetResult)
 
   if (isLoading) return null
 
@@ -54,7 +37,7 @@ function AppPage() {
         <Stack direction={['column', 'row']} spacing="6" width="full">
           <Stack width={['100%', '40%']} bg="white" p="6" rounded="md" boxShadow="base">
             <Cut1DInputs />
-            <Text>Required Cuts</Text>
+            <Text fontWeight="medium">Required Cuts</Text>
             <Box overflowX="auto">
               <Jexcel />
             </Box>
@@ -76,18 +59,18 @@ function AppPage() {
 }
 
 function Cut1DInputs() {
-  const {
-    handleAddStockSize,
-    handleBladeSizeChange,
-    handleStockSizeChange,
-    bladeSize,
-    stockSizes1D,
-  } = useStore()
+  const { handleAddStockSize, handleBladeSizeChange, bladeSize, stockSizes1D } = useStore()
+
+  const [activeIndex, setActiveIndex] = React.useState(null)
+  const ref = React.useRef()
+  useOnClickOutside(ref, () => onItemFocus(null))
+
+  const onItemFocus = (idx) => setActiveIndex(idx)
 
   return (
-    <Stack>
+    <Stack spacing="6" pb="4">
       <Stack>
-        <Text>Blade Size</Text>
+        <Text fontWeight="medium">Blade Size</Text>
         <Input
           type="number"
           value={bladeSize}
@@ -95,60 +78,148 @@ function Cut1DInputs() {
           onChange={handleBladeSizeChange}
         />
       </Stack>
-      <Stack>
-        <Text>Stock Size</Text>
-        <Grid
-          display="grid"
-          gap="5"
-          rowGap="3"
-          gridTemplateColumns="repeat(auto-fit, minmax(125px, 1fr))"
-        >
-          {stockSizes1D.map(({ size, enabled }, index) => {
+      <Stack spacing="0">
+        <Stack isInline width="full" px="2">
+          <Box>
+            <Box width="10" />
+          </Box>
+          <Box width="full">
+            <Text fontWeight="medium" textAlign="center">
+              Stock Size
+            </Text>
+          </Box>
+          <Box>
+            <Box width="10" />
+          </Box>
+          <Box width="full">
+            <Text fontWeight="medium" textAlign="center">
+              Count
+            </Text>
+          </Box>
+          <Box>
+            <Box width="10" />
+          </Box>
+        </Stack>
+        <Stack spacing="0" ref={ref}>
+          {stockSizes1D.map((item, index) => {
             return (
-              <Stack rounded="md" isInline key={index} width="full" alignItems="center">
-                <Box>
-                  <Checkbox size="lg" colorScheme="gray" defaultChecked={enabled} />
-                </Box>
-                <Input
-                  borderTopLeftRadius="none"
-                  borderBottomLeftRadius="none"
-                  name="size"
-                  width="full"
-                  type="number"
-                  placeholder="size"
-                  defaultValue={size}
-                  onChange={(e) => handleStockSizeChange(e, index)}
-                  bg="white"
-                />
-              </Stack>
+              <StockSizeItem
+                key={index}
+                {...item}
+                index={index}
+                isActive={activeIndex === index}
+                onItemFocus={onItemFocus}
+              />
             )
           })}
-        </Grid>
-        <Box>
-          <Button bg="gray.500" color="white" width="32" onClick={handleAddStockSize} _hover={{}}>
-            +
-          </Button>
-        </Box>
+        </Stack>
+        <Stack isInline spacing="0" pt="2">
+          <Box px="2">
+            <Box width="10" />
+          </Box>
+          <Box>
+            <Button bg="gray.900" color="white" width="16" onClick={handleAddStockSize} _hover={{}}>
+              +
+            </Button>
+          </Box>
+        </Stack>
       </Stack>
-      <Stack></Stack>
+    </Stack>
+  )
+}
+
+function StockSizeItem({ size, isEnabled, count, isActive, index, onItemFocus }) {
+  const handleStockSizeChange = useStore((store) => store.handleStockSizeChange)
+  const handleRemoveStockSize = useStore((store) => store.handleRemoveStockSize)
+
+  return (
+    <Stack
+      rounded="md"
+      width="full"
+      isInline
+      p="2"
+      bg={isActive ? 'gray.200' : 'white'}
+      alignItems="center"
+    >
+      <Button
+        bg={isActive ? 'gray.200' : 'white'}
+        _hover={{}}
+        transition="none"
+        _active={{ bg: isActive ? 'gray.300' : 'white' }}
+        // onClick={() => {}}
+      >
+        {isActive && <DragHandleIcon fontSize="lg" />}
+      </Button>
+      <Input
+        onFocus={() => onItemFocus(index)}
+        name="size"
+        width="full"
+        type="number"
+        placeholder="size"
+        value={size}
+        onChange={(e) => handleStockSizeChange(e, index)}
+        bg="white"
+      />
+      <Box>
+        <Text width="10" textAlign="center" fontWeight="medium">
+          x
+        </Text>
+      </Box>
+      <Input
+        onFocus={() => onItemFocus(index)}
+        name="count"
+        width="full"
+        type="number"
+        placeholder="infinity"
+        onChange={(e) => handleStockSizeChange(e, index)}
+        bg="white"
+        value={count}
+      />
+      <Button
+        bg={isActive ? 'gray.200' : 'white'}
+        _hover={{}}
+        transition="none"
+        _active={{ bg: isActive ? 'gray.300' : 'white' }}
+        onClick={() => {
+          if (!isActive) return
+          handleRemoveStockSize(index)
+        }}
+      >
+        {isActive && <CloseIcon fontSize="xs" />}
+      </Button>
     </Stack>
   )
 }
 
 function ButtonsSwitch1D2D() {
   return (
-    <Stack isInline spacing="4" mb="6">
-      <Box>
-        <Button width="32" bg="gray.900" color="white" boxShadow="base" _hover={{}}>
-          1D
-        </Button>
-      </Box>
-      <Box>
-        <Button width="32" bg="white" color="gray.900" boxShadow="base" _hover={{}}>
-          2D
-        </Button>
-      </Box>
-    </Stack>
+    <>
+      {/* <Box pb="6">
+        <Text fontSize="3xl"> Mano projectas</Text>
+      </Box> */}
+      <Stack isInline spacing="4" mb="6" width="full">
+        <Box>
+          <Button width="32" bg="gray.900" color="white" boxShadow="base" _hover={{}}>
+            1D
+          </Button>
+        </Box>
+        <Box>
+          <Button width="32" bg="white" color="gray.900" boxShadow="base" _hover={{}}>
+            2D
+          </Button>
+        </Box>
+        {/* <Box ml="auto">
+          <Button width="32" bg="white" color="gray.900" boxShadow="base" _hover={{}}>
+            Save Project
+          </Button>
+        </Box>
+        <Box ml="auto">
+          <Button width="32" bg="white" color="gray.900" boxShadow="base" _hover={{}}>
+            New Project
+          </Button>
+        </Box> */}
+      </Stack>
+    </>
   )
 }
 
@@ -167,91 +238,48 @@ function ResultView() {
   return (
     <Stack isInline fontSize="xs" bg="white" p="6" rounded="md" boxShadow="base" overflowX="auto">
       <Stack width="full">
-        <pre> {JSON.stringify(result1D, null, 4)}</pre>
-        {/* <Table size="sm">
+        {/* <pre> {JSON.stringify(result1D, null, 4)}</pre> */}
+        <Table size="sm">
           <Thead>
             <Tr>
-              <Th px="2">Quantity</Th>
-              <Th px="2">Stock length</Th>
-              <Th px="2">Cut list</Th>
-              <Th px="2">Waste</Th>
-              <Th px="2"></Th>
+              <Th>Quantity</Th>
+              <Th>Stock length</Th>
+              <Th>Cut list</Th>
+              <Th>Waste (mm)</Th>
+              {/* <Th>Waste (%)</Th> */}
             </Tr>
           </Thead>
           <Tbody>
-            {Object.entries(getFormatedResult(resultState, inputState.bladeSize)).map(
-              ([key, { count, capacity, items, stockLength, capacityPercent }]) => {
-                return (
-                  <Tr key={key}>
-                    <Td px="2">{count}</Td>
-                    <Td px="2">{stockLength}</Td>
-                    <Td px="1" maxW="md" display="flex" flexWrap="wrap">
-                      {items.map((item, idx) => {
-                        return (
-                          <Box
-                            key={idx}
-                            rounded="sm"
-                            border="1px solid"
-                            m="1"
-                            px="1"
-                            borderColor="gray.600"
-                            color="gray.600"
-                          >
-                            {item}
-                          </Box>
-                        )
-                      })}
-                    </Td>
-                    <Td px="2">{capacity}</Td>
-                    <Td px="2">{capacityPercent} %</Td>
-                  </Tr>
-                )
-              }
-            )}
+            {/* <pre>{JSON.stringify(result1D, null, 2)}</pre> */}
+            {result1D.map(([key, { count, capacity, items, stockSize, capacityPercent }]) => {
+              return (
+                <Tr key={key}>
+                  <Td>{count}</Td>
+                  <Td>{stockSize}</Td>
+                  <Td px="1" display="flex" flexWrap="wrap">
+                    {items.map((item, idx) => {
+                      return (
+                        <Box
+                          key={idx}
+                          rounded="sm"
+                          border="1px solid"
+                          m="1"
+                          px="1"
+                          borderColor="gray.600"
+                          color="gray.600"
+                        >
+                          {item}
+                        </Box>
+                      )
+                    })}
+                  </Td>
+                  <Td>{Math.round(capacity * count)}</Td>
+                  {/* <Td>{capacityPercent} %</Td> */}
+                </Tr>
+              )
+            })}
           </Tbody>
-
-          <Tfoot>
-            <Tr>
-              {Object.entries(summary.stocks).map(([key, value]) => {
-                return (
-                  <>
-                    <Th px="2">
-                      <Text>
-                        {value} x {key}
-                      </Text>
-                    </Th>
-                    <Th px="2">
-                      <Text>{Math.round(+value * +key)}</Text>
-                    </Th>
-                  </>
-                )
-              })}
-              <Th px="2"></Th>
-              {Object.entries(summary.wasteLength).map(([key, value]) => {
-                return (
-                  <Th px="2">
-                    <Text>
-                      {key} - {value}
-                    </Text>
-                    <Text>
-                      {Math.round((value * 200) / (+key * +summary.stocks[key]))}
-                      /200m
-                    </Text>
-                  </Th>
-                )
-              })}
-              {Object.entries(summary.wastePercent).map(([key, value]) => {
-                return (
-                  <Th px="2">
-                    <Text>
-                      {key} - {value} %
-                    </Text>
-                  </Th>
-                )
-              })}
-            </Tr>
-          </Tfoot>
-        </Table> */}
+        </Table>
       </Stack>
     </Stack>
   )
@@ -273,5 +301,33 @@ function ButtonsResultExport() {
     </Stack>
   )
 }
+function useOnClickOutside(ref, handler) {
+  React.useEffect(
+    () => {
+      const listener = (event) => {
+        // Do nothing if clicking ref's element or descendent elements
+        if (!ref.current || ref.current.contains(event.target)) {
+          return
+        }
 
+        handler(event)
+      }
+
+      document.addEventListener('mousedown', listener)
+      document.addEventListener('touchstart', listener)
+
+      return () => {
+        document.removeEventListener('mousedown', listener)
+        document.removeEventListener('touchstart', listener)
+      }
+    },
+    // Add ref and handler to effect dependencies
+    // It's worth noting that because passed in handler is a new ...
+    // ... function on every render that will cause this effect ...
+    // ... callback/cleanup to run every render. It's not a big deal ...
+    // ... but to optimize you can wrap handler in useCallback before ...
+    // ... passing it into this hook.
+    [ref, handler]
+  )
+}
 export default AppPage
