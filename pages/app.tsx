@@ -31,6 +31,7 @@ function AppPage() {
   const handleGetResult = useStore((store) => store.handleGetResult)
   const isOutdated = useStore((store) => store.isOutdated)
   const result1D = useStore((store) => store.result1D)
+  const is1DView = useStore((store) => store.is1DView)
 
   if (isLoading) return null
 
@@ -38,31 +39,43 @@ function AppPage() {
     <Layout>
       <Box as="main" mx="auto" width="full" py={['12']}>
         <ButtonsSwitch1D2D />
-        <Stack direction={['column', 'row']} spacing="6" width="full">
-          <Stack width={['100%', '40%']} bg="white" p="6" rounded="md" boxShadow="base">
-            <Cut1DInputs />
-            <Text fontWeight="medium">Required Cuts</Text>
-            <Box overflowX="auto">
-              <Jexcel />
-            </Box>
-            <Box width="full">
-              <Button onClick={handleGetResult} width="32" bg="gray.900" color="white" _hover={{}}>
-                Get Result
-              </Button>
-            </Box>
+        {is1DView ? (
+          <Stack direction={['column', 'row']} spacing="6" width="full">
+            <Stack width={['100%', '40%']} bg="white" p="6" rounded="md" boxShadow="base">
+              <Cut1DInputs />
+              <Text fontWeight="medium">Required Cuts</Text>
+              <Box overflowX="auto">
+                <Jexcel />
+              </Box>
+              <Box width="full">
+                <Button
+                  onClick={handleGetResult}
+                  width="32"
+                  bg="gray.900"
+                  color="white"
+                  _hover={{}}
+                >
+                  Get Result
+                </Button>
+              </Box>
+            </Stack>
+            <Stack spacing="6" width={['100%', '60%']}>
+              {isOutdated && (
+                <Alert status="warning" rounded="md" boxShadow="base">
+                  <AlertIcon />
+                  Your calculations are outdated
+                </Alert>
+              )}
+              {/* <ResultStats /> */}
+              {!!result1D.length && <ResultView />}
+              {/* <ButtonsResultExport /> */}
+            </Stack>
           </Stack>
-          <Stack spacing="6" width={['100%', '60%']}>
-            {isOutdated && (
-              <Alert status="warning" rounded="md" boxShadow="base">
-                <AlertIcon />
-                Your calculations are outdated.
-              </Alert>
-            )}
-            {/* <ResultStats /> */}
-            {!!result1D.length && <ResultView />}
-            {/* <ButtonsResultExport /> */}
-          </Stack>
-        </Stack>
+        ) : (
+          <Box>
+            <Text fontSize="2xl">Coming soon...</Text>
+          </Box>
+        )}
       </Box>
     </Layout>
   )
@@ -202,6 +215,9 @@ function StockSizeItem({ size, isEnabled, count, isActive, index, onItemFocus })
 }
 
 function ButtonsSwitch1D2D() {
+  const is1DView = useStore((store) => store.is1DView)
+  const handle1DViewSelect = useStore((store) => store.handle1DViewSelect)
+
   return (
     <>
       {/* <Box pb="6">
@@ -209,12 +225,26 @@ function ButtonsSwitch1D2D() {
       </Box> */}
       <Stack isInline spacing="4" mb="6" width="full">
         <Box>
-          <Button width="32" bg="gray.900" color="white" boxShadow="base" _hover={{}}>
+          <Button
+            width="32"
+            bg={is1DView ? 'gray.900' : 'white'}
+            color={is1DView ? 'white' : 'gray.900'}
+            boxShadow="base"
+            _hover={{}}
+            onClick={() => handle1DViewSelect(true)}
+          >
             1D
           </Button>
         </Box>
         <Box>
-          <Button width="32" bg="white" color="gray.900" boxShadow="base" _hover={{}}>
+          <Button
+            width="32"
+            bg={is1DView ? 'white' : 'gray.900'}
+            color={is1DView ? 'gray.900' : 'white'}
+            boxShadow="base"
+            _hover={{}}
+            onClick={() => handle1DViewSelect(false)}
+          >
             2D
           </Button>
         </Box>

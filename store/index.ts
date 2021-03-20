@@ -10,8 +10,12 @@ export const useStore = create(
       inputSizes1D: [],
       result1D: [],
       isOutdated: false,
+      is1DView: true,
     },
     (set, get) => ({
+      handle1DViewSelect: (bool) => {
+        set({ is1DView: bool })
+      },
       handleBladeSizeChange: (e) => {
         const { result1D } = get()
         set({ bladeSize: e.target.valueAsNumber, isOutdated: !!result1D.length })
