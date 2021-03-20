@@ -106,17 +106,17 @@ function addBladeSize(result, stockItem, bladeSize) {
   return result
 }
 
-function findStockWithLowestCapacity(result, size) {
+function findStockWithLowestCapacity(result: any, size: any) {
   const stockItem = Object.entries(result)
-    .filter(([key, value], index) => value.capacity >= size)
-    .sort(([key1, value1], [key2, value2]) => value1.capacity - value2.capacity)[0]
+    .filter(([key, value]: any, index) => value.capacity >= size)
+    .sort(([key1, value1]: any, [key2, value2]: any) => value1.capacity - value2.capacity)[0]
   return stockItem
 }
 
 function getFormatedResult(bins, bladeSize) {
   const formattedResult = {}
 
-  Object.entries(bins).forEach(([keyCurrent, values]) => {
+  Object.entries(bins).forEach(([keyCurrent, values]: any) => {
     if (formattedResult[JSON.stringify(values.items)]) {
       formattedResult[JSON.stringify(values.items)].count++
     } else {
@@ -129,6 +129,6 @@ function getFormatedResult(bins, bladeSize) {
     }
   })
   return Object.entries(formattedResult).sort(
-    ([key1, value1], [key2, value2]) => value2.stockSize - value1.stockSize
+    ([key1, value1]: any, [key2, value2]: any) => value2.stockSize - value1.stockSize
   )
 }
