@@ -15,6 +15,8 @@ import {
   TableCaption,
   Checkbox,
   Grid,
+  Alert,
+  AlertIcon,
 } from '@chakra-ui/react'
 import { Layout } from '../components'
 import { useRouter } from 'next/router'
@@ -27,6 +29,8 @@ import { DragHandleIcon, CloseIcon } from '@chakra-ui/icons'
 function AppPage() {
   const { isLoading, user } = useAuthUser()
   const handleGetResult = useStore((store) => store.handleGetResult)
+  const isOutdated = useStore((store) => store.isOutdated)
+  const result1D = useStore((store) => store.result1D)
 
   if (isLoading) return null
 
@@ -48,8 +52,14 @@ function AppPage() {
             </Box>
           </Stack>
           <Stack spacing="6" width={['100%', '60%']}>
+            {isOutdated && (
+              <Alert status="warning" rounded="md" boxShadow="base">
+                <AlertIcon />
+                Your calculations are outdated.
+              </Alert>
+            )}
             {/* <ResultStats /> */}
-            <ResultView />
+            {!!result1D.length && <ResultView />}
             {/* <ButtonsResultExport /> */}
           </Stack>
         </Stack>
@@ -238,7 +248,6 @@ function ResultView() {
   return (
     <Stack isInline fontSize="xs" bg="white" p="6" rounded="md" boxShadow="base" overflowX="auto">
       <Stack width="full">
-        {/* <pre> {JSON.stringify(result1D, null, 4)}</pre> */}
         <Table size="sm">
           <Thead>
             <Tr>
