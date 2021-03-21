@@ -40,7 +40,6 @@ function bestFitDecreasing({ inputSizes1D, stockSizes1D, bladeSize }) {
   let allStockSizes = stockSizes1D.map((item) => ({ ...item }))
   const allSizes = [...inputSizes1D]
   allSizes.sort((a, b) => b - a)
-  console.log({ allStockSizes })
   allSizes.forEach((size, index) => {
     // Try to find stock item that has been already used
     // where we can best fit the current size
