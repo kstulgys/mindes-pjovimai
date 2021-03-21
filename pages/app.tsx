@@ -17,6 +17,8 @@ import {
   Grid,
   Alert,
   AlertIcon,
+  Divider,
+  Link,
 } from '@chakra-ui/react'
 import { Layout } from '../components'
 import { useRouter } from 'next/router'
@@ -25,6 +27,7 @@ import { Jexcel } from '../components/Jexcel'
 import { useStore } from '../store'
 import { DragHandleIcon, CloseIcon } from '@chakra-ui/icons'
 // import { IconName } from "react-icons/fi";
+import XLSX from 'xlsx'
 
 function AppPage() {
   const { isLoading, user } = useAuthUser()
@@ -63,12 +66,16 @@ function AppPage() {
               {isOutdated && (
                 <Alert status="warning" rounded="md" boxShadow="base">
                   <AlertIcon />
-                  Your calculations are outdated
+                  Calculations are outdated
                 </Alert>
               )}
               {/* <ResultStats /> */}
-              {!!result1D.length && <ResultView />}
-              {/* <ButtonsResultExport /> */}
+              {!!result1D.length && (
+                <>
+                  <ResultView />
+                  <ButtonsResultExport />
+                </>
+              )}
             </Stack>
           </Stack>
         ) : (
@@ -278,7 +285,7 @@ function ResultView() {
   return (
     <Stack isInline fontSize="xs" bg="white" p="6" rounded="md" boxShadow="base" overflowX="auto">
       <Stack width="full">
-        <Table size="sm">
+        <Table size="sm" id="export-to-xls-table">
           <Thead>
             <Tr>
               <Th>Quantity</Th>
@@ -312,7 +319,7 @@ function ResultView() {
                       )
                     })}
                   </Td>
-                  <Td>{Math.round(capacity * count)}</Td>
+                  <Td>{capacity}</Td>
                   {/* <Td>{capacityPercent} %</Td> */}
                 </Tr>
               )
@@ -325,10 +332,42 @@ function ResultView() {
 }
 
 function ButtonsResultExport() {
+  const { result1D } = useStore()
+
+  const ExportData = () => {
+    if (!result1D.length) return
+    const data = result1D.map(([key, { count, capacity, items, stockSize, capacityPercent }]) => {
+      const reducer = (acc, next, index) => {
+        const item = index === 0 ? `[${next}]` : `  [${next}]`
+        return acc.concat(item)
+      }
+
+      const cutList = items.reduce(reducer, '')
+
+      return {
+        Quantity: count,
+        'Stock length': stockSize,
+        'Cut list': cutList,
+        'Waste (mm)': capacity,
+      }
+    })
+    const ws = XLSX.utils.json_to_sheet(data)
+    const wb = XLSX.utils.book_new()
+    XLSX.utils.book_append_sheet(wb, ws, 'Data')
+    XLSX.writeFile(wb, 'stock_cut_result_' + Date.now().toString() + '.xlsx')
+  }
+
   return (
     <Stack isInline spacing="4">
       <Box>
-        <Button width="32" bg="gray.900" color="white" boxShadow="base" _hover={{}}>
+        <Button
+          onClick={ExportData}
+          width="32"
+          bg="gray.900"
+          color="white"
+          boxShadow="base"
+          _hover={{}}
+        >
           Export XLS
         </Button>
       </Box>
