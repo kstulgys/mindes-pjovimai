@@ -110,6 +110,8 @@ function TableHead() {
         border: '1px solid',
         borderWidth: 1,
         borderColor: 'black',
+        paddingHorizontal: 5,
+        paddingVertical: 5,
       }}
     >
       <TextPDF style={{ width: '20%' }}>Quantity</TextPDF>
@@ -119,8 +121,7 @@ function TableHead() {
     </View>
   )
 }
-function TableRow({ count, stockSize, items, capacity }) {
-  const result1D = useStore((store) => store.result1D)
+function TableRow({ count, stockSize, items, capacity, index }) {
   return (
     <View
       style={{
@@ -133,6 +134,9 @@ function TableRow({ count, stockSize, items, capacity }) {
         border: '1px solid',
         borderWidth: 1,
         borderColor: 'black',
+        borderTopWidth: 0,
+        paddingHorizontal: 5,
+        paddingVertical: 5,
       }}
     >
       <TextPDF style={{ width: '20%' }}>{count}</TextPDF>
@@ -154,8 +158,8 @@ function MyDocument() {
     <Document>
       <Page size="A4" style={styles.body}>
         <TableHead />
-        {result1D.map(([key, item]) => {
-          return <TableRow key={key} {...item} />
+        {result1D.map(([key, item], index) => {
+          return <TableRow key={key} {...item} index={index} />
         })}
 
         {/* <pre>{JSON.stringify(result1D, null, 2)}</pre> */}
@@ -223,9 +227,9 @@ function AppPage() {
         {/* <PDFDownloadLink document={<MyDocument />} fileName="hello world">
           <Text>Download PDF</Text>
         </PDFDownloadLink> */}
-        {/* <PDFViewer style={{ width: '100%', height: '100%' }}>
+        <PDFViewer style={{ width: '100%', height: '100%' }}>
           <MyDocument />
-        </PDFViewer> */}
+        </PDFViewer>
         {is1DView ? (
           <Stack direction={['column', 'row']} spacing="6" width="full">
             <Stack width={['100%', '40%']} bg="white" p="6" rounded="md" boxShadow="base">
@@ -250,7 +254,7 @@ function AppPage() {
               {isOutdated && (
                 <Alert status="warning" rounded="md" boxShadow="base">
                   <AlertIcon />
-                  Calculations are outdated
+                  The result is outdated
                 </Alert>
               )}
               {/* <ResultStats /> */}
