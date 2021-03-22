@@ -36,12 +36,15 @@ export const getResult1D = ({ inputSizes1D, stockSizes1D, bladeSize }) => {
   return getFormatedResult(result, bladeSize)
 }
 
-// Sort stock items by count (lower - higher)
-// allStockSizes.sort((a, b) => a.count - b.count)
 function bfd({ inputSizes1D, stockSizes1D, bladeSize }) {
   const allStockSizes = stockSizes1D.map((item) => ({ ...item }))
-  allStockSizes.sort((a, b) => a.size - b.size)
-  allStockSizes.sort((a, b) => a.count - b.count)
+  allStockSizes.sort((a, b) => {
+    if (a.count > b.count) return 1
+    if (a.count < b.count) return -1
+
+    if (a.size > b.size) return 1
+    if (a.size < b.size) return -1
+  })
 
   const allSizes = [...inputSizes1D]
 
@@ -196,25 +199,11 @@ function getFormatedResult(bins, bladeSize) {
     }
   })
 
-  return Object.entries(formattedResult).sort(
-    ([key1, value1]: any, [key2, value2]: any) => value2.stockSize - value1.stockSize
-  )
-}
-// const formattedResult = {}
+  return Object.entries(formattedResult).sort(([key1, value1]: any, [key2, value2]: any) => {
+    if (value2.stockLength > value1.stockLength) return 1
+    if (value2.stockLength < value1.stockLength) return -1
 
-// Object.entries(bins).forEach(([keyCurrent, values]: any) => {
-//   if (formattedResult[JSON.stringify(values.items)]) {
-//     formattedResult[JSON.stringify(values.items)].count++
-//   } else {
-//     if (!values.items) return
-//     formattedResult[JSON.stringify(values.items)] = {
-//       ...values,
-//       items: values.items.filter((item) => item !== bladeSize),
-//       count: 1,
-//     }
-//   }
-// })
-// return Object.entries(formattedResult).sort(
-//   ([key1, value1]: any, [key2, value2]: any) => value2.stockSize - value1.stockSize
-// )
-// }
+    if (value2.count > value1.count) return 1
+    if (value2.count < value1.count) return -1
+  })
+}
