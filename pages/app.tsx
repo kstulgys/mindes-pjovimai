@@ -114,9 +114,9 @@ function TableHead() {
         paddingVertical: 5,
       }}
     >
-      <TextPDF style={{ width: '20%' }}>Quantity</TextPDF>
+      <TextPDF style={{ width: '15%' }}>Quantity</TextPDF>
       <TextPDF style={{ width: '20%' }}>Stock length</TextPDF>
-      <TextPDF style={{ width: '40%' }}>Cut list</TextPDF>
+      <TextPDF style={{ width: '45%' }}>Cut list</TextPDF>
       <TextPDF style={{ width: '20%' }}>Waste (mm)</TextPDF>
     </View>
   )
@@ -139,9 +139,9 @@ function TableRow({ count, stockSize, items, capacity, index }) {
         paddingVertical: 5,
       }}
     >
-      <TextPDF style={{ width: '20%' }}>{count}</TextPDF>
+      <TextPDF style={{ width: '15%' }}>{count}</TextPDF>
       <TextPDF style={{ width: '20%' }}>{stockSize}</TextPDF>
-      <View style={{ flexDirection: 'row', flexWrap: 'wrap', width: '40%' }}>
+      <View style={{ flexDirection: 'row', flexWrap: 'wrap', width: '45%' }}>
         {items.map((item, index) => (
           <TextPDF key={index}> [{item}] </TextPDF>
         ))}
@@ -256,7 +256,11 @@ function AppPage() {
                 </Alert>
               )}
               {/* <ResultStats /> */}
-              {!!result1D.length && (
+              {!result1D.length ? (
+                <Text textAlign="center" fontWeight="medium" color="gray.500" fontSize="lg">
+                  No results
+                </Text>
+              ) : (
                 <>
                   {/* <ResultView /> */}
                   <PDFViewer style={{ width: '100%', height: '100%' }}>
