@@ -40,6 +40,9 @@ export const getResult1D = ({ inputSizes1D, stockSizes1D, bladeSize }) => {
 // allStockSizes.sort((a, b) => a.count - b.count)
 function bfd({ inputSizes1D, stockSizes1D, bladeSize }) {
   const allStockSizes = stockSizes1D.map((item) => ({ ...item }))
+  allStockSizes.sort((a, b) => a.size - b.size)
+  allStockSizes.sort((a, b) => a.count - b.count)
+
   const allSizes = [...inputSizes1D]
 
   const data = []

@@ -14,6 +14,8 @@
     "@aws-amplify/ui-react": "^1.0.3",
     "@chakra-ui/icons": "^1.0.6",
     "@chakra-ui/react": "^1.3.2",
+    "@dnd-kit/modifiers": "^1.0.2",
+    "@dnd-kit/sortable": "^1.0.2",
     "@emotion/react": "^11.1.5",
     "@emotion/styled": "^11.1.5",
     "@react-pdf/renderer": "^1.6.14",

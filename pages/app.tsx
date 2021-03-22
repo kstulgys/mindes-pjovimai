@@ -19,6 +19,7 @@ import {
   AlertIcon,
   Divider,
   Link,
+  useToast,
 } from '@chakra-ui/react'
 import { Layout } from '../components'
 import { useRouter } from 'next/router'
@@ -97,7 +98,6 @@ const styles = StyleSheet.create({
 })
 
 function TableHead() {
-  const result1D = useStore((store) => store.result1D)
   return (
     <View
       style={{
@@ -115,12 +115,13 @@ function TableHead() {
       }}
     >
       <TextPDF style={{ width: '15%' }}>Quantity</TextPDF>
-      <TextPDF style={{ width: '20%' }}>Stock length</TextPDF>
-      <TextPDF style={{ width: '45%' }}>Cut list</TextPDF>
-      <TextPDF style={{ width: '20%' }}>Waste (mm)</TextPDF>
+      <TextPDF style={{ width: '15%' }}>Stock length</TextPDF>
+      <TextPDF style={{ width: '55%' }}>Cut list</TextPDF>
+      <TextPDF style={{ width: '15%' }}>Waste (mm)</TextPDF>
     </View>
   )
 }
+
 function TableRow({ count, stockLength, items, capacity, index }) {
   return (
     <View
@@ -140,20 +141,19 @@ function TableRow({ count, stockLength, items, capacity, index }) {
       }}
     >
       <TextPDF style={{ width: '15%' }}>{count}</TextPDF>
-      <TextPDF style={{ width: '20%' }}>{stockLength}</TextPDF>
-      <View style={{ flexDirection: 'row', flexWrap: 'wrap', width: '45%' }}>
+      <TextPDF style={{ width: '15%' }}>{stockLength}</TextPDF>
+      <View style={{ flexDirection: 'row', flexWrap: 'wrap', width: '55%' }}>
         {items.map((item, index) => (
           <TextPDF key={index}> [{item}] </TextPDF>
         ))}
       </View>
-      <TextPDF style={{ width: '20%' }}>{capacity}</TextPDF>
+      <TextPDF style={{ width: '15%' }}>{capacity}</TextPDF>
     </View>
   )
 }
 
 function MyDocument() {
   const result1D = useStore((store) => store.result1D)
-  // if (!result1D.length) return null
   return (
     <Document>
       <Page size="A4" style={styles.body}>
@@ -162,45 +162,6 @@ function MyDocument() {
           return <TableRow key={key} {...item} index={index} />
         })}
 
-        {/* <pre>{JSON.stringify(result1D, null, 2)}</pre> */}
-        {/* <Table size="sm"> */}
-        {/* <Thead>
-              <Tr>
-                <Th>Quantity</Th>
-                <Th>Stock length</Th>
-                <Th>Cut list</Th>
-                <Th>Waste (mm)</Th>
-              </Tr>
-            </Thead> */}
-        {/* <Tbody>
-              {result1D.map(([key, { count, capacity, items, stockSize, capacityPercent }]) => {
-                return (
-                  <Tr key={key}>
-                    <Td>{count}</Td>
-                    <Td>{stockSize}</Td>
-                    <Td px="1" display="flex" flexWrap="wrap">
-                      {items.map((item, idx) => {
-                        return (
-                          <Box
-                            key={idx}
-                            rounded="sm"
-                            border="1px solid"
-                            m="1"
-                            px="1"
-                            borderColor="gray.600"
-                            color="gray.600"
-                          >
-                            {item}
-                          </Box>
-                        )
-                      })}
-                    </Td>
-                    <Td>{capacity}</Td>
-                  </Tr>
-                )
-              })}
-            </Tbody> */}
-        {/* </Table> */}
         <TextPDF
           style={styles.pageNumber}
           render={({ pageNumber, totalPages }) => `${pageNumber} / ${totalPages}`}
@@ -217,6 +178,21 @@ function AppPage() {
   const isOutdated = useStore((store) => store.isOutdated)
   const result1D = useStore((store) => store.result1D)
   const is1DView = useStore((store) => store.is1DView)
+  const toast = useToast()
+
+  React.useEffect(() => {
+    if (isLoading) return null
+    if (!isOutdated) return toast.closeAll()
+
+    toast({
+      title: 'The result is outdated',
+      description: `Click "Get Result"`,
+      status: 'warning',
+      duration: null,
+      position: 'top',
+      isClosable: false,
+    })
+  }, [isLoading, isOutdated, toast])
 
   if (isLoading) return null
 
@@ -224,10 +200,6 @@ function AppPage() {
     <Layout>
       <Box as="main" mx="auto" width="full" py={['12']}>
         <ButtonsSwitch1D2D />
-        {/* <PDFDownloadLink document={<MyDocument />} fileName="hello world">
-          <Text>Download PDF</Text>
-        </PDFDownloadLink> */}
-
         {is1DView ? (
           <Stack direction={['column', 'row']} spacing="6" width="full">
             <Stack width={['100%', '40%']} bg="white" p="6" rounded="md" boxShadow="base">
@@ -249,28 +221,18 @@ function AppPage() {
               </Box>
             </Stack>
             <Stack spacing="6" width={['100%', '60%']}>
-              {isOutdated && (
-                <Alert status="warning" rounded="md" boxShadow="base">
-                  <AlertIcon />
-                  The result is outdated
-                </Alert>
-              )}
-              {/* <ResultStats /> */}
-              {/* <pre>{JSON.stringify(result1D, null, 4)}</pre> */}
-
-              {!result1D.length ? (
+              {/* {!result1D.length ? (
                 <Text textAlign="center" fontWeight="medium" color="gray.500" fontSize="lg">
                   No results
                 </Text>
               ) : (
-                <>
-                  {/* <ResultView /> */}
-                  <PDFViewer style={{ width: '100%', height: '100%' }}>
-                    <MyDocument />
-                  </PDFViewer>
-                  <ButtonsResultExport />
-                </>
-              )}
+                <> */}
+              <PDFViewer style={{ width: '100%', height: '100%' }}>
+                <MyDocument />
+              </PDFViewer>
+              <ButtonsResultExport />
+              {/* </> */}
+              {/* )} */}
             </Stack>
           </Stack>
         ) : (
@@ -531,7 +493,7 @@ function ButtonsResultExport() {
 
   const ExportData = () => {
     if (!result1D.length) return
-    const data = result1D.map(([key, { count, capacity, items, stockSize, capacityPercent }]) => {
+    const data = result1D.map(([key, { count, capacity, items, stockLength, capacityPercent }]) => {
       const reducer = (acc, next, index) => {
         const item = index === 0 ? `[${next}]` : `  [${next}]`
         return acc.concat(item)
@@ -541,7 +503,7 @@ function ButtonsResultExport() {
 
       return {
         Quantity: count,
-        'Stock length': stockSize,
+        'Stock length': stockLength,
         'Cut list': cutList,
         'Waste (mm)': capacity,
       }
@@ -567,14 +529,14 @@ function ButtonsResultExport() {
         </Button>
       </Box>
       <Box>
-        {/* <PDFDownloadLink
+        <PDFDownloadLink
           document={<MyDocument />}
           fileName={'stock_cut_result_' + Date.now().toString()}
         >
           <Button width="32" bg="gray.900" color="white" boxShadow="base" _hover={{}}>
             Export PDF
           </Button>
-        </PDFDownloadLink> */}
+        </PDFDownloadLink>
       </Box>
     </Stack>
   )

@@ -3358,6 +3358,47 @@
     enabled "2.0.x"
     kuler "^2.0.0"
 
+"@dnd-kit/accessibility@^1.0.2":
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/@dnd-kit/accessibility/-/accessibility-1.0.2.tgz#845f52387e07bef4f39c193c23079fb0feab79aa"
+  integrity sha512-aQq+B4But+369cYYtmXPUhqf26Fy9b/nR+uAP4cbhf3TXMlCqorT7bO7dT7cNe+me2DOf61GVr0mkrWtfsvR3A==
+  dependencies:
+    tslib "^2.0.0"
+
+"@dnd-kit/core@^1.0.2":
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@dnd-kit/core/-/core-1.1.0.tgz#803a755e1915a483b7f3db7b430613644aee6706"
+  integrity sha512-VrBOt9PTds0UtOU4lwE92P+MFbFY2vymgE/I3OQuUPiqrNHVRFPUYTOuJO9+I6wpfLuQYMjCvem0YMx4IRi0yQ==
+  dependencies:
+    "@dnd-kit/accessibility" "^1.0.2"
+    "@dnd-kit/utilities" "^1.0.2"
+    tslib "^2.0.0"
+
+"@dnd-kit/modifiers@^1.0.2":
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/@dnd-kit/modifiers/-/modifiers-1.0.2.tgz#aae27ef405ec8e84deb426a7b47af49812b61bf7"
+  integrity sha512-GCgFN8ZABnZuIFvptVUc7EbUtgOZVrgb+UvkiU/2h6KbQT39qRImtVOL2BX+6dZ4LWAWaPC9RX4F7N0+P0RCFA==
+  dependencies:
+    "@dnd-kit/core" "^1.0.2"
+    "@dnd-kit/utilities" "^1.0.2"
+    tslib "^2.0.0"
+
+"@dnd-kit/sortable@^1.0.2":
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/@dnd-kit/sortable/-/sortable-1.0.2.tgz#7a25b5dfa03f4c2eed2bad3870de11b02377534f"
+  integrity sha512-lma9+LBATJ5A7hdnDqtD4Nam1dEX4fQYxi8W+C6qNk3nhG1AT1fjZ+GwokvDCEbGCD6GNDHlWZybJdc7dqb7mQ==
+  dependencies:
+    "@dnd-kit/core" "^1.0.2"
+    "@dnd-kit/utilities" "^1.0.2"
+    tslib "^2.0.0"
+
+"@dnd-kit/utilities@^1.0.2":
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/@dnd-kit/utilities/-/utilities-1.0.2.tgz#21956a04daabace29bf3b85451d40f0f9889de55"
+  integrity sha512-RC3c9OVfr9Nx5acNwy278RCI0UOr8e08XQmws1w0lx+i+YIu74lQqat0MXR3zyQHimrduXRG/ctciuwj1JOgkQ==
+  dependencies:
+    tslib "^2.0.0"
+
 "@emotion/babel-plugin@^11.1.2":
   version "11.2.0"
   resolved "https://registry.yarnpkg.com/@emotion/babel-plugin/-/babel-plugin-11.2.0.tgz#f25c6df8ec045dad5ae6ca63df0791673b98c920"
