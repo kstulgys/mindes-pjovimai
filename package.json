@@ -37,6 +37,7 @@
     "react-spreadsheet": "^0.5.0",
     "stock-cutting": "^1.2.0",
     "typescript": "^4.2.2",
+    "uuid": "^8.3.2",
     "xlsx": "^0.16.9",
     "zustand": "^3.3.3"
   },

@@ -49,6 +49,7 @@ export const useStore = create(
       handleGetResult: () => {
         const { inputSizes1D, stockSizes1D, bladeSize } = get()
         const result1D = getResult1D({ inputSizes1D, stockSizes1D, bladeSize })
+        console.log({ result1D })
         set({ result1D, isOutdated: false })
       },
     })

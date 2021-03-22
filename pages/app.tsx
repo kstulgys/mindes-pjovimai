@@ -121,7 +121,7 @@ function TableHead() {
     </View>
   )
 }
-function TableRow({ count, stockSize, items, capacity, index }) {
+function TableRow({ count, stockLength, items, capacity, index }) {
   return (
     <View
       style={{
@@ -140,7 +140,7 @@ function TableRow({ count, stockSize, items, capacity, index }) {
       }}
     >
       <TextPDF style={{ width: '15%' }}>{count}</TextPDF>
-      <TextPDF style={{ width: '20%' }}>{stockSize}</TextPDF>
+      <TextPDF style={{ width: '20%' }}>{stockLength}</TextPDF>
       <View style={{ flexDirection: 'row', flexWrap: 'wrap', width: '45%' }}>
         {items.map((item, index) => (
           <TextPDF key={index}> [{item}] </TextPDF>
@@ -256,6 +256,8 @@ function AppPage() {
                 </Alert>
               )}
               {/* <ResultStats /> */}
+              {/* <pre>{JSON.stringify(result1D, null, 4)}</pre> */}
+
               {!result1D.length ? (
                 <Text textAlign="center" fontWeight="medium" color="gray.500" fontSize="lg">
                   No results
@@ -308,7 +310,7 @@ function Cut1DInputs() {
           </Box>
           <Box width="full">
             <Text fontWeight="medium" textAlign="center">
-              Stock Size
+              Stock length
             </Text>
           </Box>
           <Box>
@@ -474,7 +476,7 @@ function ResultStats() {
 }
 
 function ResultView() {
-  const { result1D } = useStore()
+  const result1D = useStore((store) => store.result1D)
   return (
     <Stack isInline fontSize="xs" bg="white" p="6" rounded="md" boxShadow="base" overflowX="auto">
       <Stack width="full">
@@ -565,14 +567,14 @@ function ButtonsResultExport() {
         </Button>
       </Box>
       <Box>
-        <PDFDownloadLink
+        {/* <PDFDownloadLink
           document={<MyDocument />}
           fileName={'stock_cut_result_' + Date.now().toString()}
         >
           <Button width="32" bg="gray.900" color="white" boxShadow="base" _hover={{}}>
             Export PDF
           </Button>
-        </PDFDownloadLink>
+        </PDFDownloadLink> */}
       </Box>
     </Stack>
   )
