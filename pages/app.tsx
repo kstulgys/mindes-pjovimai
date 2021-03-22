@@ -227,9 +227,7 @@ function AppPage() {
         {/* <PDFDownloadLink document={<MyDocument />} fileName="hello world">
           <Text>Download PDF</Text>
         </PDFDownloadLink> */}
-        <PDFViewer style={{ width: '100%', height: '100%' }}>
-          <MyDocument />
-        </PDFViewer>
+
         {is1DView ? (
           <Stack direction={['column', 'row']} spacing="6" width="full">
             <Stack width={['100%', '40%']} bg="white" p="6" rounded="md" boxShadow="base">
@@ -260,7 +258,10 @@ function AppPage() {
               {/* <ResultStats /> */}
               {!!result1D.length && (
                 <>
-                  <ResultView />
+                  {/* <ResultView /> */}
+                  <PDFViewer style={{ width: '100%', height: '100%' }}>
+                    <MyDocument />
+                  </PDFViewer>
                   <ButtonsResultExport />
                 </>
               )}
