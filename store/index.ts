@@ -2,6 +2,11 @@ import create from 'zustand'
 import { combine } from 'zustand/middleware'
 import { getSortedSizes, getResult1D, checkDouplicateName } from '../utils'
 
+const errors = {
+  input: {},
+  outdated: false,
+}
+
 export const useStore = create(
   combine(
     {
@@ -19,8 +24,21 @@ export const useStore = create(
         inputMessage: null,
         outdatedMessage: null,
       },
+      activeColumns: [
+        { name: 'Length', isChecked: false },
+        { name: 'Quantity', isChecked: false },
+        { name: 'Name', isChecked: false },
+        { name: 'Angle1', isChecked: false },
+        { name: 'Angle2', isChecked: false },
+      ],
     },
     (set, get) => ({
+      handleToggleColumn: (index) => {
+        const { activeColumns } = get()
+        const newActiveColumns = activeColumns.map((c) => c)
+        newActiveColumns[index].isChecked = !newActiveColumns[index].isChecked
+        set({ activeColumns: newActiveColumns })
+      },
       handleOutdatedError: () => {
         const { errors, result1D } = get()
         const message = !!result1D?.length && 'Result is outdated'

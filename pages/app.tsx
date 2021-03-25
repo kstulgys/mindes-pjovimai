@@ -95,6 +95,7 @@ function AppPage() {
             <Stack width={['100%', '40%']} bg="white" p="6" rounded="md" boxShadow="base">
               <Cut1DInputs />
               <Text fontWeight="medium">Required Cuts</Text>
+              <ListAllColumns />
               <Box overflowX="auto">
                 <Jexcel />
               </Box>
@@ -125,6 +126,29 @@ function AppPage() {
         )}
       </Box>
     </Layout>
+  )
+}
+
+function ListAllColumns() {
+  const activeColumns = useStore((store) => store.activeColumns)
+  const handleToggleColumn = useStore((store) => store.handleToggleColumn)
+
+  return (
+    <Stack spacing="6" isInline justifyContent="flex-end">
+      {activeColumns.map(({ name, isChecked }, index) => {
+        if (name === 'Length' || name === 'Quantity') return null
+        return (
+          <Checkbox
+            onChange={() => handleToggleColumn(index)}
+            isChecked={isChecked}
+            key={name}
+            colorScheme="orange"
+          >
+            {name}
+          </Checkbox>
+        )
+      })}
+    </Stack>
   )
 }
 

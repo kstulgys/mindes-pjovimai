@@ -14,6 +14,7 @@ function useExcel() {
   const [showTable, setShowTable] = React.useState(false)
   const intervalRef = React.useRef<null | ReturnType<typeof setTimeout>>(null)
   const handleSizesChange = useStore((state) => state.handleSizesChange)
+  const activeColumns = useStore((store) => store.activeColumns)
 
   React.useEffect(() => {
     if (window.jspreadsheet && jexcelRef.current) {
@@ -38,7 +39,12 @@ function useExcel() {
 
   React.useEffect(() => {
     if (!showTable) return
-    window.jspreadsheet(jexcelRef.current, {
+    const inActiveColumnsIndexes = activeColumns.reduce((acc, { isChecked, name }, index) => {
+      if (name === 'Length' || name === 'Quantity') return acc
+      if (!isChecked) return [...acc, index]
+      return acc
+    }, [])
+    const jexcel = window.jspreadsheet(jexcelRef.current, {
       data: [
         [1560, 3, 'POS1', -45, 45],
         [610, 4, 'POS2', -45, 45],
@@ -48,17 +54,33 @@ function useExcel() {
       ],
       minDimensions: [2, 3],
       defaultColWidth: 100,
-      csvHeaders: true,
+
+      // csvHeaders: true,
       columns: [
-        { type: 'number', title: 'Length' },
-        { type: 'number', title: 'Quantity' },
+        { type: 'text', title: 'Length' },
+        { type: 'text', title: 'Quantity' },
         { type: 'text', title: 'Name' },
-        { type: 'number', title: 'Angle1' },
-        { type: 'number', title: 'Angle2' },
+        { type: 'text', title: 'Angle1' },
+        { type: 'text', title: 'Angle2' },
       ],
-      // updateTable: function (instance, cell, col, row, val, label, cellName) {
-      //   console.log({ instance, cell, col, row, val, label, cellName });
-      // },
+      updateTable: function (instance, cell, col, row, val, label, cellName) {
+        // console.log({ instance, cell, col, row, val, label, cellName });
+        // if (cell.innerHTML == 'Total') {
+        //   cell.parentNode.style.backgroundColor = '#fffaa3'
+        // }
+
+        if (inActiveColumnsIndexes.includes(col)) {
+          // cell.style.backgroundColor = '#DD6B1F'
+          cell.style.pointerEvents = 'none'
+          cell.style.cursor = 'not-allowed'
+          cell.style.opacity = '0.3'
+          // if (parseFloat(label) > 10) {
+          //   cell.style.color = 'red'
+          // } else {
+          //   cell.style.color = 'green'
+          // }
+        }
+      },
       onafterchanges: () => {
         if (!jexcelRef.current) return
         const sizes = jexcelRef.current.jexcel.getData()
@@ -66,10 +88,15 @@ function useExcel() {
       },
       onload: () => {
         const sizes = jexcelRef.current.jexcel.getData()
+        console.log({ sizes })
         handleSizesChange(sizes)
       },
     })
-  }, [showTable])
+
+    return () => {
+      if (jexcel) jexcel.destroy()
+    }
+  }, [showTable, activeColumns])
 
   return { jexcelRef }
 }

@@ -19,10 +19,10 @@ export function useAuthUser() {
 }
 
 export function getSortedSizes(sizes) {
-  const sortedSizes = sizes.reduce((acc, [length, qty, name]) => {
+  const sortedSizes = sizes.reduce((acc, [length, qty, name, angle1, angle2]) => {
     const formatted = Array(+qty)
       .fill(null)
-      .map((_) => ({ size: +length, name }))
+      .map((_) => ({ size: +length, name, angle1, angle2 }))
     return [...acc, ...formatted]
   }, [])
   sortedSizes.sort((a, b) => b.size - a.size)
@@ -52,7 +52,7 @@ function bfd({ inputSizes1D, stockSizes1D, bladeSize }) {
   allStockSizes.forEach(({ size: stockLength, count }, _) => {
     let countAvailable = count
 
-    allCutSizes.forEach(({ size, name }, index) => {
+    allCutSizes.forEach(({ size, ...rest }, index) => {
       const isIndexUsed = usedIndexes.some((idx) => idx === index)
       if (isIndexUsed) return
 
@@ -62,7 +62,7 @@ function bfd({ inputSizes1D, stockSizes1D, bladeSize }) {
 
       if (entityFound) {
         entityFound.capacity = Math.round(entityFound.capacity - size)
-        entityFound.items.push({ size, name })
+        entityFound.items.push({ size, ...rest })
 
         if (entityFound.capacity >= bladeSize) {
           entityFound.capacity = Math.round(entityFound.capacity - bladeSize)
@@ -78,7 +78,7 @@ function bfd({ inputSizes1D, stockSizes1D, bladeSize }) {
           const item: any = {}
           item.stockLength = stockLength
           item.capacity = Math.round(stockLength - size)
-          item.items = [{ size, name }]
+          item.items = [{ size, ...rest }]
           item.id = uuid()
 
           if (item.capacity >= bladeSize) {
@@ -152,7 +152,7 @@ function getFormatedResult(stockCutResult, bladeSize) {
     if (formattedResult[key]) {
       formattedResult[key].count++
     } else {
-      const items = entity.items.filter((item) => Boolean(item.name))
+      const items = entity.items.filter(({ size }) => size !== bladeSize)
       formattedResult[key] = {
         ...entity,
         items,

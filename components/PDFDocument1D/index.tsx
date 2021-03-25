@@ -115,6 +115,8 @@ function TableHead() {
 }
 
 function TableRow({ count, stockLength, items, capacity }) {
+  const activeColumns = useStore((store) => store.activeColumns)
+
   return (
     <View
       style={{
@@ -135,12 +137,31 @@ function TableRow({ count, stockLength, items, capacity }) {
       <TextPDF style={{ width: '15%' }}>{count}</TextPDF>
       <TextPDF style={{ width: '15%' }}>{stockLength}</TextPDF>
       <View style={{ flexDirection: 'row', flexWrap: 'wrap', width: '55%' }}>
-        {items.map(({ size, name }, index) => {
-          const innerText = name ? ` ([${name}] ${size}) ` : ` ${size} `
-          return <TextPDF key={index}>{innerText}</TextPDF>
+        {items.map(({ size, name, angle1, angle2 }, index) => {
+          name = activeColumns[2].isChecked && name
+          angle1 = activeColumns[3].isChecked && angle1
+          angle2 = activeColumns[4].isChecked && angle2
+          return <TextPDF key={index}>{formatValue({ name, size, angle1, angle2 })}</TextPDF>
         })}
       </View>
       <TextPDF style={{ width: '15%' }}>{capacity}</TextPDF>
     </View>
   )
+}
+
+// 250
+// ([POS1] 250)
+// -45([POS1] 250)45
+
+function formatValue({ name, size, angle1, angle2 }) {
+  if (name && size && (angle1 || angle2)) {
+    return ` ${angle1 || 0}°([${name}] ${size})${angle2 || 0}°`
+  }
+  if (size && (angle1 || angle2)) {
+    return ` ${angle1 || 0}°(${size})${angle2 || 0}°`
+  }
+  if (name && size) {
+    return ` ([${name}] ${size}) `
+  }
+  return ` ${size} `
 }
