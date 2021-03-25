@@ -40,19 +40,21 @@ function useExcel() {
     if (!showTable) return
     window.jspreadsheet(jexcelRef.current, {
       data: [
-        [1560, 3],
-        [610, 4],
-        [520, 2],
-        [700, 2],
-        [180, 10],
+        [1560, 3, 'POS1', -45, 45],
+        [610, 4, 'POS2', -45, 45],
+        [520, 2, 'POS3', -45, 45],
+        [700, 2, 'POS4', -45, 45],
+        [180, 10, 'POS5', -45, 45],
       ],
       minDimensions: [2, 3],
       defaultColWidth: 100,
       csvHeaders: true,
-      //   tableOverflow: true,
       columns: [
-        { type: 'numeric', title: 'Length' },
-        { type: 'numeric', title: 'Quantity' },
+        { type: 'number', title: 'Length' },
+        { type: 'number', title: 'Quantity' },
+        { type: 'text', title: 'Name' },
+        { type: 'number', title: 'Angle1' },
+        { type: 'number', title: 'Angle2' },
       ],
       // updateTable: function (instance, cell, col, row, val, label, cellName) {
       //   console.log({ instance, cell, col, row, val, label, cellName });

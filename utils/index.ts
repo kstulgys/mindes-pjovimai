@@ -19,15 +19,13 @@ export function useAuthUser() {
 }
 
 export function getSortedSizes(sizes) {
-  const sortedSizes = sizes.reduce((acc, [length, qty]) => {
-    const res = Array(+qty)
+  const sortedSizes = sizes.reduce((acc, [length, qty, name]) => {
+    const formatted = Array(+qty)
       .fill(null)
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      .map((_) => +length)
-    return [...acc, ...res]
+      .map((_) => ({ size: +length, name }))
+    return [...acc, ...formatted]
   }, [])
-  sortedSizes.sort((a, b) => b - a)
-
+  sortedSizes.sort((a, b) => b.size - a.size)
   return sortedSizes
 }
 
@@ -37,16 +35,16 @@ export const getResult1D = ({ inputSizes1D, stockSizes1D, bladeSize }) => {
 }
 
 function bfd({ inputSizes1D, stockSizes1D, bladeSize }) {
-  const allStockSizes = stockSizes1D.map((item) => ({ ...item }))
-  allStockSizes.sort((a, b) => {
-    if (a.count > b.count) return 1
-    if (a.count < b.count) return -1
+  const allStockSizes = stockSizes1D.filter(({ isEnabled }) => Boolean(isEnabled))
+  const allCutSizes = inputSizes1D.map((item) => ({ ...item }))
 
+  allStockSizes.sort((a, b) => {
     if (a.size > b.size) return 1
     if (a.size < b.size) return -1
-  })
 
-  const allSizes = [...inputSizes1D]
+    if (a.count > b.count) return 1
+    if (a.count < b.count) return -1
+  })
 
   const data = []
   const usedIndexes = []
@@ -54,21 +52,21 @@ function bfd({ inputSizes1D, stockSizes1D, bladeSize }) {
   allStockSizes.forEach(({ size: stockLength, count }, _) => {
     let countAvailable = count
 
-    allSizes.forEach((size, index) => {
+    allCutSizes.forEach(({ size, name }, index) => {
       const isIndexUsed = usedIndexes.some((idx) => idx === index)
       if (isIndexUsed) return
+
       const entityFound = data
-        .map((_) => ({ ..._ }))
         .filter((obj) => obj.capacity >= size && obj.stockLength === stockLength)
         .sort((a, b) => a.capacity - b.capacity)[0]
 
       if (entityFound) {
         entityFound.capacity = Math.round(entityFound.capacity - size)
-        entityFound.items.push(size)
+        entityFound.items.push({ size, name })
 
         if (entityFound.capacity >= bladeSize) {
           entityFound.capacity = Math.round(entityFound.capacity - bladeSize)
-          entityFound.items.push(bladeSize)
+          entityFound.items.push({ size: bladeSize })
         }
         const lengthIndex = data.findIndex((item) => item.id === entityFound.id)
         data[lengthIndex] = { ...entityFound }
@@ -80,12 +78,12 @@ function bfd({ inputSizes1D, stockSizes1D, bladeSize }) {
           const item: any = {}
           item.stockLength = stockLength
           item.capacity = Math.round(stockLength - size)
-          item.items = [size]
+          item.items = [{ size, name }]
           item.id = uuid()
 
           if (item.capacity >= bladeSize) {
             item.capacity = Math.round(item.capacity - bladeSize)
-            item.items.push(bladeSize)
+            item.items.push({ size: bladeSize })
           }
           data.push(item)
           countAvailable--
@@ -100,44 +98,6 @@ function bfd({ inputSizes1D, stockSizes1D, bladeSize }) {
 
 function bestFitDecreasing({ inputSizes1D, stockSizes1D, bladeSize }) {
   return bfd({ inputSizes1D, stockSizes1D, bladeSize })
-  // let result = {}
-  // const allStockSizes = stockSizes1D.map((item) => ({ ...item }))
-  // const allSizes = [...inputSizes1D]
-  // // allSizes.sort((a, b) => b - a)
-
-  // allSizes.forEach((size, index) => {
-  //   // Try to find stock item that has been already used
-  //   // where we can best fit the current size
-  //   const stockItem = findStockWithLowestCapacity(result, size)
-  //   const stockItemNextBest = findNextBestStockItem(allStockSizes, size)
-
-  //   if (stockItem) {
-  //     result = addSizeItem(result, stockItem, size)
-  //     result = addBladeSize(result, stockItem, bladeSize)
-  //     return
-  //   }
-  //   // Otherwise use a new stock item if possible
-
-  //   // Try to find the next best stock item
-  //   const stockItemFound = findNextBestStockItem(allStockSizes, size)
-  //   console.log({ stockItemFound })
-  //   console.log({ size })
-
-  //   // Return early if stock item can not be found
-  //   if (!stockItemFound) return
-  //   // Update stock sizes (count)
-  //   // allStockSizes = stockItemFound.allStockSizes
-  //   const currentStockSize = stockItemFound.currentStockSize
-
-  //   const nextIdx = Object.values(result).length
-  //   const value = { capacity: currentStockSize.size, items: [] }
-  //   result[nextIdx] = { ...value }
-  //   result[nextIdx].stockSize = currentStockSize.size
-  //   result = addSizeItem(result, [nextIdx, value], size)
-  //   result = addBladeSize(result, [nextIdx, value], bladeSize)
-  // })
-  // console.log({ allStockSizes })
-  // return result
 }
 
 function findNextBestStockItem(allStockSizes, size) {
@@ -183,17 +143,19 @@ function findStockWithLowestCapacity(result: any, size: any) {
   return stockItem
 }
 
-function getFormatedResult(bins, bladeSize) {
+function getFormatedResult(stockCutResult, bladeSize) {
   const formattedResult = {}
 
-  bins.forEach((entity: any) => {
-    const itemInResult = JSON.stringify(entity.items) + JSON.stringify(entity.stockLength)
-    if (formattedResult[itemInResult]) {
-      formattedResult[itemInResult].count++
+  stockCutResult.forEach((entity: any) => {
+    const key = `${JSON.stringify(entity.items)} - ${entity.stockLength}`
+
+    if (formattedResult[key]) {
+      formattedResult[key].count++
     } else {
-      formattedResult[itemInResult] = {
+      const items = entity.items.filter((item) => Boolean(item.name))
+      formattedResult[key] = {
         ...entity,
-        items: entity.items.filter((item) => item !== bladeSize),
+        items,
         count: 1,
       }
     }
@@ -206,4 +168,20 @@ function getFormatedResult(bins, bladeSize) {
     if (value2.count > value1.count) return 1
     if (value2.count < value1.count) return -1
   })
+}
+
+export function checkDouplicateName(sizes) {
+  let name = null
+  sizes.some(([len1, qty1, name1], idx1) =>
+    sizes.some(([len2, qty2, name2], idx2) => {
+      if (idx1 === idx2) return false
+      if (name1 === name2) {
+        name = name1
+        return true
+      }
+      return false
+    })
+  )
+
+  return name
 }

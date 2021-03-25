@@ -64,7 +64,7 @@ function SideNavBar() {
       bg="gray.900"
       alignItems="center"
       pt="10"
-      color="white"
+      color="orange.500"
       spacing="4"
     >
       <ManuItemModal icon={FiFolder} title="Projects" />
@@ -87,7 +87,7 @@ function ManuItemModal({ icon, title }) {
   return (
     <>
       <Button onClick={onOpen} variant="unstyled">
-        <Icon as={icon} fontSize="3xl" />
+        <Icon as={icon} fontSize="2xl" />
       </Button>
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
