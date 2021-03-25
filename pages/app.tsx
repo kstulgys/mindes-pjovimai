@@ -8,33 +8,81 @@ import {
   Table,
   Thead,
   Tbody,
-  Tfoot,
   Tr,
   Th,
   Td,
-  TableCaption,
+  useToast,
   Checkbox,
-  Grid,
-  Alert,
-  AlertIcon,
-  Divider,
-  Link,
+  Icon,
 } from '@chakra-ui/react'
 import { Layout } from '../components'
-import { useRouter } from 'next/router'
 import { useAuthUser } from '../utils'
+import { useOnClickOutside } from '../utils/hooks'
 import { Jexcel } from '../components/Jexcel'
 import { useStore } from '../store'
 import { DragHandleIcon, CloseIcon } from '@chakra-ui/icons'
-// import { IconName } from "react-icons/fi";
+import { PDFDocument1D } from '../components/PDFDocument1D'
 import XLSX from 'xlsx'
+import { PDFDownloadLink, PDFViewer } from '@react-pdf/renderer'
+import { FiCheckSquare, FiSquare } from 'react-icons/fi'
 
 function AppPage() {
+  const [count, setCount] = React.useState(1)
   const { isLoading, user } = useAuthUser()
   const handleGetResult = useStore((store) => store.handleGetResult)
-  const isOutdated = useStore((store) => store.isOutdated)
-  const result1D = useStore((store) => store.result1D)
   const is1DView = useStore((store) => store.is1DView)
+  const errors = useStore((store) => store.errors)
+  // const handleInputError = useStore((store) => store.handleInputError)
+  const handleOutdatedError = useStore((store) => store.handleOutdatedError)
+  const bladeSize = useStore((store) => store.bladeSize)
+  const inputSizes1D = useStore((store) => store.bladeSize)
+  const inputSizes1DOriginal = useStore((store) => store.inputSizes1DOriginal)
+  const result1D = useStore((store) => store.result1D)
+  const stockSizes1D = useStore((store) => store.stockSizes1D)
+
+  const toast = useToast()
+
+  const toastInputMessageRef = React.useRef<any>(null)
+  const toastOutdatedMessageRef = React.useRef<any>(null)
+
+  React.useEffect(() => {
+    // handleInputError()
+    handleOutdatedError()
+  }, [bladeSize, inputSizes1D, inputSizes1DOriginal, stockSizes1D])
+
+  React.useEffect(() => {
+    setCount((prev) => prev++)
+  }, [result1D])
+
+  React.useEffect(() => {
+    if (!errors.inputMessage) {
+      !!toastInputMessageRef?.current && toast.close(toastInputMessageRef.current)
+      // handleInputError()
+      return null
+    }
+    toastInputMessageRef.current = toast({
+      title: errors.inputMessage,
+      status: 'warning',
+      duration: null,
+      position: 'top',
+      isClosable: false,
+    })
+  }, [errors.inputMessage, toast])
+
+  React.useEffect(() => {
+    if (!errors.outdatedMessage) {
+      toastOutdatedMessageRef.current && toast.close(toastOutdatedMessageRef.current)
+      // handleOutdatedError()
+      return null
+    }
+    toastOutdatedMessageRef.current = toast({
+      title: errors.outdatedMessage,
+      status: 'warning',
+      duration: null,
+      position: 'top',
+      isClosable: false,
+    })
+  }, [errors.outdatedMessage, toast])
 
   if (isLoading) return null
 
@@ -52,6 +100,7 @@ function AppPage() {
               </Box>
               <Box width="full">
                 <Button
+                  isDisabled={!!errors.inputMessage}
                   onClick={handleGetResult}
                   width="32"
                   bg="gray.900"
@@ -63,19 +112,10 @@ function AppPage() {
               </Box>
             </Stack>
             <Stack spacing="6" width={['100%', '60%']}>
-              {isOutdated && (
-                <Alert status="warning" rounded="md" boxShadow="base">
-                  <AlertIcon />
-                  Calculations are outdated
-                </Alert>
-              )}
-              {/* <ResultStats /> */}
-              {!!result1D.length && (
-                <>
-                  <ResultView />
-                  <ButtonsResultExport />
-                </>
-              )}
+              <PDFViewer key={count} style={{ width: '100%', height: '100%' }}>
+                <PDFDocument1D />
+              </PDFViewer>
+              <ButtonsResultExport />
             </Stack>
           </Stack>
         ) : (
@@ -115,7 +155,7 @@ function Cut1DInputs() {
           </Box>
           <Box width="full">
             <Text fontWeight="medium" textAlign="center">
-              Stock Size
+              Stock length
             </Text>
           </Box>
           <Box>
@@ -170,41 +210,62 @@ function StockSizeItem({ size, isEnabled, count, isActive, index, onItemFocus })
       p="2"
       bg={isActive ? 'gray.200' : 'white'}
       alignItems="center"
+      onClick={() => onItemFocus(index)}
     >
-      <Button
-        bg={isActive ? 'gray.200' : 'white'}
-        _hover={{}}
-        transition="none"
-        _active={{ bg: isActive ? 'gray.300' : 'white' }}
-        // onClick={() => {}}
-      >
-        {isActive && <DragHandleIcon fontSize="lg" />}
-      </Button>
-      <Input
-        onFocus={() => onItemFocus(index)}
-        name="size"
-        width="full"
-        type="number"
-        placeholder="size"
-        value={size}
-        onChange={(e) => handleStockSizeChange(e, index)}
-        bg="white"
-      />
+      <Stack isInline width="10" justifyContent="center">
+        <Checkbox
+          borderColor="gray.800"
+          display={isActive ? 'flex' : 'none'}
+          name="isEnabled"
+          size="lg"
+          bg="white"
+          colorScheme={'orange'}
+          isChecked={isEnabled}
+          onChange={(e) => handleStockSizeChange(e, index)}
+        />
+      </Stack>
       <Box>
-        <Text width="10" textAlign="center" fontWeight="medium">
+        <Input
+          name="size"
+          width="full"
+          type="number"
+          placeholder="size"
+          value={size}
+          onChange={(e) => handleStockSizeChange(e, index)}
+          bg="white"
+          color={isEnabled ? 'gray.600' : 'gray.300'}
+          _placeholder={{
+            color: isEnabled ? 'gray.600' : 'gray.300',
+          }}
+        />
+      </Box>
+
+      <Box>
+        <Text
+          color={isEnabled ? 'gray.600' : 'gray.300'}
+          width="10"
+          textAlign="center"
+          fontWeight="medium"
+        >
           x
         </Text>
       </Box>
-      <Input
-        onFocus={() => onItemFocus(index)}
-        name="count"
-        width="full"
-        type="number"
-        placeholder="infinity"
-        onChange={(e) => handleStockSizeChange(e, index)}
-        bg="white"
-        value={count}
-      />
+      <Box>
+        <Input
+          name="count"
+          width="full"
+          type="number"
+          placeholder="infinity"
+          onChange={(e) => handleStockSizeChange(e, index)}
+          bg="white"
+          value={count === Infinity ? '' : count}
+          color={isEnabled ? 'gray.600' : 'gray.300'}
+          _placeholder={{
+            color: isEnabled ? 'gray.600' : 'gray.300',
+          }}
+        />
+      </Box>
+
       <Button
         bg={isActive ? 'gray.200' : 'white'}
         _hover={{}}
@@ -270,83 +331,23 @@ function ButtonsSwitch1D2D() {
   )
 }
 
-function ResultStats() {
-  return (
-    <Stack isInline spacing="6" width="full">
-      <Box width="33%" height="32" bg="white" rounded="md" boxShadow="base" />
-      <Box width="33%" height="32" bg="white" rounded="md" boxShadow="base" />
-      <Box width="33%" height="32" bg="white" rounded="md" boxShadow="base" />
-    </Stack>
-  )
-}
-
-function ResultView() {
-  const { result1D } = useStore()
-  return (
-    <Stack isInline fontSize="xs" bg="white" p="6" rounded="md" boxShadow="base" overflowX="auto">
-      <Stack width="full">
-        <Table size="sm" id="export-to-xls-table">
-          <Thead>
-            <Tr>
-              <Th>Quantity</Th>
-              <Th>Stock length</Th>
-              <Th>Cut list</Th>
-              <Th>Waste (mm)</Th>
-              {/* <Th>Waste (%)</Th> */}
-            </Tr>
-          </Thead>
-          <Tbody>
-            {/* <pre>{JSON.stringify(result1D, null, 2)}</pre> */}
-            {result1D.map(([key, { count, capacity, items, stockSize, capacityPercent }]) => {
-              return (
-                <Tr key={key}>
-                  <Td>{count}</Td>
-                  <Td>{stockSize}</Td>
-                  <Td px="1" display="flex" flexWrap="wrap">
-                    {items.map((item, idx) => {
-                      return (
-                        <Box
-                          key={idx}
-                          rounded="sm"
-                          border="1px solid"
-                          m="1"
-                          px="1"
-                          borderColor="gray.600"
-                          color="gray.600"
-                        >
-                          {item}
-                        </Box>
-                      )
-                    })}
-                  </Td>
-                  <Td>{capacity}</Td>
-                  {/* <Td>{capacityPercent} %</Td> */}
-                </Tr>
-              )
-            })}
-          </Tbody>
-        </Table>
-      </Stack>
-    </Stack>
-  )
-}
-
 function ButtonsResultExport() {
   const { result1D } = useStore()
 
   const ExportData = () => {
     if (!result1D.length) return
-    const data = result1D.map(([key, { count, capacity, items, stockSize, capacityPercent }]) => {
-      const reducer = (acc, next, index) => {
-        const item = index === 0 ? `[${next}]` : `  [${next}]`
-        return acc.concat(item)
+
+    const data = result1D.map(([key, { count, capacity, items, stockLength }]) => {
+      const reducer = (acc, { name, size }, index) => {
+        const innerText = name ? ` ([${name}] ${size}) ` : ` ${size} `
+        return acc.concat(innerText)
       }
 
       const cutList = items.reduce(reducer, '')
 
       return {
         Quantity: count,
-        'Stock length': stockSize,
+        'Stock length': stockLength,
         'Cut list': cutList,
         'Waste (mm)': capacity,
       }
@@ -371,41 +372,18 @@ function ButtonsResultExport() {
           Export XLS
         </Button>
       </Box>
-      <Box>
-        <Button width="32" bg="gray.900" color="white" boxShadow="base" _hover={{}}>
-          Export PDF
-        </Button>
-      </Box>
+      {/* <Box>
+        <PDFDownloadLink
+          document={<PDFDocument1D />}
+          fileName={'stock_cut_result_' + Date.now().toString()}
+        >
+          <Button width="32" bg="gray.900" color="white" boxShadow="base" _hover={{}}>
+            Export PDF
+          </Button>
+        </PDFDownloadLink>
+      </Box> */}
     </Stack>
   )
 }
-function useOnClickOutside(ref, handler) {
-  React.useEffect(
-    () => {
-      const listener = (event) => {
-        // Do nothing if clicking ref's element or descendent elements
-        if (!ref.current || ref.current.contains(event.target)) {
-          return
-        }
 
-        handler(event)
-      }
-
-      document.addEventListener('mousedown', listener)
-      document.addEventListener('touchstart', listener)
-
-      return () => {
-        document.removeEventListener('mousedown', listener)
-        document.removeEventListener('touchstart', listener)
-      }
-    },
-    // Add ref and handler to effect dependencies
-    // It's worth noting that because passed in handler is a new ...
-    // ... function on every render that will cause this effect ...
-    // ... callback/cleanup to run every render. It's not a big deal ...
-    // ... but to optimize you can wrap handler in useCallback before ...
-    // ... passing it into this hook.
-    [ref, handler]
-  )
-}
 export default AppPage
