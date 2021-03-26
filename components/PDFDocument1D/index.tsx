@@ -138,9 +138,9 @@ function TableRow({ count, stockLength, items, capacity }) {
       <TextPDF style={{ width: '15%' }}>{stockLength}</TextPDF>
       <View style={{ flexDirection: 'row', flexWrap: 'wrap', width: '55%' }}>
         {items.map(({ size, name, angle1, angle2 }, index) => {
-          name = activeColumns[2].isChecked && name
-          angle1 = activeColumns[3].isChecked && angle1
-          angle2 = activeColumns[4].isChecked && angle2
+          name = activeColumns[0].isChecked && name
+          angle1 = activeColumns[1].isChecked && angle1
+          angle2 = activeColumns[1].isChecked && angle2
           return <TextPDF key={index}>{formatValue({ name, size, angle1, angle2 })}</TextPDF>
         })}
       </View>

@@ -39,11 +39,11 @@ function useExcel() {
 
   React.useEffect(() => {
     if (!showTable) return
-    const inActiveColumnsIndexes = activeColumns.reduce((acc, { isChecked, name }, index) => {
-      if (name === 'Length' || name === 'Quantity') return acc
-      if (!isChecked) return [...acc, index]
-      return acc
-    }, [])
+    // const currentActiveColumns = activeColumns.reduce((acc, { isChecked, name }, index) => {
+    //   // if (name === 'Length' || name === 'Quantity') return acc
+    //   if (isChecked) return [...acc, { type: 'text', title: name }]
+    //   return acc
+    // }, [])
     const jexcel = window.jspreadsheet(jexcelRef.current, {
       data: [
         [1560, 3, 'POS1', -45, 45],
@@ -68,17 +68,17 @@ function useExcel() {
         // if (cell.innerHTML == 'Total') {
         //   cell.parentNode.style.backgroundColor = '#fffaa3'
         // }
-
-        if (inActiveColumnsIndexes.includes(col)) {
+        if (col === 2 && !activeColumns[0].isChecked) {
           // cell.style.backgroundColor = '#DD6B1F'
           cell.style.pointerEvents = 'none'
           cell.style.cursor = 'not-allowed'
           cell.style.opacity = '0.3'
-          // if (parseFloat(label) > 10) {
-          //   cell.style.color = 'red'
-          // } else {
-          //   cell.style.color = 'green'
-          // }
+        }
+        if ((col === 3 || col === 4) && !activeColumns[1].isChecked) {
+          // cell.style.backgroundColor = '#DD6B1F'
+          cell.style.pointerEvents = 'none'
+          cell.style.cursor = 'not-allowed'
+          cell.style.opacity = '0.3'
         }
       },
       onafterchanges: () => {

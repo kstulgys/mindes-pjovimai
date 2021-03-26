@@ -25,11 +25,12 @@ export const useStore = create(
         outdatedMessage: null,
       },
       activeColumns: [
-        { name: 'Length', isChecked: true },
-        { name: 'Quantity', isChecked: true },
+        // { name: 'Length', isChecked: true },
+        // { name: 'Quantity', isChecked: true },
         { name: 'Name', isChecked: false },
-        { name: 'Angle1', isChecked: false },
-        { name: 'Angle2', isChecked: false },
+        { name: 'Angles', isChecked: false },
+        // { name: 'Angle1', isChecked: false },
+        // { name: 'Angle2', isChecked: false },
       ],
     },
     (set, get) => ({

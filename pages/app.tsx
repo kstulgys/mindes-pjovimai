@@ -24,7 +24,7 @@ import { DragHandleIcon, CloseIcon } from '@chakra-ui/icons'
 import { PDFDocument1D } from '../components/PDFDocument1D'
 import XLSX from 'xlsx'
 import { PDFDownloadLink, PDFViewer } from '@react-pdf/renderer'
-import { FiCheckSquare, FiSquare } from 'react-icons/fi'
+// import { FiCheckSquare, FiSquare } from 'react-icons/fi'
 
 function AppPage() {
   const [count, setCount] = React.useState(1)
@@ -136,7 +136,7 @@ function ListAllColumns() {
   return (
     <Stack spacing="6" isInline justifyContent="flex-end">
       {activeColumns.map(({ name, isChecked }, index) => {
-        if (name === 'Length' || name === 'Quantity') return null
+        // if (name === 'Length' || name === 'Quantity') return null
         return (
           <Checkbox
             onChange={() => handleToggleColumn(index)}
