@@ -31,6 +31,17 @@ export function Layout({ children }) {
           type="text/css"
         />
         <script src="https://jsuites.net/v4/jsuites.js"></script>
+        <script
+          data-name="BMC-Widget"
+          src="https://cdnjs.buymeacoffee.com/1.0.0/widget.prod.min.js"
+          data-id="yompti"
+          data-description="Support me on Buy me a coffee!"
+          data-message="Thank you for visiting. You can now buy me a coffee!"
+          data-color="#DD6B1F"
+          data-position=""
+          data-x_margin="18"
+          data-y_margin="18"
+        />
         <link rel="stylesheet" href="https://jsuites.net/v4/jsuites.css" type="text/css" />
         <link rel="preconnect" href="https://fonts.gstatic.com" />
         <link
