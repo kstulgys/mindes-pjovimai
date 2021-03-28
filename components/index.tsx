@@ -15,7 +15,7 @@ import {
 } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import React from "react";
-import { FiUser, FiSettings, FiFolder, FiLogOut } from "react-icons/fi";
+import { FiUser, FiSettings, FiFolder, FiLogOut, FiHome } from "react-icons/fi";
 import { Auth } from "aws-amplify";
 
 export function Layout({ children }) {
@@ -61,6 +61,9 @@ function SideNavBar() {
       {/* <ManuItemModal icon={FiFolder} title="Projects" />
       <ManuItemModal icon={FiSettings} title="Settings" />
       <ManuItemModal icon={FiUser} title="User" /> */}
+      <Button onClick={() => router.push("/")} variant="unstyled">
+        <Icon as={FiHome} fontSize="2xl" />
+      </Button>
       <ManuItemModal icon={FiLogOut} title="Logout" />
     </Stack>
   );
