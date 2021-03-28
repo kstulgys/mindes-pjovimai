@@ -32,8 +32,10 @@ export default function IndexPage() {
           </NextLink>
         </Box>
       </Stack>
-      <Stack alignItems="center">
-        <Image src="/app-ui.png" objectFit="cover" maxW="1000px" />
+      <Stack isInline justifyContent="center" pb="20">
+        <Box maxW="1000px">
+          <Image src="/app-ui.png" objectFit="cover" />
+        </Box>
       </Stack>
     </Layout>
   );
