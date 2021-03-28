@@ -50,10 +50,15 @@ a {
 * {
   box-sizing: border-box;
 }
+
 .jexcel_content {
   box-shadow: none !important;
   padding: 0px !important;
   overflow: hidden !important;
+}
+
+.jexcel_container {
+  padding-right: 0px !important;
 }
 
 .jexcel {

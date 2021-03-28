@@ -9815,12 +9815,12 @@ jsonschema@^1.4.0:
   resolved "https://registry.yarnpkg.com/jsonschema/-/jsonschema-1.4.0.tgz#1afa34c4bc22190d8e42271ec17ac8b3404f87b2"
   integrity sha512-/YgW6pRMr6M7C+4o8kS+B/2myEpHCrxO4PEWnqJNBFMjn7EWXqlQ4tGwL6xTHeRplwuZmcAncdvfOad1nT2yMw==
 
-jspreadsheet-ce@^4.6.0:
-  version "4.6.0"
-  resolved "https://registry.yarnpkg.com/jspreadsheet-ce/-/jspreadsheet-ce-4.6.0.tgz#38514e25ff87f53e6c5ee33665d696d6002eed3f"
-  integrity sha512-kLDO+PmwLmpDj0ltCKwBLXGN4eZV3zyt/MWAmWtA8zl8oonrYg53Z1eChaXWFrMwGNnu1DqgChBfPppa5XYZjg==
+jspreadsheet-ce@^4.7.1:
+  version "4.7.1"
+  resolved "https://registry.yarnpkg.com/jspreadsheet-ce/-/jspreadsheet-ce-4.7.1.tgz#95175e21966b498d0d3caaf3191c4490d2c6ef40"
+  integrity sha512-xpzV/72Vh1o7iVKYoDDA0gJCE4VMALbT7e3XQkzArEz320xoPgHjdMuBZ14KIBK+/7fq4MrpQicOFUp5RgT4KA==
   dependencies:
-    jsuites "^4.0.0"
+    jsuites "^4.3.0"
 
 jsprim@^1.2.2:
   version "1.4.1"
@@ -9847,10 +9847,10 @@ jsuites@^3.4.0:
   resolved "https://registry.yarnpkg.com/jsuites/-/jsuites-3.9.9.tgz#ceda5e2f77540fba143677b8d84f3c6e79885729"
   integrity sha512-uciw/BeIu6cU3+n+hBfoQQ1hgP4R/DAif2fwJwkJmu8lZ5AWeYW5xGQhVVmrCN/MPFSVkIF6ioHX6kC9Uj9AJw==
 
-jsuites@^4.0.0:
-  version "4.1.2"
-  resolved "https://registry.yarnpkg.com/jsuites/-/jsuites-4.1.2.tgz#97353591b27bdbf9fd2a695034c5609731c1eab4"
-  integrity sha512-U+6piUuCJvBj8OK89eTfF4WCGkJovaF/jzHotU1R2P2o1BJTm+gruUJpKFWHwoFHIOyrQENds4RnZ6DpEwa7Qg==
+jsuites@^4.3.0:
+  version "4.3.3"
+  resolved "https://registry.yarnpkg.com/jsuites/-/jsuites-4.3.3.tgz#c5afff37b8380df3dab27df8297fb93b52b51dc9"
+  integrity sha512-v4V5ub7LOAx+bH3VnLtWKH02xlXorbJJyPB++GRTP84NUqQS/kR21sk513Ny+YP3NhK6s145o9P72x7gQ3iwOA==
 
 "jsx-ast-utils@^2.4.1 || ^3.0.0", jsx-ast-utils@^3.1.0:
   version "3.2.0"

@@ -29,7 +29,7 @@
     "framer-motion": "^3.3.0",
     "gpu.js": "^2.11.2",
     "jexcel": "^4.5.2",
-    "jspreadsheet-ce": "^4.6.0",
+    "jspreadsheet-ce": "^4.7.1",
     "next": "10.0.6",
     "react": "17.0.1",
     "react-data-grid": "^7.0.0-canary.36",

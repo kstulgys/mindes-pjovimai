@@ -1,12 +1,18 @@
-import React from 'react'
-import { Box, Stack, Button, Text } from '@chakra-ui/react'
-import { Layout } from '../components'
-import NextLink from 'next/link'
+import React from "react";
+import { Box, Stack, Button, Text } from "@chakra-ui/react";
+import { Layout } from "../components";
+import NextLink from "next/link";
 
 export default function IndexPage() {
   return (
     <Layout>
-      <Stack maxW="8xl" width="full" mx="auto" py={[20, 64]} alignItems="center">
+      <Stack
+        maxW="8xl"
+        width="full"
+        mx="auto"
+        py={[20, 64]}
+        alignItems="center"
+      >
         <Box>
           <Text maxW="xxl" textAlign="center" fontSize="5xl" fontWeight="bold">
             Stock Cutting Optimisation App
@@ -26,5 +32,5 @@ export default function IndexPage() {
         </Box>
       </Stack>
     </Layout>
-  )
+  );
 }

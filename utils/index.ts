@@ -1,187 +1,239 @@
-import React from 'react'
-import { Auth } from 'aws-amplify'
-import { useRouter } from 'next/router'
-import { v4 as uuid } from 'uuid'
+import React from "react";
+import { Auth } from "aws-amplify";
+import { useRouter } from "next/router";
+import { v4 as uuid } from "uuid";
+
+export function formatStockItems(items) {
+  return items.reduce((acc, [stockLength, quantity, name, isEnabled]) => {
+    if (!isEnabled) return acc;
+    return [
+      ...acc,
+      {
+        stockLength: +stockLength,
+        quantity: +quantity ? +quantity : Infinity,
+        name,
+        isEnabled,
+      },
+    ];
+  }, []);
+}
+
+export function formatCutItems(items) {
+  return items.reduce(
+    (acc, [cutLength, quantity, name, angle1, angle2, isEnabled]) => {
+      if (!isEnabled) return acc;
+      const cutList = Array(+quantity)
+        .fill(null)
+        .map((_) => ({
+          cutLength: +cutLength,
+          name,
+          angle1,
+          angle2,
+        }));
+      return [...acc, ...cutList];
+    },
+    []
+  );
+}
 
 export function useAuthUser() {
-  const [user, setUser] = React.useState(null)
-  const [isLoading, setIsLoading] = React.useState(true)
+  const [user, setUser] = React.useState(null);
+  const [isLoading, setIsLoading] = React.useState(true);
 
-  const router = useRouter()
+  const router = useRouter();
 
   React.useEffect(() => {
     Auth.currentAuthenticatedUser()
       .then((user) => setUser(user))
-      .catch(() => router.push('/auth'))
-      .finally(() => setIsLoading(false))
-  }, [])
-  return { isLoading, user }
+      .catch(() => router.push("/auth"))
+      .finally(() => setIsLoading(false));
+  }, []);
+  return { isLoading, user };
 }
 
-export function getSortedSizes(sizes) {
-  const sortedSizes = sizes.reduce((acc, [length, qty, name, angle1, angle2]) => {
-    const formatted = Array(+qty)
-      .fill(null)
-      .map((_) => ({ size: +length, name, angle1, angle2 }))
-    return [...acc, ...formatted]
-  }, [])
-  sortedSizes.sort((a, b) => b.size - a.size)
-  return sortedSizes
-}
+// export function getSortedSizes(sizes) {
+//   const sortedSizes = sizes.reduce(
+//     (acc, [length, qty, name, angle1, angle2]) => {
+//       const formatted = Array(+qty)
+//         .fill(null)
+//         .map((_) => ({ size: +length, name, angle1, angle2 }));
+//       return [...acc, ...formatted];
+//     },
+//     []
+//   );
+//   sortedSizes.sort((a, b) => b.size - a.size);
+//   return sortedSizes;
+// }
 
-export const getResult1D = ({ inputSizes1D, stockSizes1D, bladeSize }) => {
-  const result: any = bestFitDecreasing({ inputSizes1D, stockSizes1D, bladeSize })
-  return getFormatedResult(result, bladeSize)
-}
+export const getResult = ({ stockItems, cutItems, bladeSize }) => {
+  const result: any = bestFitDecreasing({
+    stockItems,
+    cutItems,
+    bladeSize,
+  });
+  return getFormatedResult(result, bladeSize);
+};
 
-function bfd({ inputSizes1D, stockSizes1D, bladeSize }) {
-  const allStockSizes = stockSizes1D.filter(({ isEnabled }) => Boolean(isEnabled))
-  const allCutSizes = inputSizes1D.map((item) => ({ ...item }))
+function bestFitDecreasing({ stockItems, cutItems, bladeSize }) {
+  const allStockSizes = stockItems.map((item) => ({ ...item }));
+  const allCutSizes = cutItems.map((item) => ({ ...item }));
+
+  allCutSizes.sort((a, b) => b.cutLength - a.cutLength);
 
   allStockSizes.sort((a, b) => {
-    if (a.size > b.size) return 1
-    if (a.size < b.size) return -1
+    if (a.stockLength > b.stockLength) return 1;
+    if (a.stockLength < b.stockLength) return -1;
+    if (a.quantity > b.quantity) return 1;
+    if (a.quantity < b.quantity) return -1;
+  });
 
-    if (a.count > b.count) return 1
-    if (a.count < b.count) return -1
-  })
+  const data = [];
+  const usedIndexes = [];
 
-  const data = []
-  const usedIndexes = []
+  allStockSizes.forEach(
+    ({ stockLength, quantity: stockQuantity, name: stockName }, _) => {
+      let stockQuantityAvailable = stockQuantity;
 
-  allStockSizes.forEach(({ size: stockLength, count }, _) => {
-    let countAvailable = count
+      allCutSizes.forEach(({ cutLength, ...rest }, index) => {
+        const isIndexUsed = usedIndexes.some((idx) => idx === index);
+        if (isIndexUsed) return;
 
-    allCutSizes.forEach(({ size, ...rest }, index) => {
-      const isIndexUsed = usedIndexes.some((idx) => idx === index)
-      if (isIndexUsed) return
+        const entityFound = data
+          .filter(
+            (obj) =>
+              obj.stockLength === stockLength && obj.capacity >= cutLength
+          )
+          .sort((a, b) => a.capacity - b.capacity)[0];
 
-      const entityFound = data
-        .filter((obj) => obj.capacity >= size && obj.stockLength === stockLength)
-        .sort((a, b) => a.capacity - b.capacity)[0]
+        if (entityFound) {
+          entityFound.capacity = Math.round(entityFound.capacity - cutLength);
+          entityFound.items.push({ cutLength, ...rest });
 
-      if (entityFound) {
-        entityFound.capacity = Math.round(entityFound.capacity - size)
-        entityFound.items.push({ size, ...rest })
-
-        if (entityFound.capacity >= bladeSize) {
-          entityFound.capacity = Math.round(entityFound.capacity - bladeSize)
-          entityFound.items.push({ size: bladeSize })
-        }
-        const lengthIndex = data.findIndex((item) => item.id === entityFound.id)
-        data[lengthIndex] = { ...entityFound }
-        usedIndexes.push(index)
-      } else {
-        const isPossibleToAddStockItem = stockLength >= size
-
-        if (isPossibleToAddStockItem && !!countAvailable) {
-          const item: any = {}
-          item.stockLength = stockLength
-          item.capacity = Math.round(stockLength - size)
-          item.items = [{ size, ...rest }]
-          item.id = uuid()
-
-          if (item.capacity >= bladeSize) {
-            item.capacity = Math.round(item.capacity - bladeSize)
-            item.items.push({ size: bladeSize })
+          if (entityFound.capacity >= bladeSize) {
+            entityFound.capacity = Math.round(entityFound.capacity - bladeSize);
+            // entityFound.items.push({ cutLength: bladeSize });
           }
-          data.push(item)
-          countAvailable--
-          usedIndexes.push(index)
+          const lengthIndex = data.findIndex(
+            (item) => item.id === entityFound.id
+          );
+          data[lengthIndex] = { ...entityFound };
+          usedIndexes.push(index);
+        } else {
+          const isPossibleToAddStockItem = stockLength >= cutLength;
+
+          if (isPossibleToAddStockItem && !!stockQuantityAvailable) {
+            const item: any = {};
+            item.stockLength = stockLength;
+            item.stockName = stockName;
+            item.capacity = Math.round(stockLength - cutLength);
+            item.items = [{ cutLength, ...rest }];
+            item.id = uuid();
+
+            if (item.capacity >= bladeSize) {
+              item.capacity = Math.round(item.capacity - bladeSize);
+              // item.items.push({ cutLength: bladeSize });
+            }
+            data.push(item);
+            stockQuantityAvailable--;
+            usedIndexes.push(index);
+          }
         }
-      }
-    })
-  })
+      });
+    }
+  );
 
-  return data
+  return data;
 }
 
-function bestFitDecreasing({ inputSizes1D, stockSizes1D, bladeSize }) {
-  return bfd({ inputSizes1D, stockSizes1D, bladeSize })
-}
+// function bestFitDecreasing({ stockItems, cutItems, bladeSize }) {
+//   return bfd({ stockItems, cutItems, bladeSize  });
+// }
 
-function findNextBestStockItem(allStockSizes, size) {
-  let index
+// function findNextBestStockItem(allStockSizes, size) {
+//   let index;
 
-  const currentStockSize = allStockSizes.find((stock, idx) => {
-    const res = stock.size >= size && stock.isEnabled && stock.count > 0
-    if (res) index = idx
-    return res
-  })
+//   const currentStockSize = allStockSizes.find((stock, idx) => {
+//     const res = stock.size >= size && stock.isEnabled && stock.count > 0;
+//     if (res) index = idx;
+//     return res;
+//   });
 
-  // Sort stock items by count (lower - higher)
-  // allStockSizes.sort((a, b) => a.count - b.count)
+//   // Sort stock items by count (lower - higher)
+//   // allStockSizes.sort((a, b) => a.count - b.count)
 
-  if (currentStockSize) {
-    allStockSizes[index].count--
-    return { currentStockSize: allStockSizes[index] }
-  }
+//   if (currentStockSize) {
+//     allStockSizes[index].count--;
+//     return { currentStockSize: allStockSizes[index] };
+//   }
 
-  return null
-}
+//   return null;
+// }
 
-function addSizeItem(result, stockItem, size) {
-  const [key, value] = stockItem
-  result[key].capacity = +(value.capacity - size).toFixed(2)
-  result[key].items.push(size)
-  return result
-}
+// function addSizeItem(result, stockItem, size) {
+//   const [key, value] = stockItem;
+//   result[key].capacity = +(value.capacity - size).toFixed(2);
+//   result[key].items.push(size);
+//   return result;
+// }
 
-function addBladeSize(result, stockItem, bladeSize) {
-  const [key, value] = stockItem
-  if (result[key].capacity >= bladeSize) {
-    result[key].capacity = +(result[key].capacity - bladeSize).toFixed(2)
-    result[key].items.push(bladeSize)
-  }
-  return result
-}
+// function addBladeSize(result, stockItem, bladeSize) {
+//   const [key, value] = stockItem;
+//   if (result[key].capacity >= bladeSize) {
+//     result[key].capacity = +(result[key].capacity - bladeSize).toFixed(2);
+//     result[key].items.push(bladeSize);
+//   }
+//   return result;
+// }
 
-function findStockWithLowestCapacity(result: any, size: any) {
-  const stockItem = Object.entries(result)
-    .filter(([key, value]: any, index) => value.capacity >= size)
-    .sort(([key1, value1]: any, [key2, value2]: any) => value1.capacity - value2.capacity)[0]
-  return stockItem
-}
+// function findStockWithLowestCapacity(result: any, size: any) {
+//   const stockItem = Object.entries(result)
+//     .filter(([key, value]: any, index) => value.capacity >= size)
+//     .sort(
+//       ([key1, value1]: any, [key2, value2]: any) =>
+//         value1.capacity - value2.capacity
+//     )[0];
+//   return stockItem;
+// }
 
 function getFormatedResult(stockCutResult, bladeSize) {
-  const formattedResult = {}
+  const formattedResult = {};
 
   stockCutResult.forEach((entity: any) => {
-    const key = `${JSON.stringify(entity.items)} - ${entity.stockLength}`
+    const key = `${JSON.stringify(entity.items)} - ${entity.stockLength}`;
 
     if (formattedResult[key]) {
-      formattedResult[key].count++
+      formattedResult[key].quantity++;
     } else {
-      const items = entity.items.filter(({ size }) => size !== bladeSize)
       formattedResult[key] = {
         ...entity,
-        items,
-        count: 1,
-      }
+        quantity: 1,
+      };
     }
-  })
+  });
 
-  return Object.entries(formattedResult).sort(([key1, value1]: any, [key2, value2]: any) => {
-    if (value2.stockLength > value1.stockLength) return 1
-    if (value2.stockLength < value1.stockLength) return -1
+  return Object.entries(formattedResult).sort(
+    ([key1, value1]: any, [key2, value2]: any) => {
+      if (value2.stockLength > value1.stockLength) return 1;
+      if (value2.stockLength < value1.stockLength) return -1;
 
-    if (value2.count > value1.count) return 1
-    if (value2.count < value1.count) return -1
-  })
+      if (value2.quantity > value1.quantity) return 1;
+      if (value2.quantity < value1.quantity) return -1;
+    }
+  );
 }
 
 export function checkDouplicateName(sizes) {
-  let name = null
+  let name = null;
   sizes.some(([len1, qty1, name1], idx1) =>
     sizes.some(([len2, qty2, name2], idx2) => {
-      if (idx1 === idx2) return false
+      if (idx1 === idx2) return false;
       if (name1 === name2) {
-        name = name1
-        return true
+        name = name1;
+        return true;
       }
-      return false
+      return false;
     })
-  )
+  );
 
-  return name
+  return name;
 }
