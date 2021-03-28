@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Stack, Button, Text } from "@chakra-ui/react";
+import { Box, Stack, Button, Text, Image } from "@chakra-ui/react";
 import { Layout } from "../components";
 import NextLink from "next/link";
 
@@ -10,7 +10,8 @@ export default function IndexPage() {
         maxW="8xl"
         width="full"
         mx="auto"
-        py={[20, 64]}
+        pt={[20, 48]}
+        pb="10"
         alignItems="center"
       >
         <Box>
@@ -20,16 +21,19 @@ export default function IndexPage() {
         </Box>
         <Box>
           <Text maxW="xxl" textAlign="center" fontSize="2xl">
-            Created by Engineers for Engineers
+            Created for Engineers by Engineers
           </Text>
         </Box>
         <Box pt="4">
           <NextLink href="/app" passHref>
             <Button bg="gray.900" color="white" size="lg" _hover={{}}>
-              try the App
+              The App
             </Button>
           </NextLink>
         </Box>
+      </Stack>
+      <Stack alignItems="center">
+        <Image src="/app-ui.png" objectFit="cover" maxW="1000px" />
       </Stack>
     </Layout>
   );
