@@ -13,7 +13,14 @@ function MyApp({ Component, pageProps }) {
   return (
     <ChakraProvider>
       <Head>
-        <title>Create Next App</title>
+        <title>Cutting stock optimisation App | yompti</title>
+        <meta httpEquiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta
+          name="description"
+          content="Cutting stock optimisation App. Helps to solve 1D Cutting stock problem."
+        />
+
         <link rel="icon" href="/favicon.ico" />
         <script src="https://bossanova.uk/jspreadsheet/v4/jexcel.js"></script>
         <link

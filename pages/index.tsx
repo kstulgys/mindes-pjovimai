@@ -15,12 +15,18 @@ export default function IndexPage() {
         alignItems="center"
       >
         <Box>
-          <Text maxW="xxl" textAlign="center" fontSize="5xl" fontWeight="bold">
-            Stock Cutting Optimisation App
+          <Text
+            as="h1"
+            maxW="xxl"
+            textAlign="center"
+            fontSize="5xl"
+            fontWeight="bold"
+          >
+            Cutting stock optimisation App
           </Text>
         </Box>
         <Box>
-          <Text maxW="xxl" textAlign="center" fontSize="2xl">
+          <Text as="h3" maxW="xxl" textAlign="center" fontSize="2xl">
             Created for Engineers by Engineers
           </Text>
         </Box>
