@@ -1,6 +1,6 @@
 import { loopCalculation } from "../../utils";
 
-export default (req, res) => {
+export default function handler(req, res) {
   try {
     const { stockItems, cutItems, bladeSize, constantD } = req.body;
     console.log({ stockItems, cutItems, bladeSize, constantD });
@@ -9,4 +9,4 @@ export default (req, res) => {
   } catch (error) {
     res.status(200).json({ error });
   }
-};
+}
