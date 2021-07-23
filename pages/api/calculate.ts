@@ -6,7 +6,7 @@ export default (req, res) => {
     console.log({ stockItems, cutItems, bladeSize, constantD });
     const result = loopCalculation(stockItems, cutItems, bladeSize, constantD);
     res.status(200).json(result);
-  } catch {
-    res.status(200).json({ error: "Server responded with error" });
+  } catch (error) {
+    res.status(200).json({ error });
   }
 };
