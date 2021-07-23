@@ -79,7 +79,7 @@ export function CutsSheet({ setCutsTableValues }) {
     ],
     onbeforeinsertrow: ({ jspreadsheet }) => {
       const data = jspreadsheet.getData();
-      if (data.length >= 99) return false;
+      if (data.length >= 100) return false;
     },
     onbeforechange: (el, cell, x, y, value) => {
       if (["0", "1", "2", "3", 0, 1, 2, 3].includes(x) && +value) return value;
@@ -112,7 +112,6 @@ export function CutsSheet({ setCutsTableValues }) {
     },
     onload: ({ jspreadsheet }) => {
       if (!jspreadsheet) return;
-
       const datajson = jspreadsheet.getJson();
       const transformed = datajson.map((obj) => ({
         length: +obj[0],
