@@ -19,6 +19,8 @@ export function useAuthUser() {
   return { isLoading, user };
 }
 
+let timeTakenOnMachine = 0;
+
 export function loopCalculation(
   stockItems,
   cutItems,
@@ -453,11 +455,12 @@ export function loopCalculation(
   }
 
   const t1 = Date.now();
+  timeTakenOnMachine = t1 - t0 + " milliseconds.";
   console.log("It took " + (t1 - t0) + " milliseconds.");
   console.log("best result");
   console.log(totalUsedStockLength / 1000);
   //console.log(JSON.parse(stockInformationString));
-  return answerExport;
+  return { timeTakenOnMachine, ...answerExport };
 }
 
 export function checkMaxRatioStockAndCut(stockInfoElement, cutInfoElement) {
