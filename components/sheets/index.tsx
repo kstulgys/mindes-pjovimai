@@ -15,18 +15,31 @@ export function StockSheet({ setStockTableValues }) {
       { type: "checkbox", title: "Use", width: 30 },
     ],
     onbeforeinsertrow: ({ jspreadsheet }) => {
-      const datajson = jspreadsheet.getJson();
-      if (datajson.length >= 20) return false;
+      const data = jspreadsheet.getData();
+      if (data.length >= 20) return false;
+    },
+    onbeforechange: (el, cell, x, y, value) => {
+      if (["0", "1", 0, 1].includes(x) && +value) return value;
+      if (["2", "3", 2, 3].includes(x)) return value;
+      // console.log({ el, cell, x, y, value });
+      return 0;
     },
     onchange: ({ jspreadsheet }) => {
       if (!jspreadsheet) return;
-      const datajson = jspreadsheet.getJson();
-      const transformed = datajson.map((obj) => ({
-        length: +obj[0],
-        quantity: +obj[1],
-        name: obj[2],
-        use: +obj[3],
-      }));
+      const data = jspreadsheet.getData();
+      const transformed = data.reduce((acc, [length, quantity, name, use]) => {
+        if (use)
+          return [
+            ...acc,
+            {
+              length: +length,
+              quantity: +quantity,
+              name,
+              use,
+            },
+          ];
+        return acc;
+      }, []);
       setStockTableValues(transformed);
     },
     onload: ({ jspreadsheet }) => {
@@ -36,9 +49,8 @@ export function StockSheet({ setStockTableValues }) {
         length: +obj[0],
         quantity: +obj[1],
         name: obj[2],
-        use: +obj[3],
+        use: obj[3],
       }));
-      //console.log('onload');
       setStockTableValues(transformed);
     },
   };
@@ -66,20 +78,36 @@ export function CutsSheet({ setCutsTableValues }) {
       { type: "checkbox", title: "Use", width: 30 },
     ],
     onbeforeinsertrow: ({ jspreadsheet }) => {
-      const datajson = jspreadsheet.getJson();
-      if (datajson.length >= 99) return false;
+      const data = jspreadsheet.getData();
+      if (data.length >= 99) return false;
+    },
+    onbeforechange: (el, cell, x, y, value) => {
+      if (["0", "1", "2", "3", 0, 1, 2, 3].includes(x) && +value) return value;
+      if (["4", "5", 4, 5].includes(x)) return value;
+      // console.log({ el, cell, x, y, value });
+      return 0;
     },
     onchange: ({ jspreadsheet }) => {
       if (!jspreadsheet) return;
-      const datajson = jspreadsheet.getJson();
-      const transformed = datajson.map((obj) => ({
-        length: +obj[0],
-        quantity: +obj[1],
-        angle1: +obj[2],
-        angle2: +obj[3],
-        name: obj[4],
-        use: +obj[5],
-      }));
+      const data = jspreadsheet.getData();
+      const transformed = data.reduce(
+        (acc, [length, quantity, angle1, angle2, name, use]) => {
+          if (use)
+            return [
+              ...acc,
+              {
+                length: +length,
+                quantity: +quantity,
+                angle1: +angle1,
+                angle2: +angle2,
+                name,
+                use,
+              },
+            ];
+          return acc;
+        },
+        []
+      );
       setCutsTableValues(transformed);
     },
     onload: ({ jspreadsheet }) => {
