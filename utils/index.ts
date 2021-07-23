@@ -19,7 +19,7 @@ export function useAuthUser() {
   return { isLoading, user };
 }
 
-let timeTakenOnMachine = 0;
+let timeTakenOnMachine: any = 0;
 
 export function loopCalculation(
   stockItems,
