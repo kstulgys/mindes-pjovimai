@@ -24,7 +24,7 @@ import {
 // import { PDFDownloadLink, PDFViewer } from "@react-pdf/renderer";
 // import { ListStockItems } from "../components/ListStockItems";
 // import { ListCutItems } from "../components/ListCutItems";
-
+import fetch from "node-fetch";
 import { StockSheet, CutsSheet } from "../components/sheets";
 import "../node_modules/jspreadsheet-ce/dist/jexcel.css";
 
@@ -39,12 +39,11 @@ export default function App() {
   const handleClick = async () => {
     try {
       setIsLoading(true);
+
       const response = await fetch("/api/calculate", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
         body: JSON.stringify({ stockItems, cutItems, bladeSize, constantD }),
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
       });
 
       const result = await response.json();
