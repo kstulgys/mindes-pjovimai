@@ -77,9 +77,10 @@ export function Excel({
     return () => jexcel.destroy();
   }, [columns, columnsDisabled]);
 
-  const width = React.useMemo(() => `calc(100% / ${options.columns.length})`, [
-    options.columns.length,
-  ]);
+  const width = React.useMemo(
+    () => `calc(100% / ${options.columns.length})`,
+    [options.columns.length]
+  );
 
   return (
     <Stack width="full">

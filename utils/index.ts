@@ -189,9 +189,8 @@ export function loopCalculation(
                 return [[]]; // Best first element
               }
               // A length that has no duplicate member in the sequance and is longer/better.
-              const firstStockSizeLongerThanSum = StockSizeLongerThanSum(
-                comparisonSum
-              );
+              const firstStockSizeLongerThanSum =
+                StockSizeLongerThanSum(comparisonSum);
               if (
                 smallestFoundDifference[0] > // There is only one element
                 firstStockSizeLongerThanSum - comparisonSum

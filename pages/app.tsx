@@ -88,11 +88,11 @@ export default function App() {
   );
 }
 
-export  function WorkerButton() {
+export function WorkerButton() {
   const workerRef = React.useRef();
   React.useEffect(() => {
-    workerRef.current = new Worker(new URL('../worker.js', import.meta.url));
-    workerRef.current.onmessage = evt =>
+    workerRef.current = new Worker(new URL("../worker.js", import.meta.url));
+    workerRef.current.onmessage = (evt) =>
       alert(`WebWorker Response => ${evt.data}`);
     return () => {
       workerRef.current.terminate();
