@@ -1,8 +1,6 @@
 import { loopCalculation } from "./utils";
 
 addEventListener('message', (event) => {
-  
-
   try {
     const { stockItems, cutItems, bladeSize, constantD } = event.data;
     console.log({ stockItems, cutItems, bladeSize, constantD });

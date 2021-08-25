@@ -35,19 +35,25 @@ export default function App() {
   const [cutItems, setCutsTableValues] = React.useState([]);
   const [result, setResult] = React.useState([]);
   const [isLoading, setIsLoading] = React.useState(false);
+  const workerRef = React.useRef();
+
+  React.useEffect(() => {
+    workerRef.current = new Worker(new URL("../worker.js", import.meta.url));
+    workerRef.current.onmessage = (event) => setResult(event.data);
+    return () => {
+      workerRef.current.terminate();
+    };
+  }, []);
 
   const handleClick = async () => {
     try {
       setIsLoading(true);
-
-      const response = await fetch("/api/calculate", {
-        body: JSON.stringify({ stockItems, cutItems, bladeSize, constantD }),
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
+      workerRef.current.postMessage({
+        stockItems,
+        cutItems,
+        bladeSize,
+        constantD,
       });
-
-      const result = await response.json();
-      setResult(result);
     } catch (e) {
       setResult([]);
     } finally {
