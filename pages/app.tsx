@@ -39,7 +39,10 @@ export default function App() {
 
   React.useEffect(() => {
     workerRef.current = new Worker(new URL("../worker.js", import.meta.url));
-    workerRef.current.onmessage = (event) => setResult(event.data);
+    workerRef.current.onmessage = (event) => {
+      setResult(event.data);
+      setIsLoading(false);
+    };
     return () => {
       workerRef.current.terminate();
     };
@@ -56,7 +59,6 @@ export default function App() {
       });
     } catch (e) {
       setResult([]);
-    } finally {
       setIsLoading(false);
     }
   };
