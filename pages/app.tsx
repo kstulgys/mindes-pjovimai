@@ -88,6 +88,29 @@ export default function App() {
   );
 }
 
+export  function WorkerButton() {
+  const workerRef = React.useRef();
+  React.useEffect(() => {
+    workerRef.current = new Worker(new URL('../worker.js', import.meta.url));
+    workerRef.current.onmessage = evt =>
+      alert(`WebWorker Response => ${evt.data}`);
+    return () => {
+      workerRef.current.terminate();
+    };
+  }, []);
+
+  const handleWork = React.useCallback(async () => {
+    workerRef.current.postMessage(100000);
+  }, []);
+
+  return (
+    <div>
+      <p>Do work in a WebWorker!</p>
+      <button onClick={handleWork}>Do Stuff</button>
+    </div>
+  );
+}
+
 // // import { FiCheckSquare, FiSquare } from 'react-icons/fi'
 // function AppPage() {
 //   const [count, setCount] = React.useState(1);
