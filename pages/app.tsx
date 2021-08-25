@@ -78,9 +78,14 @@ export default function App() {
         onChange={(e) => setconstantD(e.target.valueAsNumber)}
       />
       <h2>Stock (Max 20 rows)</h2>
-      <StockSheet setStockTableValues={setStockTableValues} />
+      <Box disabled={isLoading}>
+        <StockSheet setStockTableValues={setStockTableValues} />
+      </Box>
       <h2>Cuts (Max 100 rows)</h2>
-      <CutsSheet setCutsTableValues={setCutsTableValues} />
+      <Box disabled={isLoading}>
+        <CutsSheet setCutsTableValues={setCutsTableValues} />
+      </Box>
+
       <div>
         <button onClick={handleClick}>Get result</button>
       </div>
