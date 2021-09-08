@@ -15,20 +15,28 @@ import {
   Checkbox,
   Icon,
 } from "@chakra-ui/react";
-// import { Layout } from "../components";
-// import { useAuthUser } from "../utils";
-// import { useStore } from "../store";
-// import { DragHandleIcon, CloseIcon } from "@chakra-ui/icons";
-// import { PDFDocument1D } from "../components/PDFDocument1D";
-// import XLSX from "xlsx";
-// import { PDFDownloadLink, PDFViewer } from "@react-pdf/renderer";
-// import { ListStockItems } from "../components/ListStockItems";
-// import { ListCutItems } from "../components/ListCutItems";
+import { Layout } from "../components";
+import { useAuthUser } from "../utils";
+import { useStore } from "../store";
+import { DragHandleIcon, CloseIcon } from "@chakra-ui/icons";
+//import { PDFDocument1D as PDFDocument1DNOSSR} from "../components/PDFDocument1D";
+//import PDFDocument1D from "../components/PDFDocument1D";
+import XLSX from "xlsx";
+//import { PDFDownloadLink, PDFViewer } from "@react-pdf/renderer";
+import { ListStockItems } from "../components/ListStockItems";
+import { ListCutItems } from "../components/ListCutItems";
 import fetch from "node-fetch";
 import { StockSheet, CutsSheet } from "../components/sheets";
 import "../node_modules/jspreadsheet-ce/dist/jexcel.css";
+import dynamic from "next/dynamic";
+const PDFDocument1DNOSSR = dynamic(
+  () => import("../components/PDFDocument1D"),
+  { ssr: false } // NO Server side render
+);
 
+//PDFDocument1D
 export default function App() {
+  const [count, setCount] = React.useState(1);
   const [bladeSize, setBladeSize] = React.useState(10);
   const [constantD, setconstantD] = React.useState(3);
   const [stockItems, setStockTableValues] = React.useState([]);
@@ -40,6 +48,7 @@ export default function App() {
   React.useEffect(() => {
     workerRef.current = new Worker(new URL("../worker.js", import.meta.url));
     workerRef.current.onmessage = (event) => {
+      console.log(event.data);
       setResult(event.data);
       setIsLoading(false);
     };
@@ -64,68 +73,121 @@ export default function App() {
   };
 
   return (
-    <div>
-      <h2>Blade</h2>
-      <input
-        type="number"
-        value={bladeSize}
-        onChange={(e) => setBladeSize(e.target.valueAsNumber)}
-      />
-      <h2>Time limit for optimisation, s</h2>
-      <input
-        type="number"
-        value={constantD}
-        onChange={(e) => setconstantD(e.target.valueAsNumber)}
-      />
-      <h2>Stock (Max 20 rows)</h2>
-      <Box disabled={isLoading}>
-        <StockSheet setStockTableValues={setStockTableValues} />
-      </Box>
-      <h2>Cuts (Max 100 rows)</h2>
-      <Box disabled={isLoading}>
-        <CutsSheet setCutsTableValues={setCutsTableValues} />
-      </Box>
 
-      <div>
-        <button onClick={handleClick}>Get result</button>
-      </div>
-      <h2>Result</h2>
-      <div>
-        {isLoading ? (
-          <h1>Loading...</h1>
-        ) : (
-          <pre>{JSON.stringify(result, null, 2)}</pre>
-        )}
-      </div>
-    </div>
+    <Layout>
+      <Text
+        spacing="13"
+        fontWeight="semibold"
+        color="gray.400"
+        justifyContent="rigth"
+      >
+        Name of the app
+      </Text>
+      <Box as="main" mx="auto" width="full" py={["12"]} height="full">
+        <Stack direction={["column", "row"]} spacing="12" width="full">
+          <Box width={["100%", "40%"]}>
+            <Stack bg="white" p="6" rounded="md" boxShadow="base">
+              <div>
+                <Input
+                  // value={input}
+                  placeholder="Project name..."
+                  // onChange={handleProjectNameChange}
+                />
+                <h2>Blade size</h2>
+                <input
+                  type="number"
+                  value={bladeSize}
+                  onChange={(e) => setBladeSize(e.target.valueAsNumber)}
+                />
+                <h2>Time limit for optimisation, s</h2>
+                <input
+                  type="number"
+                  value={constantD}
+                  onChange={(e) => setconstantD(e.target.valueAsNumber)}
+                />
+                <Text fontSize="lg" fontWeight="semibold">
+                  Stock (Max 20 rows)
+                </Text>
+                <Box disabled={isLoading}>
+                  <StockSheet setStockTableValues={setStockTableValues} /> 
+                </Box>
+                <Text fontSize="lg" fontWeight="semibold">
+                  Cuts (Max 100 rows)
+                </Text>
+                {/* <Box disabled={isLoading}>
+                  <CutsSheet setCutsTableValues={setCutsTableValues} />
+                </Box> */}
+
+                <Box width="full">
+                  <Button
+                    width="45"
+                    bg="gray.900"
+                    color="white"
+                    _hover={{}}
+                    onClick={handleClick}
+                  >
+                    Get result
+                  </Button>
+                </Box>
+                <h2>Result</h2>
+                <div>
+                   {/* {isLoading ? (
+                    <h1>Loading...</h1>
+                  ) 
+                  : (
+                    <pre>{JSON.stringify(result, null, 2)}</pre>
+                  )
+                  } */}
+                </div>
+              </div>
+            </Stack>
+          </Box>
+          <Stack spacing="6" width={["100%", "60%"]} minH="100vh">
+            {/* <PDFViewer style={{ width: "100%", height: "100%" }}> */}
+            {/* key={count} */}
+            {/* <PDFDocument1DNOSSR something={result}/> */}
+            {/* something={JSON.stringify(result, null, 2)} */}
+            {/* something={isLoading ? (
+                    <h1></h1>
+                  ) : (
+                    <pre>{JSON.stringify(result, null, 2)}</pre>
+                  )}/> */}
+            {/* </PDFViewer>  */}
+            {/* <ButtonsResultExport /> */}
+          </Stack>
+        </Stack>
+      </Box>
+    </Layout>
   );
 }
 
-export function WorkerButton() {
-  const workerRef = React.useRef();
-  React.useEffect(() => {
-    workerRef.current = new Worker(new URL("../worker.js", import.meta.url));
-    workerRef.current.onmessage = (evt) =>
-      alert(`WebWorker Response => ${evt.data}`);
-    return () => {
-      workerRef.current.terminate();
-    };
-  }, []);
+// export function WorkerButton() {
+//   const workerRef = React.useRef();
+//   React.useEffect(() => {
+//     workerRef.current = new Worker(new URL("../worker.js", import.meta.url));
+//     workerRef.current.onmessage = (evt) =>
+//       alert(`WebWorker Response => ${evt.data}`);
+//     return () => {
+//       workerRef.current.terminate();
+//     };
+//   }, []);
 
-  const handleWork = React.useCallback(async () => {
-    workerRef.current.postMessage(100000);
-  }, []);
+//   const handleWork = React.useCallback(async () => {
+//     workerRef.current.postMessage(100000);
+//   }, []);
 
-  return (
-    <div>
-      <p>Do work in a WebWorker!</p>
-      <button onClick={handleWork}>Do Stuff</button>
-    </div>
-  );
-}
+//   return (
+//     <div>
+//       <p>Do work in a WebWorker!</p>
+//       <button onClick={handleWork}>Do Stuff</button>
+//     </div>
+//   );
+// }
 
 // // import { FiCheckSquare, FiSquare } from 'react-icons/fi'
-// function AppPage() {
+
+// export default App;
+// function App() {
 //   const [count, setCount] = React.useState(1);
 //   const { isLoading: isUserLoading, user } = useAuthUser();
 
@@ -135,31 +197,37 @@ export function WorkerButton() {
 //   const [cutItems, setCutsTableValues] = React.useState([]);
 //   const [result, setResult] = React.useState([]);
 //   const [isLoading, setIsLoading] = React.useState(false);
+//   const workerRef = React.useRef();
+
+//   React.useEffect(() => {
+//     workerRef.current = new Worker(new URL("../worker.js", import.meta.url));
+//     workerRef.current.onmessage = (event) => {
+//       console.log(" on message from worker");
+//       setResult(event.data);
+//       setIsLoading(false);
+//     };
+//     return () => {
+//       workerRef.current.terminate();
+//     };
+//   }, []);
 
 //   const handleClick = async () => {
 //     try {
 //       setIsLoading(true);
-//       const response = await fetch("/api/calculate", {
-//         method: "POST", // *GET, POST, PUT, DELETE, etc.
-//         headers: {
-//           "Content-Type": "application/json",
-//         },
-//         body: JSON.stringify({ stockItems, cutItems, bladeSize, constantD }), // body data type must match "Content-Type"
+//       workerRef.current.postMessage({
+//         stockItems,
+//         cutItems,
+//         bladeSize,
+//         constantD,
 //       });
-
-//       const result = await response.json(); // parses JSON response into native JavaScript objects
-//       // console.log({ result });
-//       setResult(result);
 //     } catch (e) {
 //       setResult([]);
-//     } finally {
 //       setIsLoading(false);
 //     }
 //   };
-
-//   React.useEffect(() => {
-//     setCount((prev) => prev++);
-//   }, [result]);
+//   // React.useEffect(() => {
+//   //   setCount((prev) => prev++);
+//   // }, [result]);
 
 //   if (isUserLoading) return null;
 
@@ -170,15 +238,16 @@ export function WorkerButton() {
 //         <Stack direction={["column", "row"]} spacing="12" width="full">
 //           <Box width={["100%", "40%"]}>
 //             <Stack bg="white" p="6" rounded="md" boxShadow="base">
-//               <Cut1DInputs />
+//               {/* <Cut1DInputs /> */}
 //               <Text fontSize="lg" fontWeight="semibold">
 //                 Cuts
 //               </Text>
 //               <ListCutItems />
 //               <Box width="full">
 //                 <Button
-//                   isDisabled={!!errors.inputMessage}
-//                   onClick={handleGetResult}
+//                   // isDisabled={!!errors.inputMessage}
+//                   onClick={handleClick}
+//                   //{handleGetResult}
 //                   width="32"
 //                   bg="gray.900"
 //                   color="white"

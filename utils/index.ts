@@ -13,7 +13,7 @@ export function useAuthUser() {
   React.useEffect(() => {
     Auth.currentAuthenticatedUser()
       .then((user) => setUser(user))
-      .catch(() => router.push("/auth"))
+      .catch(() => router.push("/app"))
       .finally(() => setIsLoading(false));
   }, []);
   return { isLoading, user };
@@ -297,7 +297,7 @@ export function loopCalculation(
           //const quantityIndex = cutInformation.sizes.indexOf(length[3]);
           const quantityIndex1 = length[1];
           // for (i = 0; i < quantityInCombo; i++) {
-          itemsToExport.push([
+          itemsToExport.push(
             {
               cutQuantity: quantityInCombo,
               cutLength: length[3],
@@ -305,7 +305,7 @@ export function loopCalculation(
               angle1: cutInformation.angle1[quantityIndex1],
               angle2: cutInformation.angle2[quantityIndex1],
             },
-          ]);
+          );
           // }
           cutInformation.quantities[quantityIndex1] =
             cutInformation.quantities[quantityIndex1] -
@@ -422,7 +422,7 @@ export function loopCalculation(
     return implement();
   }
 
-  for (let i = 5; i < 150; i++) {
+  for (let i = 5; i < 6; i++) {
     // i - how deep the recursive function gets. Iterates till time limit.
     cutInformationExport = JSON.parse(cutInformationString);
     stockInformationExport = JSON.parse(stockInformationString);
@@ -441,25 +441,28 @@ export function loopCalculation(
     );
     console.log(totalUsedStockLengthCompare / 1000 + " m");
     if (totalUsedStockLengthCompare < totalUsedStockLength) {
+      //var leftOversCompare =stockInformationExport;
       totalUsedStockLength = totalUsedStockLengthCompare;
       answerExport = element;
     }
     if (Date.now() - t0 > timeforCalculation * 1000 && answerExport.length) {
-      console.log("Time limit " + timeforCalculation + "seconds");
-      console.log("best result");
-      console.log(totalUsedStockLength / 1000 + " m");
-
-      return answerExport;
+      console.log(
+        "Time limit " +
+          timeforCalculation +
+          " seconds time limit has been reached"
+      );
+      break;
+      //return answerExport;
     }
   }
 
   const t1 = Date.now();
   timeTakenOnMachine = t1 - t0 + " milliseconds.";
   console.log("It took " + (t1 - t0) + " milliseconds.");
-  console.log("best result");
-  console.log(totalUsedStockLength / 1000);
+  console.log("Best result");
+  console.log(totalUsedStockLength / 1000 + " m");
   //console.log(JSON.parse(stockInformationString));
-  return { timeTakenOnMachine, ...answerExport };
+  return answerExport;
 }
 
 export function checkMaxRatioStockAndCut(stockInfoElement, cutInfoElement) {

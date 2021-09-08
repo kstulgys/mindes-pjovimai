@@ -127,7 +127,7 @@ export function CutsSheet({ setCutsTableValues }) {
 
   const [options, setOptions] = React.useState(defaultOptions);
   const jRef = useRef(null);
-  useJspreadsheet({ options, jRef });
+ // useJspreadsheet({ options, jRef });
   return <div ref={jRef} />;
 }
 

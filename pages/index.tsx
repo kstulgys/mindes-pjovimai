@@ -31,7 +31,8 @@ export default function IndexPage() {
           </Text>
         </Box>
         <Box pt="4">
-          <NextLink href="/app" passHref>
+          <NextLink href="/app" passHref={true}>
+            {/* passHref */}
             <Button bg="gray.900" color="white" size="lg" _hover={{}}>
               The App
             </Button>

@@ -15,7 +15,16 @@ import {
 } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import React from "react";
-import { FiUser, FiSettings, FiFolder, FiLogOut, FiHome } from "react-icons/fi";
+import {
+  FiUser,
+  FiSettings,
+  FiFolder,
+  FiLogOut,
+  FiHome,
+  FiAward,
+  FiCoffee,
+  FiInfo,
+} from "react-icons/fi";
 import { Auth } from "aws-amplify";
 
 export function Layout({ children }) {
@@ -55,7 +64,7 @@ function SideNavBar() {
       bg="gray.900"
       alignItems="center"
       pt="10"
-      color="orange.500"
+      color="orange.200"
       spacing="4"
     >
       {/* <ManuItemModal icon={FiFolder} title="Projects" />
@@ -65,6 +74,7 @@ function SideNavBar() {
         <Icon as={FiHome} fontSize="2xl" />
       </Button>
       <ManuItemModal icon={FiLogOut} title="Logout" />
+      <ManuItemModal icon={FiInfo} title="Info" />
     </Stack>
   );
 }
@@ -91,13 +101,8 @@ function ManuItemModal({ icon, title }) {
           <ModalBody>
             {title === "Logout"
               ? `Are you sure you want to logout ?`
-              : `Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum
-            has been the industry's standard dummy text ever since the 1500s, when an unknown
-            printer took a galley of type and scrambled it to make a type specimen book. It has
-            survived not only five centuries, but also the leap into electronic typesetting,
-            remaining essentially unchanged. It was popularised in the 1960s with the release of
-            Letraset sheets containing Lorem Ipsum passages, and more recently with desktop
-            publishing software like Aldus PageMaker including versions of Lorem Ipsum.`}
+              : ` This is how it started... 
+              Let us know how did you enjoy our app: "info@yompti.com"`}
           </ModalBody>
           <ModalFooter>
             {title === "Logout" ? (
