@@ -15,13 +15,13 @@ import { PDFDownloadLink, PDFViewer } from "@react-pdf/renderer";
 import { arrayMove } from "@dnd-kit/sortable";
 //import { error } from "console";
 
-// Font.register({
-//   family: "Montserrat",
-//   src: "https://fonts.gstatic.com/s/montserrat/v15/JTUSjIg1_i6t8kCHKm459WlhyyTh89Y.woff2",
-// });
+Font.register({
+  family: "Montserrat",
+  src: "https://fonts.gstatic.com/s/montserrat/v15/JTUSjIg1_i6t8kCHKm459WlhyyTh89Y.woff2",
+});
 
 
-export default function PDFDocument1D({ something }) {
+export default function PDFDocument1D({ something, otherData }) {
   //   const result = useStore((store) => store.result);
   const projectName = useStore((store) => store.projectName);
 
@@ -38,12 +38,12 @@ export default function PDFDocument1D({ something }) {
     </Document>
     </PDFViewer>
   );
-  }
+ }
   console.log(something);
   console.log('1');
- // const totalStockLength = something.reduce((a, b) => a + b.stockLength*b.quantity, 0)
-  // const totalWaste =something.reduce((a, b) => a + checkIfPositive(b.waste)*b.quantity, 0)
-  //const percentageWaste = roundToTwo (totalWaste/totalStockLength*100);
+ const totalStockLength = something.reduce((a, b) => a + b.stockLength*b.quantity, 0)
+  const totalWaste =something.reduce((a, b) => a + checkIfPositive(b.waste)*b.quantity, 0)
+  const percentageWaste = roundToTwo (totalWaste/totalStockLength*100);
    
     function roundToTwo(num) {    
       return Math.round( ( num + Number.EPSILON ) * 100 ) / 100;
@@ -55,18 +55,15 @@ export default function PDFDocument1D({ something }) {
   //     0
   //   );
   //const date = new Date().toLocaleDateString();
-var d = new Date();
-var mm = d.getMonth() + 1;
-var dd = d.getDate();
-var yy = d.getFullYear();
-  const date = yy + '/' + mm + '/' + dd; //(LT :))
+
 
   return (
     <PDFViewer key={1} style={{ width: "100%", height: "100%"}}>
-      <Document >
-        <Page size="A4" style={{ marginLeft: "2cm", marginRight: "4cm" }} >
+      <Document>
+        <Page size="A4" style={{marginLeft:"2cm", marginTop:"1cm", marginBottom:"1cm"}} >
           <View
             style={{
+              width:"85%",
               flexDirection: "row",
               // margin: 12,
               fontSize: 24,
@@ -75,12 +72,12 @@ var yy = d.getFullYear();
             }}
           >
             <TextPDF style={{ fontSize: 12, lineHeight: 1.6 }}>
-              {projectName}
+              {otherData}
             </TextPDF>
             <TextPDF
               style={{ fontSize: 12, lineHeight: 1.6, marginLeft: "auto" }}
             >
-              {date}
+              {todayDateEurope()}
             </TextPDF>
           </View>
           <TableHead />
@@ -89,13 +86,13 @@ var yy = d.getFullYear();
             return <TableRow key={index} {...value} index={index} />;
           })}
           <TextPDF style={{ fontSize: 12, lineHeight: 1.6, marginTop: 10 }}>
-            {/* Total stock length: {totalStockLength} mm */}
+            Total stock length: {totalStockLength} mm
           </TextPDF>
           <TextPDF style={{ fontSize: 12, lineHeight: 1.6 }}>
-            {/* Total waste: {totalWaste} mm */}
+            Total waste: {totalWaste} mm
           </TextPDF>
           <TextPDF style={{ fontSize: 12, lineHeight: 1.6 }}>
-            {/* Percentage of waste: {percentageWaste} % */}
+            Percentage of waste: {percentageWaste} %
           </TextPDF>
           {/* <Box style={{top:"0cm"}}> */}
           <TextPDF
@@ -120,9 +117,9 @@ function TableHead() {
   return (
     <View
       style={{
+        width:"85%",
         display: "flex",
         flexDirection: "row",
-        width: "90%",
         justifyContent: "space-around",
         borderStyle: "solid",
         fontSize: 12,
@@ -133,7 +130,7 @@ function TableHead() {
         paddingVertical: 5,
       }}
     >
-      <TextPDF style={{ width: "20%" }}>Quantity</TextPDF>
+      <TextPDF style={{ width: "15%" }}>Quantity</TextPDF>
       <TextPDF style={{ width: "20%" }}>Stock length</TextPDF>
       <TextPDF style={{ width: "60%" }}>Cut list</TextPDF>
       <TextPDF style={{ width: "10%" }}>Waste</TextPDF>
@@ -145,9 +142,9 @@ function TableRow({ quantity, stockLength, items, waste, stockName }) {
   return (
     <View
       style={{
+        width:"85%",
         display: "flex",
         flexDirection: "row",
-        width: "90%",
         justifyContent: "space-around",
         borderStyle: "solid",
         fontSize: 12,
@@ -159,7 +156,7 @@ function TableRow({ quantity, stockLength, items, waste, stockName }) {
         paddingVertical: 5,
       }}
     >
-      <TextPDF style={{ width: "10%" }}>{quantity}</TextPDF>
+      <TextPDF style={{ width: "15%" }}>{quantity}</TextPDF>
       <TextPDF style={{ width: "20%" }}>
         {formatStockValue({ stockLength, stockName })}
       </TextPDF>
@@ -204,4 +201,16 @@ function formatCutValue({ cutQuantity, cutLength, cutName, angle1, angle2 }) {
     return ` ([${cutName}] ${cutLength}) x ${cutQuantity}`;
   }
   return ` ${cutLength} x ${cutQuantity}`;
+}
+
+
+function todayDateEurope(){
+  var d = new Date(); 
+  var mm = d.getMonth() + 1;
+  var dd = d.getDate();
+  var yy = d.getFullYear();
+  if(mm<10 && dd<10 ) return yy + '-0' + mm + '-0' + dd;
+  if(mm<10) return yy + '-0' + mm + '-' + dd;
+  if(dd<10) return yy + '-' + mm + '-0' + dd;
+  return yy + '-' + mm + '-' + dd; //(LT :))
 }
