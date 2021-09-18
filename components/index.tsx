@@ -1,4 +1,4 @@
-import Head from 'next/head'
+import Head from "next/head";
 import {
   Box,
   Stack,
@@ -12,35 +12,26 @@ import {
   ModalFooter,
   ModalBody,
   ModalCloseButton,
-} from '@chakra-ui/react'
-import { useRouter } from 'next/router'
-import React from 'react'
-import { FiUser, FiSettings, FiFolder, FiLogOut } from 'react-icons/fi'
-import { Auth } from 'aws-amplify'
+} from "@chakra-ui/react";
+import { useRouter } from "next/router";
+import React from "react";
+import { FiUser, FiSettings, FiFolder, FiLogOut, FiHome } from "react-icons/fi";
+import { Auth } from "aws-amplify";
 
 export function Layout({ children }) {
   return (
     <Box>
-      <Head>
-        <title>Create Next App</title>
-        <link rel="icon" href="/favicon.ico" />
-        <script src="https://bossanova.uk/jspreadsheet/v4/jexcel.js"></script>
-        <link
-          rel="stylesheet"
-          href="https://bossanova.uk/jspreadsheet/v4/jexcel.css"
-          type="text/css"
-        />
-        <script src="https://jsuites.net/v4/jsuites.js"></script>
-        <link rel="stylesheet" href="https://jsuites.net/v4/jsuites.css" type="text/css" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500;600;700;800;900&display=swap"
-          rel="stylesheet"
-        />
-      </Head>
-      <Stack fontFamily="Montserrat" isInline bg="gray.200" minH="100vh" width="full" spacing="0">
+      <Stack
+        fontFamily="Montserrat"
+        isInline
+        bg="gray.200"
+        minH="100vh"
+        // height="full"
+        width="full"
+        spacing="0"
+      >
         <SideNavBar />
-        <Box width="full" px={[4, 24]}>
+        <Box width="full" px={[4, 24]} minH="100vh">
           {children}
         </Box>
       </Stack>
@@ -48,41 +39,35 @@ export function Layout({ children }) {
         <AmplifyChatbot/>
       </Box> */}
     </Box>
-  )
+  );
 }
 
 function SideNavBar() {
-  const router = useRouter()
+  const router = useRouter();
 
-  if (router.pathname === '/') return null
+  if (router.pathname === "/") return null;
 
   return (
-    <Stack
-      display={['none', 'flex']}
-      width="16"
-      boxShadow="base"
-      bg="gray.900"
-      alignItems="center"
-      pt="10"
-      color="orange.500"
-      spacing="4"
-    >
-      <ManuItemModal icon={FiFolder} title="Projects" />
+    <Stack display={["none", "flex"]} width="16" boxShadow="base" bg="gray.900" alignItems="center" pt="10" color="orange.500" spacing="4">
+      {/* <ManuItemModal icon={FiFolder} title="Projects" />
       <ManuItemModal icon={FiSettings} title="Settings" />
-      <ManuItemModal icon={FiUser} title="User" />
+      <ManuItemModal icon={FiUser} title="User" /> */}
+      <Button onClick={() => router.push("/")} variant="unstyled">
+        <Icon as={FiHome} fontSize="2xl" />
+      </Button>
       <ManuItemModal icon={FiLogOut} title="Logout" />
     </Stack>
-  )
+  );
 }
 
 function ManuItemModal({ icon, title }) {
-  const { isOpen, onOpen, onClose } = useDisclosure()
-  const router = useRouter()
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const router = useRouter();
 
   const handleLogout = async () => {
-    await Auth.signOut()
-    router.push('/')
-  }
+    await Auth.signOut();
+    router.push("/");
+  };
 
   return (
     <>
@@ -95,7 +80,7 @@ function ManuItemModal({ icon, title }) {
           <ModalHeader>{title}</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
-            {title === 'Logout'
+            {title === "Logout"
               ? `Are you sure you want to logout ?`
               : `Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum
             has been the industry's standard dummy text ever since the 1500s, when an unknown
@@ -106,8 +91,8 @@ function ManuItemModal({ icon, title }) {
             publishing software like Aldus PageMaker including versions of Lorem Ipsum.`}
           </ModalBody>
           <ModalFooter>
-            {title === 'Logout' ? (
-              <Button colorScheme="blue" mr={3} onClick={handleLogout}>
+            {title === "Logout" ? (
+              <Button _hover={{}} bg="gray.900" color="white" mr={3} onClick={handleLogout}>
                 Yes
               </Button>
             ) : (
@@ -122,5 +107,5 @@ function ManuItemModal({ icon, title }) {
         </ModalContent>
       </Modal>
     </>
-  )
+  );
 }
