@@ -90,24 +90,21 @@ export function CutsSheet({ setCutsTableValues }) {
     onchange: ({ jspreadsheet }) => {
       if (!jspreadsheet) return;
       const data = jspreadsheet.getData();
-      const transformed = data.reduce(
-        (acc, [length, quantity, angle1, angle2, name, use]) => {
-          if (use)
-            return [
-              ...acc,
-              {
-                length: +length,
-                quantity: +quantity,
-                angle1: +angle1,
-                angle2: +angle2,
-                name,
-                use,
-              },
-            ];
-          return acc;
-        },
-        []
-      );
+      const transformed = data.reduce((acc, [length, quantity, angle1, angle2, name, use]) => {
+        if (use)
+          return [
+            ...acc,
+            {
+              length: +length,
+              quantity: +quantity,
+              angle1: +angle1,
+              angle2: +angle2,
+              name,
+              use,
+            },
+          ];
+        return acc;
+      }, []);
       setCutsTableValues(transformed);
     },
     onload: ({ jspreadsheet }) => {
@@ -148,7 +145,9 @@ function useJspreadsheet({ options, jRef }) {
           jspreadsheet.current = jsp;
         })
         .then(() => rerender());
-    } catch (e) {}
+    } catch (e) {
+      console.log({ e });
+    }
   }, []);
 
   useEffect(() => {

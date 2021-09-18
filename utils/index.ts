@@ -21,12 +21,7 @@ export function useAuthUser() {
 
 let timeTakenOnMachine: any = 0;
 
-export function loopCalculation(
-  stockItems,
-  cutItems,
-  bladeSize,
-  timeforCalculation
-) {
+export function loopCalculation(stockItems, cutItems, bladeSize, timeforCalculation) {
   let answerExport = [];
   let totalUsedStockLength = Number.MAX_SAFE_INTEGER;
   const t0 = Date.now();
@@ -44,11 +39,7 @@ export function loopCalculation(
       return b.length - a.length;
     });
     importCutInformation.forEach((element) => {
-      if (
-        !Number.isInteger(element.length) ||
-        !Number.isInteger(element.quantity)
-      )
-        mustBeInteger = false;
+      if (!Number.isInteger(element.length) || !Number.isInteger(element.quantity)) mustBeInteger = false;
 
       if (element.length > 0 && element.quantity > 0) {
         sizes[indexI] = element.length;
@@ -79,17 +70,9 @@ export function loopCalculation(
   if (!mustBeInteger) return checkIfInteger();
   // Check inputs 2. Ratio between max stock and min cut must be not bigger than 1000 times;
   if (checkMaxRatioStockAndCut(stockInformationExport, cutInformationExport))
-    return checkMaxRatioStockAndCut(
-      stockInformationExport,
-      cutInformationExport
-    );
+    return checkMaxRatioStockAndCut(stockInformationExport, cutInformationExport);
 
-  function calculation(
-    stockInformation,
-    cutInformation,
-    bladeSize,
-    constantDe
-  ) {
+  function calculation(stockInformation, cutInformation, bladeSize, constantDe) {
     // Creates an array of possible cuts. Checks how many fits on one stock length.
     //If fits all then creates combinations for all, otherwise for only how many fits.
     //Creates combination on the longest stock length.
@@ -108,16 +91,10 @@ export function loopCalculation(
         let element = 0;
         let j = 0;
         if (quantities1[i] === 0) continue;
-        if (
-          (longestStock - (firstSize + bladeSize)) / (sizes1[i] + bladeSize) >
-          quantities1[i]
-        ) {
+        if ((longestStock - (firstSize + bladeSize)) / (sizes1[i] + bladeSize) > quantities1[i]) {
           element = quantities1[i];
         } else {
-          element = Math.floor(
-            (longestStock - (firstSize + bladeSize) + bladeSize) /
-              (sizes1[i] + bladeSize)
-          );
+          element = Math.floor((longestStock - (firstSize + bladeSize) + bladeSize) / (sizes1[i] + bladeSize));
         }
         if (firstSize === sizes1[i] && element !== quantities1[i]) {
           element++;
@@ -152,8 +129,7 @@ export function loopCalculation(
     // All possible cut combinations of one stock
     const combinations = (elements) => {
       //if (howDeep > calculationDepthConstant) console.log(howDeep);
-      if (elements.length === 0 || howDeep > calculationDepthConstant)
-        return [[]];
+      if (elements.length === 0 || howDeep > calculationDepthConstant) return [[]];
 
       const firstEl = elements[0];
       const rest = elements.slice(1);
@@ -164,19 +140,12 @@ export function loopCalculation(
       for (let i = 0; i < combsWithoutFirst.length; i++) {
         if (!afterThatSTOP) return [[]];
         //First and second member have different lengths
-        if (
-          (combsWithoutFirst[i][0] &&
-            firstEl[1] !== combsWithoutFirst[i][0][1]) ||
-          !combsWithoutFirst[i][0]
-        ) {
+        if ((combsWithoutFirst[i][0] && firstEl[1] !== combsWithoutFirst[i][0][1]) || !combsWithoutFirst[i][0]) {
           alliterationSteps++;
           oneIterationSteps++;
 
           const element = [firstEl, ...combsWithoutFirst[i]];
-          const comparisonSum = element.reduce(
-            (a, b) => a + b[0] + bladeSize,
-            0
-          );
+          const comparisonSum = element.reduce((a, b) => a + b[0] + bladeSize, 0);
           // All lenghts shorter than longest stock length
           if (stockInformation.sizes[0] + bladeSize >= comparisonSum) {
             // A length that has no residual end.
@@ -189,8 +158,7 @@ export function loopCalculation(
                 return [[]]; // Best first element
               }
               // A length that has no duplicate member in the sequance and is longer/better.
-              const firstStockSizeLongerThanSum =
-                StockSizeLongerThanSum(comparisonSum);
+              const firstStockSizeLongerThanSum = StockSizeLongerThanSum(comparisonSum);
               if (
                 smallestFoundDifference[0] > // There is only one element
                 firstStockSizeLongerThanSum - comparisonSum
@@ -198,9 +166,7 @@ export function loopCalculation(
                 lengthToUseNotFound = [];
                 lengthToUseNotFound.push(firstStockSizeLongerThanSum);
                 smallestFoundDifference = [];
-                smallestFoundDifference.push(
-                  firstStockSizeLongerThanSum - comparisonSum
-                );
+                smallestFoundDifference.push(firstStockSizeLongerThanSum - comparisonSum);
                 bestLastElement = [];
                 bestLastElement.push(element);
               }
@@ -217,10 +183,7 @@ export function loopCalculation(
       let doWhileThis = true;
       for (let index = 0; index < stockInformation.sizes.length; index++) {
         const element = stockInformation.sizes[index];
-        if (
-          cutComboLength <= element &&
-          element <= cutComboLength + bladeSize
-        ) {
+        if (cutComboLength <= element && element <= cutComboLength + bladeSize) {
           lengthToUseFound = [];
           lengthToUseFound.push(element);
           doWhileThis = false;
@@ -260,9 +223,7 @@ export function loopCalculation(
         const element = importedCutCombination[index];
         const cutLengthIndex = element[1];
         //const cutLengthIndex = cutInformation.sizes.indexOf(element[3]);
-        const cutNumberAccCutQuantity = Math.floor(
-          cutInformation.quantities[cutLengthIndex] / element[2]
-        );
+        const cutNumberAccCutQuantity = Math.floor(cutInformation.quantities[cutLengthIndex] / element[2]);
 
         if (cutNumberAccCutQuantity <= 0 || isNaN(cutNumberAccCutQuantity)) {
           hasAtLeastOneCut = false;
@@ -273,15 +234,8 @@ export function loopCalculation(
             lengthToUse1: lengthToUse1,
           };
         }
-        if (
-          cutNumberFloor > cutNumberAccCutQuantity &&
-          hasAtLeastOneCut === true &&
-          cutNumberAccCutQuantity > 0
-        ) {
-          if (
-            cutNumberAccCutQuantity <=
-            stockInformation.quantities[stockLengthIndex]
-          ) {
+        if (cutNumberFloor > cutNumberAccCutQuantity && hasAtLeastOneCut === true && cutNumberAccCutQuantity > 0) {
+          if (cutNumberAccCutQuantity <= stockInformation.quantities[stockLengthIndex]) {
             cutNumberFloor = cutNumberAccCutQuantity; // Quantity number according cut number
           } else {
             cutNumberFloor = stockInformation.quantities[stockLengthIndex]; // Quantity number according stock number
@@ -307,14 +261,11 @@ export function loopCalculation(
             },
           ]);
           // }
-          cutInformation.quantities[quantityIndex1] =
-            cutInformation.quantities[quantityIndex1] -
-            cutNumberFloor * quantityInCombo;
+          cutInformation.quantities[quantityIndex1] = cutInformation.quantities[quantityIndex1] - cutNumberFloor * quantityInCombo;
         }
       }
       //Subtracts used stocks
-      stockInformation.quantities[stockLengthIndex] =
-        stockInformation.quantities[stockLengthIndex] - cutNumberFloor;
+      stockInformation.quantities[stockLengthIndex] = stockInformation.quantities[stockLengthIndex] - cutNumberFloor;
       if (stockInformation.quantities[stockLengthIndex] === 0) {
         stockInformation.quantities.splice(stockLengthIndex, 1);
         stockInformation.sizes.splice(stockLengthIndex, 1);
@@ -340,10 +291,7 @@ export function loopCalculation(
       let indexExact = 0;
       stockInformation.sizes.forEach((stockElement) => {
         cutInformation.sizes.forEach((cutElement, index) => {
-          if (
-            stockElement >= cutElement &&
-            cutElement + bladeSize >= stockElement
-          ) {
+          if (stockElement >= cutElement && cutElement + bladeSize >= stockElement) {
             exactMatch[indexExact] = [cutElement, stockElement, index];
             indexExact++;
           }
@@ -373,10 +321,7 @@ export function loopCalculation(
         afterThatSTOP = true;
         smallestFoundDifference = [Number.MAX_SAFE_INTEGER];
 
-        const cut = membersOfCombinations(
-          cutInformation.sizes,
-          cutInformation.quantities
-        );
+        const cut = membersOfCombinations(cutInformation.sizes, cutInformation.quantities);
         firstGlobalElement =
           cutInformation.sizes[
             // @ts-ignore
@@ -426,19 +371,11 @@ export function loopCalculation(
     // i - how deep the recursive function gets. Iterates till time limit.
     cutInformationExport = JSON.parse(cutInformationString);
     stockInformationExport = JSON.parse(stockInformationString);
-    const element = calculation(
-      stockInformationExport,
-      cutInformationExport,
-      bladeSize,
-      i
-    );
+    const element = calculation(stockInformationExport, cutInformationExport, bladeSize, i);
 
     if (!notEnoughStockItems) return checkIfEnoughStockItems();
 
-    const totalUsedStockLengthCompare = element.reduce(
-      (a, b) => a + b.stockLength * b.quantity,
-      0
-    );
+    const totalUsedStockLengthCompare = element.reduce((a, b) => a + b.stockLength * b.quantity, 0);
     console.log(totalUsedStockLengthCompare / 1000 + " m");
     if (totalUsedStockLengthCompare < totalUsedStockLength) {
       totalUsedStockLength = totalUsedStockLengthCompare;
@@ -467,8 +404,7 @@ export function checkMaxRatioStockAndCut(stockInfoElement, cutInfoElement) {
   const mixCutSize = cutInfoElement.sizes[cutInfoElement.sizes.length - 1];
   if (maxStockSize / mixCutSize >= 1000) {
     return {
-      error:
-        "Ration between stock and cut sizes is too big. Reduce to less than 1000",
+      error: "Ration between stock and cut sizes is too big. Reduce to less than 1000",
     };
   }
 }

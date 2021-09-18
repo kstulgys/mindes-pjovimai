@@ -6,22 +6,9 @@ import NextLink from "next/link";
 export default function IndexPage() {
   return (
     <Layout>
-      <Stack
-        maxW="8xl"
-        width="full"
-        mx="auto"
-        pt={[20, 48]}
-        pb="10"
-        alignItems="center"
-      >
+      <Stack maxW="8xl" width="full" mx="auto" pt={[20, 48]} pb="10" alignItems="center">
         <Box>
-          <Text
-            as="h1"
-            maxW="xxl"
-            textAlign="center"
-            fontSize="5xl"
-            fontWeight="bold"
-          >
+          <Text as="h1" maxW="xxl" textAlign="center" fontSize="5xl" fontWeight="bold">
             Cutting stock optimisation App
           </Text>
         </Box>

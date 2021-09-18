@@ -1,20 +1,5 @@
 import React from "react";
-import {
-  Box,
-  Stack,
-  Button,
-  Text,
-  Input,
-  Table,
-  Thead,
-  Tbody,
-  Tr,
-  Th,
-  Td,
-  useToast,
-  Checkbox,
-  Icon,
-} from "@chakra-ui/react";
+import { Box, Stack, Button, Text, Input, Table, Thead, Tbody, Tr, Th, Td, useToast, Checkbox, Icon } from "@chakra-ui/react";
 // import { Layout } from "../components";
 // import { useAuthUser } from "../utils";
 // import { useStore } from "../store";
@@ -66,17 +51,9 @@ export default function App() {
   return (
     <div>
       <h2>Blade</h2>
-      <input
-        type="number"
-        value={bladeSize}
-        onChange={(e) => setBladeSize(e.target.valueAsNumber)}
-      />
+      <input type="number" value={bladeSize} onChange={(e) => setBladeSize(e.target.valueAsNumber)} />
       <h2>Time limit for optimisation, s</h2>
-      <input
-        type="number"
-        value={constantD}
-        onChange={(e) => setconstantD(e.target.valueAsNumber)}
-      />
+      <input type="number" value={constantD} onChange={(e) => setconstantD(e.target.valueAsNumber)} />
       <h2>Stock (Max 20 rows)</h2>
       <Box disabled={isLoading}>
         <StockSheet setStockTableValues={setStockTableValues} />
@@ -90,13 +67,7 @@ export default function App() {
         <button onClick={handleClick}>Get result</button>
       </div>
       <h2>Result</h2>
-      <div>
-        {isLoading ? (
-          <h1>Loading...</h1>
-        ) : (
-          <pre>{JSON.stringify(result, null, 2)}</pre>
-        )}
-      </div>
+      <div>{isLoading ? <h1>Loading...</h1> : <pre>{JSON.stringify(result, null, 2)}</pre>}</div>
     </div>
   );
 }
@@ -105,8 +76,7 @@ export function WorkerButton() {
   const workerRef = React.useRef();
   React.useEffect(() => {
     workerRef.current = new Worker(new URL("../worker.js", import.meta.url));
-    workerRef.current.onmessage = (evt) =>
-      alert(`WebWorker Response => ${evt.data}`);
+    workerRef.current.onmessage = (evt) => alert(`WebWorker Response => ${evt.data}`);
     return () => {
       workerRef.current.terminate();
     };

@@ -8,13 +8,7 @@ declare global {
   }
 }
 
-export function Excel({
-  options,
-  initialData,
-  onAfterChange,
-  listToggableColumns,
-  toggablePair,
-}) {
+export function Excel({ options, initialData, onAfterChange, listToggableColumns, toggablePair }) {
   const { columns } = options;
   const jRef = React.useRef(null);
   const [columnsDisabled, setColumnsDisaled] = React.useState([]);
@@ -37,9 +31,7 @@ export function Excel({
     if (foundIndex) {
       if (isToggablePair) {
         const [index1, index2] = toggablePair;
-        return setColumnsDisaled(
-          columnsDisabled.filter((idx) => idx !== index1 && idx !== index2)
-        );
+        return setColumnsDisaled(columnsDisabled.filter((idx) => idx !== index1 && idx !== index2));
       }
       setColumnsDisaled(columnsDisabled.filter((idx) => idx !== index));
     } else {
@@ -77,10 +69,7 @@ export function Excel({
     return () => jexcel.destroy();
   }, [columns, columnsDisabled]);
 
-  const width = React.useMemo(
-    () => `calc(100% / ${options.columns.length})`,
-    [options.columns.length]
-  );
+  const width = React.useMemo(() => `calc(100% / ${options.columns.length})`, [options.columns.length]);
 
   return (
     <Stack width="full">
@@ -90,12 +79,7 @@ export function Excel({
           {options.columns.map((col, index) => {
             if (listToggableColumns.includes(index)) {
               return (
-                <Stack
-                  width={width}
-                  spacing="0"
-                  isInline
-                  justifyContent="center"
-                >
+                <Stack width={width} spacing="0" isInline justifyContent="center">
                   <Checkbox
                     size="lg"
                     colorScheme="gray"

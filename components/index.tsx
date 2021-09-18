@@ -48,16 +48,7 @@ function SideNavBar() {
   if (router.pathname === "/") return null;
 
   return (
-    <Stack
-      display={["none", "flex"]}
-      width="16"
-      boxShadow="base"
-      bg="gray.900"
-      alignItems="center"
-      pt="10"
-      color="orange.500"
-      spacing="4"
-    >
+    <Stack display={["none", "flex"]} width="16" boxShadow="base" bg="gray.900" alignItems="center" pt="10" color="orange.500" spacing="4">
       {/* <ManuItemModal icon={FiFolder} title="Projects" />
       <ManuItemModal icon={FiSettings} title="Settings" />
       <ManuItemModal icon={FiUser} title="User" /> */}
@@ -101,13 +92,7 @@ function ManuItemModal({ icon, title }) {
           </ModalBody>
           <ModalFooter>
             {title === "Logout" ? (
-              <Button
-                _hover={{}}
-                bg="gray.900"
-                color="white"
-                mr={3}
-                onClick={handleLogout}
-              >
+              <Button _hover={{}} bg="gray.900" color="white" mr={3} onClick={handleLogout}>
                 Yes
               </Button>
             ) : (
