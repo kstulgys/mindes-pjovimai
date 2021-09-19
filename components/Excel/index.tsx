@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 import React from "react";
 import { Box, Stack, Checkbox } from "@chakra-ui/react";
 
@@ -7,7 +8,7 @@ declare global {
     jexcel: any;
   }
 }
-
+// @ts-ignore
 export function Excel({ options, initialData, onAfterChange, listToggableColumns, toggablePair }) {
   const { columns } = options;
   const jRef = React.useRef(null);
@@ -15,6 +16,7 @@ export function Excel({ options, initialData, onAfterChange, listToggableColumns
   const [data, setData] = React.useState(() => initialData);
 
   React.useEffect(() => {
+    // @ts-ignore
     const removedDisabledColumns = data.map((arr, index) => {
       const item = [...arr];
       columnsDisabled.forEach((idx) => {

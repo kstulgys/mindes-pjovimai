@@ -9,7 +9,6 @@ import { Box, Stack, Button, Text, Input, Table, Thead, Tbody, Tr, Th, Td, useTo
 // import { PDFDownloadLink, PDFViewer } from "@react-pdf/renderer";
 // import { ListStockItems } from "../components/ListStockItems";
 // import { ListCutItems } from "../components/ListCutItems";
-import fetch from "node-fetch";
 import { StockSheet, CutsSheet } from "../components/sheets";
 import "../node_modules/jspreadsheet-ce/dist/jexcel.css";
 
@@ -20,7 +19,7 @@ export default function App() {
   const [cutItems, setCutsTableValues] = React.useState([]);
   const [result, setResult] = React.useState([]);
   const [isLoading, setIsLoading] = React.useState(false);
-  const workerRef = React.useRef();
+  const workerRef = React.useRef<Worker>();
 
   React.useEffect(() => {
     workerRef.current = new Worker(new URL("../worker.js", import.meta.url));
@@ -68,28 +67,6 @@ export default function App() {
       </div>
       <h2>Result</h2>
       <div>{isLoading ? <h1>Loading...</h1> : <pre>{JSON.stringify(result, null, 2)}</pre>}</div>
-    </div>
-  );
-}
-
-export function WorkerButton() {
-  const workerRef = React.useRef();
-  React.useEffect(() => {
-    workerRef.current = new Worker(new URL("../worker.js", import.meta.url));
-    workerRef.current.onmessage = (evt) => alert(`WebWorker Response => ${evt.data}`);
-    return () => {
-      workerRef.current.terminate();
-    };
-  }, []);
-
-  const handleWork = React.useCallback(async () => {
-    workerRef.current.postMessage(100000);
-  }, []);
-
-  return (
-    <div>
-      <p>Do work in a WebWorker!</p>
-      <button onClick={handleWork}>Do Stuff</button>
     </div>
   );
 }
