@@ -69,7 +69,7 @@ function SideNavBar() {
       bg="gray.900"
       alignItems="center"
       pt="10"
-      color="orange.200"
+      color="white"
       spacing="4"
     >
       {/* <ManuItemModal icon={FiFolder} title="Projects" />

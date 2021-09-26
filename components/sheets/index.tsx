@@ -77,32 +77,35 @@ export function StockSheet({ setStockTableValues }) {
 }
 
 export function CutsSheet({ setCutsTableValues }) {
+  const hi = function inputX(){
+    return <input type="checkbox"> hi</input>
+  }
   const defaultOptions = {
     columnResize: false,
     style: {
-      A1:'background-color: red;',
-      B1:'background-color: orange;',
-      C1:"color: #9ccc65",
-      //F1:"color: #9ccc65",
-      //F1:"size:lg",
-      F1:":colorScheme:blackAlpha",
-      jexcel_header_background: "#212121",
-      cell: "background-color:#212121;",
-      table:"background-color: orange;",
+      // A1:'background-color: red;',
+      // B1:'background-color: orange;',
+      // C1:"color: #9ccc65",
+      // //F1:"color: #9ccc65",
+      // //F1:"size:lg",
+      // F1:":colorScheme:blackAlpha",
+      // jexcel_header_background: "#212121",
+      // cell: "background-color:#212121;",
+      // table:"background-color: orange;",
     },
     data:[
       [1560, 25, -90, 90, "b1", true],
       [1200, 42, 0, 45, "b2", true],
-      [1100, 12, 25, 90, "", false],
+      [1100, 12, 25, 90, "", true],
       [1000, 52, 0, 0, "", true],
     ],
     columns: [
-      { type: "number", title: "Length", width: 80 },
+      { type: "number", title: "Length", width: 75 },
       { type: "number", title: "Quantity", width: 80 },
-      { type: "number", title: "Angle 1", width: 60 },
-      { type: "number", title: "Angle 2", width: 60 },
-      { type: "string", title: "Name", width: 120 },
-      { type: "checkbox", title: "Use", width: 30 },
+      { type: "number", title: "Angle 1", width: 70 },
+      { type: "number", title: "Angle 2", width: 70 },
+      { type: "string", title: "Name", width: 100 },
+      { type: "checkbox", title: "Use", width: 35 },
     ],
     onbeforeinsertrow: ({ jspreadsheet }) => {
       const data = jspreadsheet.getData();
