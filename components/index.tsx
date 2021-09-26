@@ -1,5 +1,8 @@
 import Head from "next/head";
 import {
+  Text,
+  Textarea,
+  Input,
   Box,
   Stack,
   Button,
@@ -37,10 +40,12 @@ export function Layout({ children }) {
         minH="100vh"
         // height="full"
         width="full"
+        minWidth="1500px" // to have nice jspreadsheets
         spacing="0"
       >
+        
         <SideNavBar />
-        <Box width="full" px={[4, 24]} minH="100vh">
+        <Box width="full" px={[2, 6]} minH="100vh">
           {children}
         </Box>
       </Stack>
@@ -70,42 +75,57 @@ function SideNavBar() {
       {/* <ManuItemModal icon={FiFolder} title="Projects" />
       <ManuItemModal icon={FiSettings} title="Settings" />
       <ManuItemModal icon={FiUser} title="User" /> */}
-      <Button onClick={() => router.push("/")} variant="unstyled">
+      <Button onClick={() => router.push("/")} variant="unstyled" title="Home page">
         <Icon as={FiHome} fontSize="2xl" />
       </Button>
-      <ManuItemModal icon={FiLogOut} title="Logout" />
-      <ManuItemModal icon={FiInfo} title="Info" />
+      <ManuItemModal icon={FiLogOut} title="Logout" buttonsText="Yes" text="Are you sure want to log out?"/>
+      {/* <ManuItemModal icon={FiSettings} title="How to use it" buttonsText="" text="Watch the video to find out what you can do in the app"/> */}
+      <ManuItemModal icon={FiCoffee} title="Contacts" buttonsText="Send message" text="Send us a message if you have any questions."/>
     </Stack>
   );
 }
 
-function ManuItemModal({ icon, title }) {
+function ManuItemModal({ icon, title, buttonsText, text }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const router = useRouter();
-
+  const [symbolsNumber, setSymbolsNumber] = React.useState(0);
+  const [messageText, setMessageText] = React.useState('');
+ 
   const handleLogout = async () => {
     await Auth.signOut();
     router.push("/");
   };
 
+  function handleTextInsert(el){
+    if(el.length<=250){setMessageText(el)
+    setSymbolsNumber(el.length)};
+  }
   return (
     <>
-      <Button onClick={onOpen} variant="unstyled">
+      <Button title={title} onClick={onOpen} variant="unstyled">
         <Icon as={icon} fontSize="2xl" />
       </Button>
-      <Modal isOpen={isOpen} onClose={onClose}>
+      <Modal isOpen={isOpen} onClose={onClose} isCentered size="xl">
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>{title}</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
-            {title === "Logout"
-              ? `Are you sure you want to logout ?`
-              : ` This is how it started... 
-              Let us know how did you enjoy our app: "info@yompti.com"`}
+            {text}
+
+            {title=="Contacts"?(
+              <>
+              <Text>//Yompti team</Text>
+              <Textarea onChange={(e)=>handleTextInsert(e.target.value)} value={messageText} placeholder="Hi..."></Textarea>
+              <Text>{symbolsNumber}/250</Text>
+              </>
+              ):(<></>)}
           </ModalBody>
           <ModalFooter>
-            {title === "Logout" ? (
+
+             
+
+              {buttonsText?(
               <Button
                 _hover={{}}
                 bg="gray.900"
@@ -113,16 +133,10 @@ function ManuItemModal({ icon, title }) {
                 mr={3}
                 onClick={handleLogout}
               >
-                Yes
+                {buttonsText}
               </Button>
-            ) : (
-              <>
-                <Button colorScheme="blue" mr={3} onClick={onClose}>
-                  Close
-                </Button>
-                <Button variant="ghost">Secondary Action</Button>
-              </>
-            )}
+              ):(<></>)}
+
           </ModalFooter>
         </ModalContent>
       </Modal>

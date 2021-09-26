@@ -4,7 +4,6 @@ import { styles } from "./PDF_Styles"; // Styles of PDF
 import React from "react";
 import { useStore } from "../../store";
 import {
-  Box,
   Page,
   Text as TextPDF,
   View,
@@ -21,30 +20,29 @@ Font.register({
 });
 
 
-export default function PDFDocument1D({ something, otherData }) {
+export default function PDFDocument1D({ something, defaultData }) {
   //   const result = useStore((store) => store.result);
   const projectName = useStore((store) => store.projectName);
 
   if (!something || something.length===0 || something.error) {
   return (
-    <PDFViewer key={1} style={{ width: "100%", height: "100%"}}>
+    <PDFViewer key={1} style={{ width: "100%", height: "100%", maxHeight:"2000px"}}>
     <Document>
-      <Page size="A4" >
+      <Page size="A4" style={{marginLeft:"2cm", marginTop:"0.5cm", marginBottom:"1cm",width:"3cm"}}>
+        <TextPDF style={{ fontSize: 10, color:"gray", lineHeight: 1.6, marginLeft: "30%", marginBottom:"10px"}} >Made by www.yompti.com</TextPDF>
+        <DefaultPageView defaultData={defaultData}/>
         <TableHead />
-        <TextPDF>
-{/* //{something.error} */}
-        </TextPDF>
+        <TextPDF>{something.error}</TextPDF>
       </Page>
     </Document>
     </PDFViewer>
   );
  }
-  console.log(something);
-  console.log('1');
+  // console.log(something);
+  // console.log('1');
  const totalStockLength = something.reduce((a, b) => a + b.stockLength*b.quantity, 0)
   const totalWaste =something.reduce((a, b) => a + checkIfPositive(b.waste)*b.quantity, 0)
   const percentageWaste = roundToTwo (totalWaste/totalStockLength*100);
-   
     function roundToTwo(num) {    
       return Math.round( ( num + Number.EPSILON ) * 100 ) / 100;
     }
@@ -58,32 +56,14 @@ export default function PDFDocument1D({ something, otherData }) {
 
 
   return (
-    <PDFViewer key={1} style={{ width: "100%", height: "100%"}}>
+    <PDFViewer key={1} style={{ width: "100%", height: "100%", maxHeight:"2000px"}}>
       <Document>
-        <Page size="A4" style={{marginLeft:"2cm", marginTop:"1cm", marginBottom:"1cm"}} >
-          <View
-            style={{
-              width:"85%",
-              flexDirection: "row",
-              // margin: 12,
-              fontSize: 24,
-              textAlign: "justify",
-           //   fontFamily: "Montserrat",
-            }}
-          >
-            <TextPDF style={{ fontSize: 12, lineHeight: 1.6 }}>
-              {otherData}
-            </TextPDF>
-            <TextPDF
-              style={{ fontSize: 12, lineHeight: 1.6, marginLeft: "auto" }}
-            >
-              {todayDateEurope()}
-            </TextPDF>
-          </View>
-          <TableHead />
-         
+        <Page size="A4" style={{marginLeft:"2cm", marginTop:"0.5cm", marginBottom:"10cm", marginRight:"6cm"}} >
+            <TextPDF style={{ fontSize: 10, color:"gray", lineHeight: 1.6, marginLeft: "30%", marginBottom:"10px"}} fixed >Made by www.yompti.com</TextPDF>
+            <DefaultPageView defaultData={defaultData} />
+            <TableHead />
           {something.map((value, index) => {
-            return <TableRow key={index} {...value} index={index} />;
+            return <TableRow key={index} {...value} index={index} defaultData={defaultData}/>;
           })}
           <TextPDF style={{ fontSize: 12, lineHeight: 1.6, marginTop: 10 }}>
             Total stock length: {totalStockLength} mm
@@ -96,7 +76,7 @@ export default function PDFDocument1D({ something, otherData }) {
           </TextPDF>
           {/* <Box style={{top:"0cm"}}> */}
           <TextPDF
-            style={{ fontSize: 12, lineHeight: 1.6, textAlign: "center",top:"0cm" }}
+            style={{ fontSize: 12, lineHeight: 1.6, marginLeft: "40%", marginBottom:"1cm", marginTop:"3mm" }}
             render={({ pageNumber, totalPages }) =>
               `${pageNumber} / ${totalPages}`
             }
@@ -113,6 +93,30 @@ function checkIfPositive(number){
   if (number<0) return 0;
   return number;
    }
+
+   function DefaultPageView({defaultData}){
+    return (<View
+      style={{
+        width:"85%",
+        flexDirection: "row",
+         //margin: 12,
+        fontSize: 24,
+        textAlign: "justify",
+       // fontFamily: "Montserrat",
+      }}
+      fixed
+    > 
+      <TextPDF style={{ fontSize: 12, lineHeight: 1 }}>
+        {defaultData.projectName}
+      </TextPDF>
+      <TextPDF style={{ fontSize: 12, lineHeight: 1.6, marginLeft: "30%" }}>Blade size: {defaultData.bladeSize}</TextPDF>
+      <TextPDF
+        style={{ fontSize: 12, lineHeight: 1.6, marginLeft: "auto" }}
+      >
+        {todayDateEurope()}
+      </TextPDF>
+    </View>)
+  };
 function TableHead() {
   return (
     <View
@@ -129,6 +133,7 @@ function TableHead() {
         paddingHorizontal: 5,
         paddingVertical: 5,
       }}
+      fixed
     >
       <TextPDF style={{ width: "15%" }}>Quantity</TextPDF>
       <TextPDF style={{ width: "20%" }}>Stock length</TextPDF>
@@ -138,7 +143,7 @@ function TableHead() {
   );
 }
 
-function TableRow({ quantity, stockLength, items, waste, stockName }) {
+function TableRow({ quantity, stockLength, items, waste, stockName, defaultData }) {
   return (
     <View
       style={{
@@ -147,7 +152,7 @@ function TableRow({ quantity, stockLength, items, waste, stockName }) {
         flexDirection: "row",
         justifyContent: "space-around",
         borderStyle: "solid",
-        fontSize: 12,
+        fontSize: 11,
         border: "1px solid",
         borderWidth: 1,
         borderColor: "black",
@@ -172,6 +177,7 @@ function TableRow({ quantity, stockLength, items, waste, stockName }) {
                   cutName,
                   angle1,
                   angle2,
+                  defaultData
                 })}
               </TextPDF>
             );
@@ -190,17 +196,37 @@ function formatStockValue({ stockLength, stockName }) {
   return ` ${stockLength} `;
 }
 
-function formatCutValue({ cutQuantity, cutLength, cutName, angle1, angle2 }) {
-  if (cutName && cutLength && (angle1 || angle2)) {
-    return ` ${angle1 || 0}°([${cutName}] ${cutLength})${angle2 || 0}° x ${cutQuantity}`;
+function formatCutValue({ cutQuantity, cutLength, cutName, angle1, angle2, defaultData }) {
+    if(!defaultData.groupIndentical){
+      let name="";
+      for (let index = 0; index < cutQuantity; index++) {
+        if (defaultData.showNames && defaultData.showAngles && cutName && cutLength && (angle1 || angle2)) {
+          name += `|${angle1 || 0}°([${cutName}] ${cutLength})${angle2 || 0}°| `;
+          continue;
+        }
+        if (defaultData.showAngles && cutLength && (angle1 || angle2)) {
+          name += `|${angle1 || 0}°(${cutLength})${angle2 || 0}°| `;
+          continue;
+        }
+        if (defaultData.showNames && cutName && cutLength) {
+          name += `|([${cutName}] ${cutLength})| `;
+          continue;
+        }
+        name +=`|${cutLength}| `;
+        continue;
+      }
+      return name;
+    }
+  if (defaultData.showNames && defaultData.showAngles && cutName && cutLength && (angle1 || angle2)) {
+    return `|${angle1 || 0}°([${cutName}] ${cutLength})${angle2 || 0}° x ${cutQuantity}| `;
   }
-  if (cutLength && (angle1 || angle2)) {
-    return ` ${angle1 || 0}°(${cutLength})${angle2 || 0}° x ${cutQuantity}`;
+  if (defaultData.showAngles && cutLength && (angle1 || angle2)) {
+    return `|${angle1 || 0}°(${cutLength})${angle2 || 0}° x ${cutQuantity}| `;
   }
-  if (cutName && cutLength) {
-    return ` ([${cutName}] ${cutLength}) x ${cutQuantity}`;
+  if (defaultData.showNames && cutName && cutLength) {
+    return `|([${cutName}] ${cutLength}) x ${cutQuantity}| `;
   }
-  return ` ${cutLength} x ${cutQuantity}`;
+  return `|${cutLength} x ${cutQuantity}| `;
 }
 
 

@@ -422,7 +422,7 @@ export function loopCalculation(
     return implement();
   }
 
-  for (let i = 5; i < 6; i++) {
+  for (let i = 5; i < 100; i++) {
     // i - how deep the recursive function gets. Iterates till time limit.
     cutInformationExport = JSON.parse(cutInformationString);
     stockInformationExport = JSON.parse(stockInformationString);
@@ -432,7 +432,8 @@ export function loopCalculation(
       bladeSize,
       i
     );
-
+      //console.log(element);
+      
     if (!notEnoughStockItems) return checkIfEnoughStockItems();
 
     const totalUsedStockLengthCompare = element.reduce(
