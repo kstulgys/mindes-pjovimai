@@ -2,6 +2,7 @@ import React from "react";
 import {
   Slider,
   Image,
+  Radio,
   Box,
   Stack,
   Button,
@@ -92,7 +93,7 @@ export default function App() {
           <Box width={["100%", "40%"]} >
             <Stack bg="white" p="6" rounded="md" boxShadow="base">
               <Stack spacing="10px" direction="row">
-                <Checkbox size="sm" isChecked={groupIndentical} onChange={(e) => setGroupIndentical(!groupIndentical)} fontSize="lg"> Group indentical parts  </Checkbox>
+                <Checkbox size="sm" isChecked={groupIndentical} onChange={(e) => setGroupIndentical(!groupIndentical)}> Group indentical parts  </Checkbox>
                 <Checkbox size="sm" isChecked={showAngles} onChange={(e) => setShowAngles(!showAngles)}> Show angles  </Checkbox>
                 <Checkbox size="sm"  isChecked={showNames} onChange={(e) => setShowNames(!showNames)} > Show names  </Checkbox>
               </Stack>
@@ -179,161 +180,6 @@ export default function App() {
   );
 }
 
-// export function WorkerButton() {
-//   const workerRef = React.useRef();
-//   React.useEffect(() => {
-//     workerRef.current = new Worker(new URL("../worker.js", import.meta.url));
-//     workerRef.current.onmessage = (evt) =>
-//       alert(`WebWorker Response => ${evt.data}`);
-//     return () => {
-//       workerRef.current.terminate();
-//     };
-//   }, []);
-
-//   const handleWork = React.useCallback(async () => {
-//     workerRef.current.postMessage(100000);
-//   }, []);
-
-//   return (
-//     <div>
-//       <p>Do work in a WebWorker!</p>
-//       <button onClick={handleWork}>Do Stuff</button>
-//     </div>
-//   );
-// }
-
-// // import { FiCheckSquare, FiSquare } from 'react-icons/fi'
-
-// export default App;
-// function App() {
-//   const [count, setCount] = React.useState(1);
-//   const { isLoading: isUserLoading, user } = useAuthUser();
-
-//   const [bladeSize, setBladeSize] = React.useState(10);
-//   const [constantD, setconstantD] = React.useState(3);
-//   const [stockItems, setStockTableValues] = React.useState([]);
-//   const [cutItems, setCutsTableValues] = React.useState([]);
-//   const [result, setResult] = React.useState([]);
-//   const [isLoading, setIsLoading] = React.useState(false);
-//   const workerRef = React.useRef();
-
-//   React.useEffect(() => {
-//     workerRef.current = new Worker(new URL("../worker.js", import.meta.url));
-//     workerRef.current.onmessage = (event) => {
-//       console.log(" on message from worker");
-//       setResult(event.data);
-//       setIsLoading(false);
-//     };
-//     return () => {
-//       workerRef.current.terminate();
-//     };
-//   }, []);
-
-//   const handleClick = async () => {
-//     try {
-//       setIsLoading(true);
-//       workerRef.current.postMessage({
-//         stockItems,
-//         cutItems,
-//         bladeSize,
-//         constantD,
-//       });
-//     } catch (e) {
-//       setResult([]);
-//       setIsLoading(false);
-//     }
-//   };
-//   // React.useEffect(() => {
-//   //   setCount((prev) => prev++);
-//   // }, [result]);
-
-//   if (isUserLoading) return null;
-
-//   return (
-//     <Layout>
-//       <Box as="main" mx="auto" width="full" py={["12"]} height="full">
-//         {/* <ButtonsSwitch1D2D /> */}
-//         <Stack direction={["column", "row"]} spacing="12" width="full">
-//           <Box width={["100%", "40%"]}>
-//             <Stack bg="white" p="6" rounded="md" boxShadow="base">
-//               {/* <Cut1DInputs /> */}
-//               <Text fontSize="lg" fontWeight="semibold">
-//                 Cuts
-//               </Text>
-//               <ListCutItems />
-//               <Box width="full">
-//                 <Button
-//                   // isDisabled={!!errors.inputMessage}
-//                   onClick={handleClick}
-//                   //{handleGetResult}
-//                   width="32"
-//                   bg="gray.900"
-//                   color="white"
-//                   _hover={{}}
-//                 >
-//                   Get Result
-//                 </Button>
-//               </Box>
-//             </Stack>
-//           </Box>
-
-//           <Stack spacing="6" width={["100%", "60%"]} minH="100vh">
-//             <PDFViewer key={count} style={{ width: "100%", height: "100%" }}>
-//               <PDFDocument1D />
-//             </PDFViewer>
-//             {/* <ButtonsResultExport /> */}
-//           </Stack>
-//         </Stack>
-//       </Box>
-//     </Layout>
-//   );
-// }
-
-// function Cut1DInputs() {
-//   const bladeSize = useStore((store) => store.bladeSize);
-//   const projectName = useStore((store) => store.projectName);
-
-//   const handleBladeSizeChange = useStore(
-//     (store) => store.handleBladeSizeChange
-//   );
-
-//   const handleProjectNameChange = useStore(
-//     (store) => store.handleProjectNameChange
-//   );
-
-//   return (
-//     <Stack spacing="6" pb="4">
-//       <Stack>
-//         <Text fontWeight="semibold" fontSize="lg">
-//           Project name
-//         </Text>
-//         <Input
-//           value={projectName}
-//           placeholder="project name"
-//           onChange={handleProjectNameChange}
-//         />
-//       </Stack>
-//       <Stack>
-//         <Text fontWeight="semibold" fontSize="lg">
-//           Blade Size
-//         </Text>
-//         <Input
-//           type="number"
-//           value={bladeSize}
-//           placeholder="blade size"
-//           onChange={handleBladeSizeChange}
-//         />
-//       </Stack>
-//       <Stack spacing="2">
-//         <Text fontWeight="semibold" fontSize="lg">
-//           Stock
-//         </Text>
-//         <ListStockItems />
-//       </Stack>
-//     </Stack>
-//   );
-// }
-
 function ButtonsResultExport({resultXLS, defaultData}) {
   const ExportData = () => {
   // angle1Item1,nameItem1,lengthItem1,quantityItem1,angle2Item1, cut 10,waste
@@ -393,18 +239,7 @@ function ButtonsResultExport({resultXLS, defaultData}) {
           Export XLS
         </Button>
       </Box>
-      {/* <Box>
-        <PDFDownloadLink
-          document={<PDFDocument1D />}
-          fileName={'stock_cut_result_' + Date.now().toString()}
-        >
-          <Button width="32" bg="gray.900" color="white" boxShadow="base" _hover={{}}>
-            Export PDF
-          </Button>
-        </PDFDownloadLink>
-      </Box> */}
     </Stack>
   );
 }
 
-// export default AppPage;
