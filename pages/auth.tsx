@@ -10,6 +10,7 @@ import { useRouter } from "next/router";
 import { useAuthUser } from "../utils";
 import {
   Box,
+  Image,
   Button,
   Input,
   Stack,
@@ -67,18 +68,27 @@ function AuthPage() {
   return (
     <Stack bg="gray.200" height="100vh" isInline spacing="0">
       <Stack
-        display={["none", "flex"]}
-        width="50%"
+      // display={["none", "flex"]}
+        justifyContent={["center"]}
+        alignItems={["center"]}
+        display={["flex"]}
+        width="45%"
         height="full"
         bg="gray.900"
         p="4"
-      ></Stack>
+      > <Box maxW="1000px" >
+          <Image src="/Disk1.JPG"
+            objectFit="cover"
+          alignItems={["flex-start", "center"]}
+          justifyContent={["flex-start", "center"]} />  
+        </Box>
+      </Stack>
       <Stack
-        width={["full", "50%"]}
+        width={["full", "55%"]}
         p="4"
         height="full"
-        alignItems={["flex-start", "center"]}
-        justifyContent={["flex-start", "center"]}
+        alignItems={["center"]}
+        justifyContent={["center"]}
       >
         <Stack width={["full", "60%"]} pb="3">
           <Text fontSize="5xl" lineHeight="none" fontWeight="bold">
@@ -114,6 +124,12 @@ function AuthPage() {
               type="password"
             />
           </FormControl>
+          <Button
+                variant="link"
+                // onClick={() => Auth.resendSignUp(userInput.email)}
+              >
+                Forgot your password?
+              </Button>
           {showVerify && (
             <>
               <FormControl id="code">

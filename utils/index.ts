@@ -422,7 +422,7 @@ export function loopCalculation(
     return implement();
   }
 
-  for (let i = 5; i < 100; i++) {
+  for (let i = 5; i < 150; i++) {
     // i - how deep the recursive function gets. Iterates till time limit.
     cutInformationExport = JSON.parse(cutInformationString);
     stockInformationExport = JSON.parse(stockInformationString);
@@ -472,19 +472,19 @@ export function checkMaxRatioStockAndCut(stockInfoElement, cutInfoElement) {
   if (maxStockSize / mixCutSize >= 1000) {
     return {
       error:
-        "Ration between stock and cut sizes is too big. Reduce to less than 1000",
+        "Ration between stock and cut sizes is too big. Reduce to less than 1000.",
     };
   }
 }
 
 export function checkIfInteger() {
   return {
-    error: "Inputs must be integer numbers",
+    error: "Inputs must be integer numbers.",
   };
 }
 
 export function checkIfEnoughStockItems() {
   return {
-    error: "Not enough stock items",
+    error: "Not enough stock items.",
   };
 }

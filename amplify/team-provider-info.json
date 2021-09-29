@@ -42,5 +42,23 @@
         }
       }
     }
+  },
+  "beta": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-cutoptimiser-beta-191411-authRole",
+      "UnauthRoleArn": "arn:aws:iam::836344603433:role/amplify-cutoptimiser-beta-191411-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::836344603433:role/amplify-cutoptimiser-beta-191411-authRole",
+      "Region": "eu-north-1",
+      "DeploymentBucketName": "amplify-cutoptimiser-beta-191411-deployment",
+      "UnauthRoleName": "amplify-cutoptimiser-beta-191411-unauthRole",
+      "StackName": "amplify-cutoptimiser-beta-191411",
+      "StackId": "arn:aws:cloudformation:eu-north-1:836344603433:stack/amplify-cutoptimiser-beta-191411/ccb60360-1ee4-11ec-a99d-0aacb8b666fe",
+      "AmplifyAppId": "dxe1p6fvz7pdz"
+    },
+    "categories": {
+      "auth": {
+        "cutoptimiser14fe74a0": {}
+      }
+    }
   }
 }

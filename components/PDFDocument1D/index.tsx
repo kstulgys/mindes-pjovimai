@@ -32,7 +32,17 @@ export default function PDFDocument1D({ something, defaultData }) {
         <TextPDF style={{ fontSize: 10, color:"gray", lineHeight: 1.6, marginLeft: "30%", marginBottom:"10px"}} >Made by www.yompti.com</TextPDF>
         <DefaultPageView defaultData={defaultData}/>
         <TableHead />
-        <TextPDF>{something.error}</TextPDF>
+        <View style={{
+        width:"85%",
+        flexDirection: "row",
+         //margin: 12,
+        fontSize: 24,
+        textAlign: "justify",
+       // fontFamily: "Montserrat",
+      }}
+      fixed>
+        <TextPDF >{something.error}</TextPDF>
+        </View>
       </Page>
     </Document>
     </PDFViewer>

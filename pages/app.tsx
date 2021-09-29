@@ -135,12 +135,12 @@ export default function App() {
 
                 <Box width="full">
                   <Button
-                    width="45"
+                    width="full"
                     bg="gray.900"
                     color="white"
                     _hover={{}}
                     onClick={handleClick}
-                    margin="5px"
+                    margin="0px"
                   >
                     Get result
                   </Button>
@@ -225,16 +225,16 @@ function ButtonsResultExport({resultXLS, defaultData}) {
   };
 
   return (
-    <Stack isInline spacing="4">
-      <Box>
+    <Stack isInline spacing="10">
+      <Box width="full" marginTop="10px"> 
         <Button
           onClick={ExportData}
-          width="32"
+          width="full"
           bg="gray.900"
           color="white"
           boxShadow="base"
           _hover={{}}
-          margin="5px"
+          margin="0px"
         >
           Export XLS
         </Button>

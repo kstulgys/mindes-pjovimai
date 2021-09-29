@@ -165,14 +165,14 @@ export function CutsSheet({ setCutsTableValues }) {
       } else {cell.style.opacity = "1";}
     },
     oninsertrow: ({ jspreadsheet }, cell, col, row, val, label, cellName, ha) => {
-      console.log('oninsertrow');
-      //console.log(cell, col, row, val, label, cellName, ha);
-      console.log('jspreadsheet');
-      console.log(jspreadsheet);  
-      console.log(jspreadsheet.getStyle("F1"));
-      // if (!jspreadsheet.getData()[row][5]){ // If USE unchecked 
-      //   cell.style.opacity = "0.3";
-      // } else {cell.style.opacity = "1";}
+      // console.log('oninsertrow');
+      // //console.log(cell, col, row, val, label, cellName, ha);
+      // console.log('jspreadsheet');
+      // console.log(jspreadsheet);  
+      // console.log(jspreadsheet.getStyle("F1"));
+      // // if (!jspreadsheet.getData()[row][5]){ // If USE unchecked 
+      // //   cell.style.opacity = "0.3";
+      // // } else {cell.style.opacity = "1";}
     },
   };
 

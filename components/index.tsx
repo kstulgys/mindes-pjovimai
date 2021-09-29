@@ -2,6 +2,7 @@ import Head from "next/head";
 import {
   Text,
   Textarea,
+  Heading,
   Input,
   Box,
   Stack,
@@ -15,6 +16,7 @@ import {
   ModalFooter,
   ModalBody,
   ModalCloseButton,
+  Spacer,
 } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import React from "react";
@@ -70,17 +72,22 @@ function SideNavBar() {
       alignItems="center"
       pt="10"
       color="white"
-      spacing="4"
+      spacing="8"
     >
       {/* <ManuItemModal icon={FiFolder} title="Projects" />
       <ManuItemModal icon={FiSettings} title="Settings" />
-      <ManuItemModal icon={FiUser} title="User" /> */}
-      <Button onClick={() => router.push("/")} variant="unstyled" title="Home page">
+      <ManuItemModal icon={FiUser} title="User" /> */} 
+      <Button onClick={() => router.push("/")} variant="unstyled" title="Home page" _hover={{bg:"blue.500"}}>
         <Icon as={FiHome} fontSize="2xl" />
       </Button>
-      <ManuItemModal icon={FiLogOut} title="Logout" buttonsText="Yes" text="Are you sure want to log out?"/>
+      <ManuItemModal icon={FiLogOut} title="Logout" buttonsText="Yes" text="Are you sure want to log out?" />
       {/* <ManuItemModal icon={FiSettings} title="How to use it" buttonsText="" text="Watch the video to find out what you can do in the app"/> */}
+      <ManuItemModal icon={FiInfo} title="Info" buttonsText="" text="Web-based automatic stock cutting optimisation software. The cutting software can be used for obtaining optimal cutting layouts for one (1D) dimensional pieces, 
+      such as bars, pipes, tubes, steel bars, metal profiles, extrusions, tubes, lineal wood boards or other materials."/>
       <ManuItemModal icon={FiCoffee} title="Contacts" buttonsText="Send message" text="Send us a message if you have any questions."/>
+      <Text textAlign="center" fontSize="2xl" fontWeight="bold" bgGradient="linear(to-r,blue.300,gray.100)" bgClip="text">
+      Y <br />O<br />M<br />P<br />T<br />I
+      </Text>
     </Stack>
   );
 }
@@ -100,16 +107,19 @@ function ManuItemModal({ icon, title, buttonsText, text }) {
     if(el.length<=250){setMessageText(el)
     setSymbolsNumber(el.length)};
   }
+  function sendAMessage(msg){
+    console.log("a message has been sent to the developer");
+  }
   return (
     <>
-      <Button title={title} onClick={onOpen} variant="unstyled">
+      <Button title={title} onClick={onOpen} variant="unstyled" _hover={{bg:"blue.500"}} >
         <Icon as={icon} fontSize="2xl" />
       </Button>
       <Modal isOpen={isOpen} onClose={onClose} isCentered size="xl">
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>{title}</ModalHeader>
-          <ModalCloseButton />
+          <ModalCloseButton/>
           <ModalBody>
             {text}
 
@@ -131,7 +141,7 @@ function ManuItemModal({ icon, title, buttonsText, text }) {
                 bg="gray.900"
                 color="white"
                 mr={3}
-                onClick={handleLogout}
+                onClick={title=="Contacts"?sendAMessage:handleLogout}
               >
                 {buttonsText}
               </Button>
