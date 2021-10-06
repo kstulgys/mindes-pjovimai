@@ -1,13 +1,8 @@
-import React from "react";
-import { Auth, withSSRContext, Hub } from "aws-amplify";
-import {
-  withAuthenticator,
-  AmplifySignOut,
-  AmplifyAuthenticator,
-  AmplifyChatbot,
-} from "@aws-amplify/ui-react";
-import { useRouter } from "next/router";
-import { useAuthUser } from "../utils";
+import React from 'react';
+import { Auth, withSSRContext, Hub } from 'aws-amplify';
+import { withAuthenticator, AmplifySignOut, AmplifyAuthenticator, AmplifyChatbot } from '@aws-amplify/ui-react';
+import { useRouter } from 'next/router';
+import { useAuthUser } from '../utils';
 import {
   Box,
   Image,
@@ -20,26 +15,26 @@ import {
   FormLabel,
   FormErrorMessage,
   FormHelperText,
-} from "@chakra-ui/react";
+} from '@chakra-ui/react';
 
 function AuthPage() {
   const [showLogin, setShowLogin] = React.useState(false);
-  const [error, setError] = React.useState("");
+  const [error, setError] = React.useState('');
   const [showVerify, setVerify] = React.useState(false);
   const [userInput, setUserInput] = React.useState({
-    email: "",
-    password: "",
-    code: "",
+    email: '',
+    password: '',
+    code: '',
   });
 
   const router = useRouter();
   const toast = useToast();
 
-  const redirectAuthUser = () => router.push("/app");
+  const redirectAuthUser = () => router.push('/app');
 
   React.useEffect(() => {
-    Hub.listen("auth", ({ payload: { event } }) => {
-      if (event === "signIn") return redirectAuthUser();
+    Hub.listen('auth', ({ payload: { event } }) => {
+      if (event === 'signIn') return redirectAuthUser();
       setShowLogin(true);
     });
 
@@ -52,7 +47,7 @@ function AuthPage() {
     if (!error) return;
     toast({
       title: error,
-      status: "warning",
+      status: 'warning',
       duration: 9000,
       isClosable: false,
     });
@@ -68,116 +63,77 @@ function AuthPage() {
   return (
     <Stack bg="gray.200" height="100vh" isInline spacing="0">
       <Stack
-      // display={["none", "flex"]}
-        justifyContent={["center"]}
-        alignItems={["center"]}
-        display={["flex"]}
+        // display={["none", "flex"]}
+        justifyContent={['center']}
+        alignItems={['center']}
+        display={['flex']}
         width="45%"
         height="full"
         bg="gray.900"
         p="4"
-      > <Box maxW="1000px" >
-          <Image src="/Disk1.JPG"
+      >
+        {' '}
+        <Box maxW="1000px">
+          <Image
+            src="/Disk1.JPG"
             objectFit="cover"
-          alignItems={["flex-start", "center"]}
-          justifyContent={["flex-start", "center"]} />  
+            alignItems={['flex-start', 'center']}
+            justifyContent={['flex-start', 'center']}
+          />
         </Box>
       </Stack>
-      <Stack
-        width={["full", "55%"]}
-        p="4"
-        height="full"
-        alignItems={["center"]}
-        justifyContent={["center"]}
-      >
-        <Stack width={["full", "60%"]} pb="3">
+      <Stack width={['full', '55%']} p="4" height="full" alignItems={['center']} justifyContent={['center']}>
+        <Stack width={['full', '60%']} pb="3">
           <Text fontSize="5xl" lineHeight="none" fontWeight="bold">
             Welcome back
           </Text>
           <Text fontSize="xl">Sign in to continue</Text>
         </Stack>
 
-        <Stack
-          width={["full", "60%"]}
-          p="10"
-          bg="white"
-          rounded="md"
-          boxShadow="base"
-        >
+        <Stack width={['full', '60%']} p="10" bg="white" rounded="md" boxShadow="base">
           <FormControl id="email">
             <FormLabel>Email</FormLabel>
-            <Input
-              onChange={handleInputChange}
-              name="email"
-              value={userInput.email}
-              size="lg"
-              type="email"
-            />
+            <Input onChange={handleInputChange} name="email" value={userInput.email} size="lg" type="email" />
           </FormControl>
           <FormControl id="password">
             <FormLabel>Password</FormLabel>
-            <Input
-              onChange={handleInputChange}
-              name="password"
-              value={userInput.password}
-              size="lg"
-              type="password"
-            />
+            <Input onChange={handleInputChange} name="password" value={userInput.password} size="lg" type="password" />
           </FormControl>
           <Button
-                variant="link"
-                // onClick={() => Auth.resendSignUp(userInput.email)}
-              >
-                Forgot your password?
-              </Button>
+            variant="link"
+            // onClick={() => Auth.resendSignUp(userInput.email)}
+          >
+            Forgot your password?
+          </Button>
           {showVerify && (
             <>
               <FormControl id="code">
                 <FormLabel>Code</FormLabel>
-                <Input
-                  onChange={handleInputChange}
-                  name="code"
-                  value={userInput.code}
-                  size="lg"
-                  type="text"
-                />
+                <Input onChange={handleInputChange} name="code" value={userInput.code} size="lg" type="text" />
               </FormControl>
-              <Button
-                variant="link"
-                onClick={() => Auth.resendSignUp(userInput.email)}
-              >
+              <Button variant="link" onClick={() => Auth.resendSignUp(userInput.email)}>
                 Resend confirmation code
               </Button>
             </>
           )}
-          <FormButtons
-            userInput={userInput}
-            showVerify={showVerify}
-            setVerify={setVerify}
-            setError={setError}
-          />
+          <FormButtons userInput={userInput} showVerify={showVerify} setVerify={setVerify} setError={setError} />
         </Stack>
       </Stack>
     </Stack>
   );
 }
 
-function FormButtons({
-  userInput: { email, password, code },
-  showVerify,
-  setVerify,
-  setError,
-}) {
+function FormButtons({ userInput: { email, password, code }, showVerify, setVerify, setError }) {
   const toast = useToast();
 
   const signIn = () =>
     Auth.signIn(email, password)
       .then(() => {
-        setError("");
+        setError('');
       })
       .catch(({ message }) => {
         setError(message);
-        if (message === "User is not confirmed.") {
+        if (message === 'User is not confirmed.') {
           setVerify(true);
         } else {
           setVerify(false);
@@ -192,13 +148,13 @@ function FormButtons({
     })
       .then(() => {
         toast({
-          title: "Please check your inbox and add your verification code.",
+          title: 'Please check your inbox and add your verification code.',
           // description: "We've created your account for you.",
-          status: "warning",
+          status: 'warning',
           duration: 9000,
           isClosable: false,
         });
-        setError("");
+        setError('');
         setVerify(true);
       })
       .catch(({ message }) => {
@@ -217,14 +173,7 @@ function FormButtons({
   if (showVerify) {
     return (
       <Stack isInline pt="4" spacing="4">
-        <Button
-          _hover={{}}
-          bg="gray.900"
-          color="white"
-          size="lg"
-          width="full"
-          onClick={confirmSignUp}
-        >
+        <Button _hover={{}} bg="gray.900" color="white" size="lg" width="full" onClick={confirmSignUp}>
           Verify
         </Button>
       </Stack>
@@ -233,14 +182,7 @@ function FormButtons({
 
   return (
     <Stack isInline pt="4" spacing="4">
-      <Button
-        _hover={{}}
-        bg="gray.900"
-        color="white"
-        size="lg"
-        width="full"
-        onClick={signIn}
-      >
+      <Button _hover={{}} bg="gray.900" color="white" size="lg" width="full" onClick={signIn}>
         Sign In
       </Button>
       <Button size="lg" width="full" onClick={signUp}>
