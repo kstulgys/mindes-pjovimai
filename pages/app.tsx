@@ -24,7 +24,6 @@ import { useAuthUser } from '../utils';
 import { useStore } from '../store';
 import { DragHandleIcon, CloseIcon } from '@chakra-ui/icons';
 import XLSX from 'xlsx';
-import fetch from 'node-fetch';
 import { ListCutItems } from '../components/ListCutItems';
 import { StockSheet, CutsSheet } from '../components/sheets';
 import '../node_modules/jspreadsheet-ce/dist/jexcel.css';
