@@ -18,8 +18,6 @@ function MyApp({ Component, pageProps }) {
         <meta httpEquiv="Content-Type" content="text/html; charset=utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta name="description" content="Cutting stock optimization App. Helps to solve 1D Cutting stock problem." />
-        <script src="https://bossanova.uk/jspreadsheet/v4/jexcel.js" />
-        <script src="https://jsuites.net/v4/jsuites.js" />
         <link rel="stylesheet" href="https://jsuites.net/v4/jsuites.css" type="text/css" />
         <link rel="stylesheet" href="https://bossanova.uk/Jspreadsheet/v4/jexcel.css" type="text/css" />
         <link rel="preconnect" href="https://fonts.gstatic.com" />

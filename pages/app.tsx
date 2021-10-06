@@ -20,15 +20,12 @@ import {
   Icon,
 } from '@chakra-ui/react';
 import { Layout } from '../components';
-import { useAuthUser } from '../utils';
-import { useStore } from '../store';
-import { DragHandleIcon, CloseIcon } from '@chakra-ui/icons';
 import XLSX from 'xlsx';
-import { ListCutItems } from '../components/ListCutItems';
 import { StockSheet, CutsSheet } from '../components/sheets';
 import '../node_modules/jspreadsheet-ce/dist/jexcel.css';
 import dynamic from 'next/dynamic';
-import { arrayMove } from '@dnd-kit/sortable';
+import Script from 'next/script';
+
 const PDFDocument1DNOSSR = dynamic(
   () => import('../components/PDFDocument1D'),
   { ssr: false } // NO Server side render
@@ -89,6 +86,8 @@ export default function App() {
 
   return (
     <Layout>
+      <Script src="https://bossanova.uk/jspreadsheet/v4/jexcel.js"></Script>
+      <Script src="https://jsuites.net/v4/jsuites.js"></Script>
       {/* <Text marginTop="20px" marginBottom="5px" fontStyle="myriad-pro-1" fontSize="lg" fontWeight="semibold">
         YOMPTI Your optimisation tool 
       </Text> */}
