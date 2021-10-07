@@ -36,12 +36,13 @@ export default function App() {
   };
 
   workerRef.current = React.useMemo(() => {
-    workerRef.current = new Worker(new URL('../worker.js', import.meta.url));
-    workerRef.current.onmessage = (event) => {
+    const worker = new Worker(new URL('../worker.js', import.meta.url));
+    worker.onmessage = (event) => {
       console.log(event.data);
       setResult(event.data);
       setIsLoading(false);
     };
+    return worker;
   }, []);
 
   React.useEffect(() => {
