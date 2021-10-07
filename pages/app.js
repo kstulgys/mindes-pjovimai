@@ -35,36 +35,18 @@ export default function App() {
     showNames: showNames,
   };
 
-  workerRef.current = React.useMemo(() => {
-    const worker = new Worker(new URL('../worker.js', import.meta.url));
-    worker.onmessage = (event) => {
+  React.useEffect(() => {
+    workerRef.current = new Worker(new URL('../worker.js', import.meta.url));
+    workerRef.current.onmessage = (event) => {
       console.log(event.data);
       setResult(event.data);
       setIsLoading(false);
     };
-    return worker;
-  }, []);
-
-  React.useEffect(() => {
     return () => {
-      if (workerRef.current && workerRef.current.terminate) {
-        workerRef.current.terminate();
-      }
+      // @ts-ignore
+      workerRef.current.terminate();
     };
   }, []);
-
-  // React.useEffect(() => {
-  //   workerRef.current = new Worker(new URL('../worker.js', import.meta.url));
-  //   workerRef.current.onmessage = (event) => {
-  //     console.log(event.data);
-  //     setResult(event.data);
-  //     setIsLoading(false);
-  //   };
-  //   return () => {
-  //     // @ts-ignore
-  //     workerRef.current.terminate();
-  //   };
-  // }, []);
 
   const handleClick = async () => {
     try {
