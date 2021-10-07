@@ -1,4 +1,4 @@
-import { loopCalculation } from "./utils";
+import { loopCalculation } from './utils';
 
 addEventListener('message', (event) => {
   try {
@@ -7,6 +7,6 @@ addEventListener('message', (event) => {
     const result = loopCalculation(stockItems, cutItems, bladeSize, constantD);
     postMessage(result);
   } catch (error) {
-    postMessage({error:"error"})
+    postMessage({ error: 'error' });
   }
-})
+});

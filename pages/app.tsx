@@ -1,30 +1,12 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import React from 'react';
-import {
-  Slider,
-  Image,
-  Radio,
-  Box,
-  Stack,
-  Button,
-  Text,
-  Input,
-  Table,
-  Thead,
-  Tbody,
-  Tr,
-  Th,
-  Td,
-  useToast,
-  Checkbox,
-  Icon,
-} from '@chakra-ui/react';
+import { Box, Stack, Button, Text, Input, Checkbox } from '@chakra-ui/react';
 import { Layout } from '../components';
 import XLSX from 'xlsx';
 import { StockSheet, CutsSheet } from '../components/sheets';
-import '../node_modules/jspreadsheet-ce/dist/jexcel.css';
 import dynamic from 'next/dynamic';
 import Script from 'next/script';
+import '../node_modules/jspreadsheet-ce/dist/jexcel.css';
 
 const PDFDocument1DNOSSR = dynamic(
   () => import('../components/PDFDocument1D'),
@@ -53,35 +35,35 @@ export default function App() {
     showNames: showNames,
   };
 
-  // React.useEffect(() => {
-  //   // @ts-ignore
-  //   workerRef.current = new Worker(new URL('../worker.js', import.meta.url));
-  //   // @ts-ignore
-  //   workerRef.current.onmessage = (event) => {
-  //     console.log(event.data);
-  //     setResult(event.data);
-  //     setIsLoading(false);
-  //   };
-  //   return () => {
-  //     // @ts-ignore
-  //     workerRef.current.terminate();
-  //   };
-  // }, []);
+  React.useEffect(() => {
+    // @ts-ignore
+    workerRef.current = new Worker(new URL('../worker.ts', import.meta.url));
+    // @ts-ignore
+    workerRef.current.onmessage = (event) => {
+      console.log(event.data);
+      setResult(event.data);
+      setIsLoading(false);
+    };
+    return () => {
+      // @ts-ignore
+      workerRef.current.terminate();
+    };
+  }, []);
 
   const handleClick = async () => {
-    // try {
-    //   setIsLoading(true);
-    //   // @ts-ignore
-    //   workerRef.current.postMessage({
-    //     stockItems,
-    //     cutItems,
-    //     bladeSize,
-    //     constantD,
-    //   });
-    // } catch (e) {
-    //   setResult([]);
-    //   setIsLoading(false);
-    // }
+    try {
+      setIsLoading(true);
+      // @ts-ignore
+      workerRef.current.postMessage({
+        stockItems,
+        cutItems,
+        bladeSize,
+        constantD,
+      });
+    } catch (e) {
+      setResult([]);
+      setIsLoading(false);
+    }
   };
 
   return (
