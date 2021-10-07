@@ -37,7 +37,7 @@ export default function App() {
 
   React.useEffect(() => {
     // @ts-ignore
-    workerRef.current = new Worker(new URL('../worker.js', import.meta.url));
+    workerRef.current = new Worker(new URL('../worker.ts', import.meta.url));
     // @ts-ignore
     workerRef.current.onmessage = (event) => {
       console.log(event.data);
