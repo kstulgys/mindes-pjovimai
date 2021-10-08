@@ -7,6 +7,7 @@ import { StockSheet, CutsSheet } from '../components/sheets';
 import dynamic from 'next/dynamic';
 import Script from 'next/script';
 import '../node_modules/jspreadsheet-ce/dist/jexcel.css';
+import { useWorker } from '../utils/hooks';
 
 const PDFDocument1DNOSSR = dynamic(
   () => import('../components/PDFDocument1D'),
@@ -26,7 +27,8 @@ export default function App() {
   const [cutItems, setCutsTableValues] = React.useState([]);
   const [result, setResult] = React.useState([]);
   const [isLoading, setIsLoading] = React.useState(false);
-  const workerRef = React.useRef();
+  const { data, handlePostMessage } = useWorker();
+
   const defaultData = {
     bladeSize: bladeSize,
     projectName: projectName,
@@ -36,23 +38,14 @@ export default function App() {
   };
 
   React.useEffect(() => {
-    workerRef.current = new Worker(new URL('../worker.js', import.meta.url));
-    workerRef.current.onmessage = (event) => {
-      console.log(event.data);
-      setResult(event.data);
-      setIsLoading(false);
-    };
-    return () => {
-      // @ts-ignore
-      workerRef.current.terminate();
-    };
-  }, []);
+    if (data) setResult(data);
+  }, [data]);
 
   const handleClick = async () => {
     try {
       setIsLoading(true);
       // @ts-ignore
-      workerRef.current.postMessage({
+      handlePostMessage({
         stockItems,
         cutItems,
         bladeSize,

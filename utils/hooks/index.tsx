@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 
 export function useOnClickOutside(ref, handler) {
   React.useEffect(
@@ -12,12 +12,12 @@ export function useOnClickOutside(ref, handler) {
         handler(event);
       };
 
-      document.addEventListener("mousedown", listener);
-      document.addEventListener("touchstart", listener);
+      document.addEventListener('mousedown', listener);
+      document.addEventListener('touchstart', listener);
 
       return () => {
-        document.removeEventListener("mousedown", listener);
-        document.removeEventListener("touchstart", listener);
+        document.removeEventListener('mousedown', listener);
+        document.removeEventListener('touchstart', listener);
       };
     },
     // Add ref and handler to effect dependencies
@@ -28,4 +28,30 @@ export function useOnClickOutside(ref, handler) {
     // ... passing it into this hook.
     [ref, handler]
   );
+}
+
+export function useWorker() {
+  const workerRef = React.useRef<Worker>();
+  const [data, setData] = React.useState([]);
+
+  React.useEffect(() => {
+    workerRef.current = new Worker(new URL('../../worker.js', import.meta.url));
+    workerRef.current.onmessage = (event) => {
+      setData(event.data);
+    };
+    return () => {
+      workerRef.current.terminate();
+    };
+  }, []);
+
+  const handlePostMessage = ({ stockItems, cutItems, bladeSize, constantD }) => {
+    workerRef.current.postMessage({
+      stockItems,
+      cutItems,
+      bladeSize,
+      constantD,
+    });
+  };
+
+  return { handlePostMessage, data };
 }
