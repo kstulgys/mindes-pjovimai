@@ -13,7 +13,7 @@ const PDFDocument1DNOSSR = dynamic(
   () => import('../components/PDFDocument1D'),
   { ssr: false } // NO Server side render
 );
-
+//learning Github
 //PDFDocument1D
 export default function App() {
   const [groupIndentical, setGroupIndentical] = React.useState(true);
