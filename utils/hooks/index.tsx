@@ -1,5 +1,5 @@
 import React from 'react';
-
+console.log('test');
 export function useOnClickOutside(ref, handler) {
   React.useEffect(
     () => {
