@@ -15,8 +15,7 @@ function MyApp({ Component, pageProps }) {
     <ChakraProvider>
       <Head>
         <title>Cutting stock optimisation App | yompti</title>
-        <meta httpEquiv="Content-Type" content="text/html; charset=utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="viewport" content="initial-scale=1.0, width=device-width" />
         <meta name="description" content="Cutting stock optimization App. Helps to solve 1D Cutting stock problem." />
         <link rel="stylesheet" href="https://jsuites.net/v4/jsuites.css" type="text/css" />
         <link rel="stylesheet" href="https://bossanova.uk/Jspreadsheet/v4/jexcel.css" type="text/css" />
