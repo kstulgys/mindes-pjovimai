@@ -18,5 +18,7 @@ module.exports = {
     "valtio/state-snapshot-rule": "warn",
     "valtio/avoid-this-in-proxy": "warn",
     "react/react-in-jsx-scope": "off",
+    "react/no-unescaped-entities": "off",
+    "@next/next/no-page-custom-font": "off"
   },
 }

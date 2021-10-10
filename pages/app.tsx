@@ -14,6 +14,9 @@ const PDFDocument1DNOSSR = dynamic(
   { ssr: false } // NO Server side render
 );
 //PDFDocument1D
+
+
+
 export default function App() {
   const [groupIndentical, setGroupIndentical] = React.useState(true);
   const [showNames, setShowNames] = React.useState(true);
