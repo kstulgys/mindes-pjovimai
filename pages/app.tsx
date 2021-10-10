@@ -156,7 +156,6 @@ export default function App() {
     </Layout>
   );
 }
-
 function ButtonsResultExport({ resultXLS, defaultData }) {
   const ExportData = () => {
     // angle1Item1,nameItem1,lengthItem1,quantityItem1,angle2Item1, cut 10,waste
