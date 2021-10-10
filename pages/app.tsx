@@ -15,8 +15,6 @@ const PDFDocument1DNOSSR = dynamic(
 );
 //PDFDocument1D
 
-
-
 export default function App() {
   const [groupIndentical, setGroupIndentical] = React.useState(true);
   const [showNames, setShowNames] = React.useState(true);
