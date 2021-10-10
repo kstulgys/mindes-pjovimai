@@ -203,7 +203,6 @@ function ButtonsResultExport({ resultXLS, defaultData }) {
     XLSX.utils.book_append_sheet(wb, ws, 'Data');
     XLSX.writeFile(wb, 'stock_cut_result_' + Date.now().toString() + '.xlsx');
   };
-
   return (
     <Stack isInline spacing="10">
       <Box width="full" marginTop="10px">
