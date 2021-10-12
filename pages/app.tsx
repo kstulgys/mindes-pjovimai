@@ -27,7 +27,7 @@ export default function App() {
   const [cutItems, setCutsTableValues] = React.useState([]);
   const [result, setResult] = React.useState([]);
   const [isLoading, setIsLoading] = React.useState(false);
-  const { data, handlePostMessage } = useWorker();
+  // const { data, handlePostMessage } = useWorker();
 
   const defaultData = {
     bladeSize: bladeSize,
@@ -37,25 +37,25 @@ export default function App() {
     showNames: showNames,
   };
 
-  React.useEffect(() => {
-    if (data) setResult(data);
-  }, [data]);
+  // React.useEffect(() => {
+  //   if (data) setResult(data);
+  // }, [data]);
 
-  const handleClick = async () => {
-    try {
-      setIsLoading(true);
-      // @ts-ignore
-      handlePostMessage({
-        stockItems,
-        cutItems,
-        bladeSize,
-        constantD,
-      });
-    } catch (e) {
-      setResult([]);
-      setIsLoading(false);
-    }
-  };
+  // const handleClick = async () => {
+  //   try {
+  //     setIsLoading(true);
+  //     // @ts-ignore
+  //     handlePostMessage({
+  //       stockItems,
+  //       cutItems,
+  //       bladeSize,
+  //       constantD,
+  //     });
+  //   } catch (e) {
+  //     setResult([]);
+  //     setIsLoading(false);
+  //   }
+  // };
 
   return (
     <Layout>
