@@ -119,10 +119,12 @@ export default function App() {
               </Box>
 
               <Box width="full">
-                <Button width="full" bg="gray.900" color="white" _hover={{}} onClick={handleClick} margin="0px">
+                <Button width="full" bg="gray.900" color="white" _hover={{}} margin="0px">
                   Get result
                 </Button>
-
+                {/* <Button width="full" bg="gray.900" color="white" _hover={{}} onClick={handleClick} margin="0px">
+                  Get result
+                </Button> */}
                 {/* <ButtonsResultExport resultXLS={result} defaultData={defaultData}></ButtonsResultExport> */}
               </Box>
               {/* <h2>Result</h2>
