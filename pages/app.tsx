@@ -7,7 +7,7 @@ import { StockSheet, CutsSheet } from '../components/sheets';
 import dynamic from 'next/dynamic';
 import Script from 'next/script';
 import '../node_modules/jspreadsheet-ce/dist/jexcel.css';
-import { useWorker } from '../utils/hooks';
+// import { useWorker } from '../utils/hooks';
 
 const PDFDocument1DNOSSR = dynamic(
   () => import('../components/PDFDocument1D'),
