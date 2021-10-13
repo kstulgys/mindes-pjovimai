@@ -36,7 +36,7 @@ export function useWorker() {
   const [data, setData] = React.useState([]);
 
   React.useEffect(() => {
-    workerRef.current = new Worker(new URL('../../worker.js', import.meta.url));
+    workerRef.current = new Worker(new URL('../../worker.tsx', import.meta.url));
     workerRef.current.onmessage = (event) => {
       setData(event.data);
     };
