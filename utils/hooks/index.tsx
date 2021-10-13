@@ -1,4 +1,5 @@
 import React from 'react';
+//import '../../worker';
 
 export function useOnClickOutside(ref, handler) {
   React.useEffect(
@@ -30,28 +31,28 @@ export function useOnClickOutside(ref, handler) {
   );
 }
 
-// export function useWorker() {
-//   const workerRef = React.useRef<Worker>(null);
-//   const [data, setData] = React.useState([]);
+export function useWorker() {
+  const workerRef = React.useRef<Worker>(null);
+  const [data, setData] = React.useState([]);
 
-//   React.useEffect(() => {
-//     workerRef.current = new Worker(new URL('../../worker.js', import.meta.url));
-//     workerRef.current.onmessage = (event) => {
-//       setData(event.data);
-//     };
-//     return () => {
-//       workerRef.current.terminate();
-//     };
-//   }, []);
+  React.useEffect(() => {
+    workerRef.current = new Worker(new URL('../../worker.tsx', import.meta.url));
+    workerRef.current.onmessage = (event) => {
+      setData(event.data);
+    };
+    return () => {
+      workerRef.current.terminate();
+    };
+  }, []);
 
-//   const handlePostMessage = ({ stockItems, cutItems, bladeSize, constantD }) => {
-//     workerRef.current.postMessage({
-//       stockItems,
-//       cutItems,
-//       bladeSize,
-//       constantD,
-//     });
-//   };
+  const handlePostMessage = ({ stockItems, cutItems, bladeSize, constantD }) => {
+    workerRef.current.postMessage({
+      stockItems,
+      cutItems,
+      bladeSize,
+      constantD,
+    });
+  };
 
-//   return { handlePostMessage, data };
-// }
+  return { handlePostMessage, data };
+}
