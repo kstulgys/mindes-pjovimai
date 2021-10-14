@@ -32,7 +32,7 @@ export function useOnClickOutside(ref, handler) {
 }
 
 export function useWorker() {
-  const workerRef = React.useRef<Worker>(null);
+  const workerRef = React.useRef(null);
   const [data, setData] = React.useState([]);
 
   React.useEffect(() => {
