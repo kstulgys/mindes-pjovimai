@@ -156,7 +156,7 @@ export default function App() {
             {/* <PDFViewer style={{ width: "100%", height: "100%" }}> */}
             {/* key={count} */}
 
-            {/* <PDFDocument1DNOSSR something={result} defaultData={defaultData} /> */}
+            <PDFDocument1DNOSSR something={result} defaultData={defaultData} />
             {/* something={JSON.stringify(result, null, 2)}
             {/* something={isLoading ? (
                     <h1></h1>
