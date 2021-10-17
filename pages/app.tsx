@@ -7,7 +7,8 @@ import { StockSheet, CutsSheet } from '../components/sheets';
 import dynamic from 'next/dynamic';
 import Script from 'next/script';
 import '../node_modules/jspreadsheet-ce/dist/jexcel.css';
-import { useWorker } from '../utils/hooks';
+//import { useWorker } from '../utils/hooks';
+import { useWebworker} from '../utils/hooks/use-webworker'
 
 const PDFDocument1DNOSSR = dynamic(
   () => import('../components/PDFDocument1D'),
@@ -25,9 +26,11 @@ export default function App() {
   const [constantD, setconstantD] = React.useState(4); // Time limit for calculation, s
   const [stockItems, setStockTableValues] = React.useState([]);
   const [cutItems, setCutsTableValues] = React.useState([]);
-  const [result, setResult] = React.useState([]);
+  //const [result, setResult] = React.useState([]);
   const [isLoading, setIsLoading] = React.useState(false);
-  const { data, handlePostMessage } = useWorker();
+  //const { data, handlePostMessage } = useWorker();
+
+  const {result, run} = useWebworker();
 
   const defaultData = {
     bladeSize: bladeSize,
@@ -37,22 +40,29 @@ export default function App() {
     showNames: showNames,
   };
 
-  React.useEffect(() => {
-    if (data) setResult(data);
-  }, [data]);
+  // React.useEffect(() => {
+  //   if (data) setData({
+  //     stockItems,
+  //     cutItems,
+  //     bladeSize,
+  //     constantD,
+  //   });
+  //  }, []);
 
   const handleClick = async () => {
     try {
+      console.log('data handleclick');
       setIsLoading(true);
       // @ts-ignore
-      handlePostMessage({
-        stockItems,
-        cutItems,
-        bladeSize,
-        constantD,
-      });
+      run({
+            stockItems,
+            cutItems,
+            bladeSize,
+            constantD,
+          });
     } catch (e) {
-      setResult([]);
+      //setResult([]);
+      console.log(e);
       setIsLoading(false);
     }
   };

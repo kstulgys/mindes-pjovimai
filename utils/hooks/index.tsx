@@ -1,5 +1,4 @@
 import React from 'react';
-//import '../../worker';
 
 export function useOnClickOutside(ref, handler) {
   React.useEffect(
@@ -31,17 +30,18 @@ export function useOnClickOutside(ref, handler) {
   );
 }
 
-export function useWorker() {
+export function useWorker () {
   const workerRef = React.useRef(null);
   const [data, setData] = React.useState([]);
 
   React.useEffect(() => {
-    workerRef.current = new Worker(new URL('../../worker.tsx', import.meta.url));
-    workerRef.current.onmessage = (event) => {
+    const worker = new Worker(new URL('../../worker.tsx', import.meta.url));
+    workerRef.current = worker;
+    worker.onmessage = (event) => {
       setData(event.data);
     };
     return () => {
-      workerRef.current.terminate();
+      worker.terminate();
     };
   }, []);
 
