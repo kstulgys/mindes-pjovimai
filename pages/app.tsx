@@ -29,6 +29,7 @@ export default function App() {
   //const [result, setResult] = React.useState([]);
   const [isLoading, setIsLoading] = React.useState(false);
   //const { data, handlePostMessage } = useWorker();
+  const [data, setData] =React.useState({})
 
   const {result, run} = useWebworker();
 
@@ -54,12 +55,14 @@ export default function App() {
       console.log('data handleclick');
       setIsLoading(true);
       // @ts-ignore
-      run({
-            stockItems,
-            cutItems,
-            bladeSize,
-            constantD,
-          });
+      await run({
+        stockItems,
+        cutItems,
+        bladeSize,
+        constantD,
+      });
+     // console.log(result);
+      
     } catch (e) {
       //setResult([]);
       console.log(e);
@@ -153,7 +156,7 @@ export default function App() {
             {/* <PDFViewer style={{ width: "100%", height: "100%" }}> */}
             {/* key={count} */}
 
-            <PDFDocument1DNOSSR something={result} defaultData={defaultData} />
+            {/* <PDFDocument1DNOSSR something={result} defaultData={defaultData} /> */}
             {/* something={JSON.stringify(result, null, 2)}
             {/* something={isLoading ? (
                     <h1></h1>

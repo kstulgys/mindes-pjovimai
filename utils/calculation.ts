@@ -1,27 +1,6 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
-import React from 'react';
-import { Auth } from 'aws-amplify';
-import { useRouter } from 'next/router';
-import { v4 as uuid } from 'uuid';
-
-export function useAuthUser() {
-  const [user, setUser] = React.useState(null);
-  const [isLoading, setIsLoading] = React.useState(true);
-  const router = useRouter();
-
-  React.useEffect(() => {
-    Auth.currentAuthenticatedUser()
-      .then((user) => setUser(user))
-      .catch(() => router.push('/app'))
-      .finally(() => setIsLoading(false));
-  }, []);
-  return { isLoading, user };
-}
-
-let timeTakenOnMachine: any = 0;
-
 export function loopCalculation(stockItems, cutItems, bladeSize:number, timeforCalculation:number) {
   let answerExport = [];
+  let timeTakenOnMachine: any = 0;
   let totalUsedStockLength = Number.MAX_SAFE_INTEGER;
   const t0 = Date.now();
   let mustBeInteger = true;
@@ -129,53 +108,73 @@ function calculation(stockInformation, cutInformation, bladeSize, constantDe) {
     let smallestFoundDifference = [Number.MAX_SAFE_INTEGER];
     // All possible cut combinations of one stock
     const combinations = (elements) => {
+       // console.log(elements);
       //if (howDeep > calculationDepthConstant) console.log(howDeep);
-      if (elements.length === 0 || howDeep > calculationDepthConstant) return [[]];
+      try{
+        if (elements.length === 0 || howDeep > calculationDepthConstant) { console.log('pasieke gyli');
+        return [[]]};
+    
       const firstEl = elements[0];
       const rest = elements.slice(1);
       howDeep++;
+      //console.log(rest);
+      console.log( howDeep);
       const combsWithoutFirst = combinations(rest);
+      console.log('combsWithoutFirst1' );
+      console.log(combsWithoutFirst );
+      
       const combsWithFirst = [];
+      
 
-      for (let i = 0; i < combsWithoutFirst.length; i++) {
-        if (!afterThatSTOP) return [[]];
-        //First and second member have different lengths
-        if ((combsWithoutFirst[i][0] && firstEl[1] !== combsWithoutFirst[i][0][1]) || !combsWithoutFirst[i][0]) {
-          alliterationSteps++;
-          oneIterationSteps++;
-
-          const element = [firstEl, ...combsWithoutFirst[i]];
-          const comparisonSum = element.reduce((a, b) => a + b[0] + bladeSize, 0);
-          // All lenghts shorter than longest stock length
-          if (stockInformation.sizes[0] + bladeSize >= comparisonSum) {
-            // A length that has no residual end.
-            if (firstGlobalElement === firstEl[3]) {
-              if (checkIfSomethingMatches(comparisonSum)) {
-                afterThatSTOP = false;
-                found = true;
-                matchedCombination = [];
-                matchedCombination.push(element);
-                return [[]]; // Best first element
-              }
-              // A length that has no duplicate member in the sequance and is longer/better.
-              const firstStockSizeLongerThanSum = StockSizeLongerThanSum(comparisonSum);
-              if (
-                smallestFoundDifference[0] > // There is only one element
-                firstStockSizeLongerThanSum - comparisonSum
-              ) {
-                lengthToUseNotFound = [];
-                lengthToUseNotFound.push(firstStockSizeLongerThanSum);
-                smallestFoundDifference = [];
-                smallestFoundDifference.push(firstStockSizeLongerThanSum - comparisonSum);
-                bestLastElement = [];
-                bestLastElement.push(element);
-              }
+            
+        for (let i = 0; i < combsWithoutFirst.length; i++) {
+            
+            if (!afterThatSTOP) return [[]];
+            //First and second member have different lengths
+          
+            if ((combsWithoutFirst[i][0] && firstEl[1] !== combsWithoutFirst[i][0][1]) || !combsWithoutFirst[i][0]) {
+            alliterationSteps++;
+            oneIterationSteps++;
+            const element = [firstEl, ...combsWithoutFirst[i]];
+            const comparisonSum = element.reduce((a, b) => a + b[0] + bladeSize, 0);
+            // All lenghts shorter than longest stock length
+            if (stockInformation.sizes[0] + bladeSize >= comparisonSum) {
+                // A length that has no residual end.
+                if (firstGlobalElement === firstEl[3]) {
+                if (checkIfSomethingMatches(comparisonSum)) {
+                    afterThatSTOP = false;
+                    found = true;
+                    matchedCombination = [];
+                    matchedCombination.push(element);
+                    return [[]]; // Best first element
+                }
+                // A length that has no duplicate member in the sequance and is longer/better.
+                const firstStockSizeLongerThanSum = StockSizeLongerThanSum(comparisonSum);
+                if (
+                    smallestFoundDifference[0] > // There is only one element
+                    firstStockSizeLongerThanSum - comparisonSum
+                ) {
+                    lengthToUseNotFound = [];
+                    lengthToUseNotFound.push(firstStockSizeLongerThanSum);
+                    smallestFoundDifference = [];
+                    smallestFoundDifference.push(firstStockSizeLongerThanSum - comparisonSum);
+                    bestLastElement = [];
+                    bestLastElement.push(element);
+                }
+                }
+                combsWithFirst.push(element);
             }
-            combsWithFirst.push(element);
-          }
-        }
-      }
+            }
+        } 
+       
+        
+        //console.log([combsWithFirst, combsWithoutFirst]);
       return [...combsWithFirst, ...combsWithoutFirst];
+        } catch(e){
+            console.log(e);
+            console.log('pirma');
+            
+        }
     };
 
     //Between sizes
@@ -327,7 +326,8 @@ function calculation(stockInformation, cutInformation, bladeSize, constantDe) {
             [getIndexFirstMember(cutInformation.quantities)]
           ];
         let combinationNew = combinations(cut);
-
+        //   console.log('combinationNew');
+        //   console.log(combinationNew);
         if (found === false) {
           combinationNew = bestLastElement[0];
           lengthToUse = lengthToUseNotFound[0];
@@ -365,32 +365,34 @@ function calculation(stockInformation, cutInformation, bladeSize, constantDe) {
 
     return implement();
   }
-  for (let i = 5; i < 10; i++) {
-    // i - how deep the recursive function gets. Iterates till time limit.
-    cutInformationExport = JSON.parse(cutInformationString);
-    stockInformationExport = JSON.parse(stockInformationString);
-    const element = calculation(stockInformationExport, cutInformationExport, bladeSize, i);
-    //console.log('element');
-    //console.log(element);
-    if (!notEnoughStockItems) return checkIfEnoughStockItems();
+//   for (let i = 5; i < 6; i++) {
+//     // i - how deep the recursive function gets. Iterates till time limit.
+//     cutInformationExport = JSON.parse(cutInformationString);
+//     stockInformationExport = JSON.parse(stockInformationString);
+//     const element = calculation(stockInformationExport, cutInformationExport, bladeSize, i);
+//     //console.log('element');
+//     //console.log(element);
+//     if (!notEnoughStockItems) return checkIfEnoughStockItems();
 
-    const totalUsedStockLengthCompare = element.reduce((a, b) => a + b.stockLength * b.quantity, 0);
-    console.log(totalUsedStockLengthCompare / 1000 + ' m');
-    if (totalUsedStockLengthCompare < totalUsedStockLength) {
-      //var leftOversCompare =stockInformationExport;
-      totalUsedStockLength = totalUsedStockLengthCompare;
-      answerExport = element;
-    }
-    if (Date.now() - t0 > timeforCalculation * 1000 && answerExport.length) {
-      console.log('Time limit ' + timeforCalculation + ' seconds time limit has been reached');
-      break;
-      //return answerExport;
-    }
-  }
-
-  const t1 = Date.now();
-  timeTakenOnMachine = t1 - t0 + ' milliseconds.';
-  console.log('It took ' + (t1 - t0) + ' milliseconds.');
+//     const totalUsedStockLengthCompare = element.reduce((a, b) => a + b.stockLength * b.quantity, 0);
+//     console.log(totalUsedStockLengthCompare / 1000 + ' m');
+//     if (totalUsedStockLengthCompare < totalUsedStockLength) {
+//       //var leftOversCompare =stockInformationExport;
+//       totalUsedStockLength = totalUsedStockLengthCompare;
+//       answerExport = element;
+//     }
+//     if (Date.now() - t0 > timeforCalculation * 1000 && answerExport.length) {
+//       console.log('Time limit ' + timeforCalculation + ' seconds time limit has been reached');
+//       break;
+//       //return answerExport;
+//     }
+//   }
+  cutInformationExport = JSON.parse(cutInformationString);
+  stockInformationExport = JSON.parse(stockInformationString);
+  answerExport = calculation(stockInformationExport, cutInformationExport, bladeSize, 8);
+  
+  //timeTakenOnMachine = t1 - t0 + ' milliseconds.';
+  //console.log('It took ' + (t1 - t0) + ' milliseconds.');
   console.log('Best result');
   console.log(totalUsedStockLength / 1000 + ' m');
   //console.log(JSON.parse(stockInformationString));

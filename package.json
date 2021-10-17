@@ -28,6 +28,7 @@
     "aws-amplify": "^4.3.2",
     "axios": "^0.22.0",
     "babel-jest": "^27.2.5",
+    "babel-loader": "^8.2.2",
     "chakra-ui": "^0.3.9",
     "framer-motion": "^4",
     "identity-obj-proxy": "^3.0.0",
