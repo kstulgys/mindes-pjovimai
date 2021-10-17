@@ -7,6 +7,7 @@ import { StockSheet, CutsSheet } from '../components/sheets';
 import dynamic from 'next/dynamic';
 import Script from 'next/script';
 import '../node_modules/jspreadsheet-ce/dist/jexcel.css';
+
 //import { useWorker } from '../utils/hooks';
 import { useWebworker} from '../utils/hooks/use-webworker'
 
@@ -26,11 +27,7 @@ export default function App() {
   const [constantD, setconstantD] = React.useState(4); // Time limit for calculation, s
   const [stockItems, setStockTableValues] = React.useState([]);
   const [cutItems, setCutsTableValues] = React.useState([]);
-  //const [result, setResult] = React.useState([]);
   const [isLoading, setIsLoading] = React.useState(false);
-  //const { data, handlePostMessage } = useWorker();
-  const [data, setData] =React.useState({})
-
   const {result, run} = useWebworker();
 
   const defaultData = {
@@ -41,18 +38,8 @@ export default function App() {
     showNames: showNames,
   };
 
-  // React.useEffect(() => {
-  //   if (data) setData({
-  //     stockItems,
-  //     cutItems,
-  //     bladeSize,
-  //     constantD,
-  //   });
-  //  }, []);
-
   const handleClick = async () => {
     try {
-      console.log('data handleclick');
       setIsLoading(true);
       // @ts-ignore
       await run({
@@ -79,7 +66,7 @@ export default function App() {
       </Text> */}
       <Box as="main" mx="auto" width="full" py={['6']} height="full">
         <Stack direction={['column', 'row']} spacing="6" width="full">
-          <Box width={['100%', '40%']}>
+          <Box width={['100%', '40%']} >
             <Stack bg="white" p="6" rounded="md" boxShadow="base">
               <Stack spacing="10px" direction="row">
                 <Checkbox size="sm" isChecked={groupIndentical} onChange={(e) => setGroupIndentical(!groupIndentical)}>
@@ -96,7 +83,7 @@ export default function App() {
                 </Checkbox>
               </Stack>
               <Box spacing="10px">
-                <Text fontSize="lg" fontWeight="semibold">
+                <Text fontSize="lg" fontWeight="semibold" >
                   Project Name
                 </Text>
               </Box>
@@ -138,7 +125,7 @@ export default function App() {
                 <Button width="full" bg="gray.900" color="white" _hover={{}} onClick={handleClick} margin="0px">
                   Get result
                 </Button>
-                {/* <ButtonsResultExport resultXLS={result} defaultData={defaultData}></ButtonsResultExport> */}
+                <ButtonsResultExport resultXLS={result} defaultData={defaultData}></ButtonsResultExport>
               </Box>
               {/* <h2>Result</h2>
                 <div>
@@ -164,7 +151,6 @@ export default function App() {
                     <pre>{JSON.stringify(result, null, 2)}</pre>
                   )}/> */}
             {/* </PDFViewer>  */}
-            {/* <ButtonsResultExport /> */}
           </Stack>
         </Stack>
       </Box>

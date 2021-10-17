@@ -3,6 +3,7 @@ import '../styles/globals.css';
 import Head from 'next/head';
 
 import { ChakraProvider } from '@chakra-ui/react';
+
 // import Amplify from 'aws-amplify';
 // import config from '../src/aws-exports';
 // Amplify.configure({

@@ -342,7 +342,7 @@ function calculation(stockInformation, cutInformation, bladeSize, constantDe) {
 
     return implement();
   }
-  for (let i = 5; i < 10; i++) {
+  for (let i = 5; i < 150; i++) {
     // i - how deep the recursive function gets. Iterates till time limit.
     cutInformationExport = JSON.parse(cutInformationString);
     stockInformationExport = JSON.parse(stockInformationString);
@@ -368,8 +368,7 @@ function calculation(stockInformation, cutInformation, bladeSize, constantDe) {
   const t1 = Date.now();
   timeTakenOnMachine = t1 - t0 + ' milliseconds.';
   console.log('It took ' + (t1 - t0) + ' milliseconds.');
-  console.log('Best result');
-  console.log(totalUsedStockLength / 1000 + ' m');
+  console.log('Best result '+ totalUsedStockLength / 1000 + ' m');
   //console.log(JSON.parse(stockInformationString));
   return answerExport;
 
