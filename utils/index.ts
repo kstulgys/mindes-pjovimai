@@ -440,3 +440,6 @@ export function loopCalculation(stockItems, cutItems, bladeSize, timeforCalculat
 //     error: 'Not enough stock items.',
 //   };
 // }
+export function skaiciavimams(a,b,c,d){
+  return {a,b,c,d}
+}

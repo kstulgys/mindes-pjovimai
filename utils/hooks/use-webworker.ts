@@ -1,5 +1,5 @@
 import {useState, useEffect, useRef} from 'react';
-import {loopCalculation} from '../index';
+import {loopCalculation, skaiciavimams} from '../index';
 
 const workerHandler = (fn) =>{
     onmessage=(event)=>{
@@ -18,16 +18,16 @@ export const useWebworker = () =>{
     const [result, setResult]=useState([]);
     const workerRef = useRef(null);
     useEffect(() => {
-        const worker = new Worker(new URL('../../worker.tsx', import.meta.url));
-        // const worker = new Worker(
-        //     URL.createObjectURL(new Blob([`(${workerHandler})(${loopCalculation})`]))
-        // )
+        //const worker = new Worker(new URL('../../worker.tsx', import.meta.url));
+        const worker = new Worker(
+            URL.createObjectURL(new Blob([`(${workerHandler})(${skaiciavimams})`]))
+        )
         workerRef.current = worker;
         worker.onmessage = (event) => {
             console.log('pagaliau kazkoks rezas');
             console.log(event.data);
-            
-            setResult(event.data);
+            //setResult([{error:"tiesiog"}]);
+            //setResult(event.data);
         }
         return ()=>{
             worker.terminate()
