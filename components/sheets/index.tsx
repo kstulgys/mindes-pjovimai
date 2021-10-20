@@ -64,7 +64,7 @@ export function StockSheet({ setStockTableValues }) {
     },
     updateTable: ({ jspreadsheet }, cell, col, row, val, label, cellName) => {
       //console.log('updateTable');
-      if (!jspreadsheet.getData()[row][3]) {
+        if (!jspreadsheet.getData()[row][3]) {
         cell.style.opacity = '0.3';
       } else {
         cell.style.opacity = '1';

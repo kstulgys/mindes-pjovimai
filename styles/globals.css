@@ -35,8 +35,12 @@ a {
 }
 
 table[class~="jexcel"]{
-  background-color: rgb(240, 236, 243);
-  border-radius: 10px 10px 10px 0;
+  background-color: rgb(255, 255, 255);
+  border-radius: 10px 10px 10px 0px;
+}
+
+iframe{
+  border-radius: 10px 10px 10px 10px;
 }
 
 /* td[title="Length"],
@@ -62,6 +66,10 @@ td[class="jexcel_selectall"]{
   background-color: #1a1616 ;
 }
 
+input[type='checkbox']{
+  background-color: #1a1616 ;
+  background: #FFF;
+}
 
 .jexcel_toolbar{
   background-color: #099ac8 ;

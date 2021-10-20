@@ -70,20 +70,20 @@ function SideNavBar() {
       <Button onClick={() => router.push('/')} variant="unstyled" title="Home page" _hover={{ bg: 'blue.500' }}>
         <Icon as={FiHome} fontSize="2xl" />
       </Button>
-      <ManuItemModal icon={FiLogOut} title="Logout" buttonsText="Yes" text="Are you sure want to log out?" />
+      {/* <ManuItemModal icon={FiLogOut} title="Logout" buttonsText="Yes" text="Are you sure want to log out?" /> */}
       {/* <ManuItemModal icon={FiSettings} title="How to use it" buttonsText="" text="Watch the video to find out what you can do in the app"/> */}
       <ManuItemModal
         icon={FiInfo}
         title="Info"
         buttonsText=""
-        text="Web-based automatic stock cutting optimisation software. The cutting software can be used for obtaining optimal cutting layouts for one (1D) dimensional pieces, 
-      such as bars, pipes, tubes, steel bars, metal profiles, extrusions, tubes, lineal wood boards or other materials."
+        text="
+   "
       />
       <ManuItemModal
         icon={FiCoffee}
-        title="Contacts"
-        buttonsText="Send message"
-        text="Send us a message if you have any questions."
+        title="Contact Yompti team!"
+        buttonsText=""
+        text="Send us a message if you have any questions. Email: hello@kastproductions.com"
       />
       <Text
         textAlign="center"
@@ -101,23 +101,23 @@ function SideNavBar() {
 function ManuItemModal({ icon, title, buttonsText, text }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const router = useRouter();
-  const [symbolsNumber, setSymbolsNumber] = React.useState(0);
-  const [messageText, setMessageText] = React.useState('');
+  // const [symbolsNumber, setSymbolsNumber] = React.useState(0);
+  // const [messageText, setMessageText] = React.useState('');
 
-  const handleLogout = async () => {
-    await Auth.signOut();
-    router.push('/');
-  };
+  // const handleLogout = async () => {
+  //   await Auth.signOut();
+  //   router.push('/');
+  // };
 
-  function handleTextInsert(el) {
-    if (el.length <= 250) {
-      setMessageText(el);
-      setSymbolsNumber(el.length);
-    }
-  }
-  function sendAMessage(msg) {
-    console.log('a message has been sent to the developer');
-  }
+  // function handleTextInsert(el) {
+  //   if (el.length <= 250) {
+  //     setMessageText(el);
+  //     setSymbolsNumber(el.length);
+  //   }
+  // }
+  // function sendAMessage(msg) {
+  //   console.log('a message has been sent to the developer');
+  // }
   return (
     <>
       <Button title={title} onClick={onOpen} variant="unstyled" _hover={{ bg: 'blue.500' }}>
@@ -131,20 +131,23 @@ function ManuItemModal({ icon, title, buttonsText, text }) {
           <ModalBody>
             {text}
 
-            {title == 'Contacts' ? (
+            {title == 'Info' ? (
               <>
-                <Text>Yompti team</Text>
-                <Text>hello@kastproductions.com</Text>
-
-                {/* <Textarea onChange={(e)=>handleTextInsert(e.target.value)} value={messageText} placeholder="Hi..."></Textarea> */}
-                {/* <Text>{symbolsNumber}/250</Text> */}
+                <Text>◉ What is Yompti?</Text>
+                <Text>Web-based automatic stock cutting optimisation software. 
+                  The cutting software can be used for obtaining optimal cutting layouts for one (1D) dimensional pieces, 
+                such as bars, pipes, tubes, steel bars, metal profiles, extrusions, tubes, lineal wood boards or other materials.</Text>
+                <Text>◉ How it works?</Text>
+                <Text>It generates optimized cutting patterns based on the available stock sheets by nesting the required cuts. 
+                Cut and stock information can be copied directly to the input sheets from any spreadsheet software.
+                The results can be exported in XLS and PDF formats in your preferred grouping.</Text>
               </>
             ) : (
               <></>
             )}
           </ModalBody>
           <ModalFooter>
-            {buttonsText ? (
+            {/* {buttonsText ? (
               <Button
                 _hover={{}}
                 bg="gray.900"
@@ -156,7 +159,7 @@ function ManuItemModal({ icon, title, buttonsText, text }) {
               </Button>
             ) : (
               <></>
-            )}
+            )} */}
           </ModalFooter>
         </ModalContent>
       </Modal>
