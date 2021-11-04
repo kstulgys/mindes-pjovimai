@@ -1,5 +1,5 @@
 export function loopCalculation(stockItems, cutItems, bladeSize:number, timeforCalculation:number) {
-    let timeTakenOnMachine: any = 0;
+  let timeTakenOnMachine: any = 0;
   let answerExport = [];
   let totalUsedStockLength = Number.MAX_SAFE_INTEGER;
   const t0 = Date.now();
@@ -352,7 +352,7 @@ function calculation(stockInformation, cutInformation, bladeSize, constantDe) {
     if (!notEnoughStockItems) return checkIfEnoughStockItems();
 
     const totalUsedStockLengthCompare = element.reduce((a, b) => a + b.stockLength * b.quantity, 0);
-    console.log(totalUsedStockLengthCompare / 1000 + ' m');
+    //console.log(totalUsedStockLengthCompare / 1000 + ' m');
     if (totalUsedStockLengthCompare < totalUsedStockLength) {
       //var leftOversCompare =stockInformationExport;
       totalUsedStockLength = totalUsedStockLengthCompare;
