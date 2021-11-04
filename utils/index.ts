@@ -7,7 +7,6 @@ import { v4 as uuid } from "uuid";
 export function useAuthUser() {
   const [user, setUser] = React.useState(null);
   const [isLoading, setIsLoading] = React.useState(true);
-
   const router = useRouter();
 
   React.useEffect(() => {
@@ -21,7 +20,7 @@ export function useAuthUser() {
 
 let timeTakenOnMachine: any = 0;
 
-export function loopCalculation(stockItems, cutItems, bladeSize, timeforCalculation) {
+export function loopCalculation(stockItems, cutItems, bladeSize:number, timeforCalculation:number) {
   let answerExport = [];
   let totalUsedStockLength = Number.MAX_SAFE_INTEGER;
   const t0 = Date.now();
@@ -62,21 +61,23 @@ export function loopCalculation(stockItems, cutItems, bladeSize, timeforCalculat
   }
   let cutInformationExport = Information(cutItems, true);
   const cutInformationString = JSON.stringify(cutInformationExport);
-  // console.log(cutInformationExport);
+  //console.log(cutInformationString);
   let stockInformationExport = Information(stockItems, false);
   const stockInformationString = JSON.stringify(stockInformationExport);
-  // console.log(stockInformationExport);
+  //console.log(stockInformationString);
   // Check inputs 1. Inputs must be integer;
   if (!mustBeInteger) return checkIfInteger();
   // Check inputs 2. Ratio between max stock and min cut must be not bigger than 1000 times;
   if (checkMaxRatioStockAndCut(stockInformationExport, cutInformationExport))
     return checkMaxRatioStockAndCut(stockInformationExport, cutInformationExport);
-
-  function calculation(stockInformation, cutInformation, bladeSize, constantDe) {
+    
+function calculation(stockInformation, cutInformation, bladeSize, constantDe) {
+        console.log('all info in loop');
+        console.log(cutInformation);
+        //console.log({stockInformation, cutInformation, bladeSize, constantDe});
     // Creates an array of possible cuts. Checks how many fits on one stock length.
     //If fits all then creates combinations for all, otherwise for only how many fits.
     //Creates combination on the longest stock length.
-
     function getIndexFirstMember(arrQuantities) {
       // Get longest cut which still has quantities to cut.
       for (let i = 0; i < arrQuantities.length; i++) {
@@ -130,7 +131,6 @@ export function loopCalculation(stockItems, cutItems, bladeSize, timeforCalculat
     const combinations = (elements) => {
       //if (howDeep > calculationDepthConstant) console.log(howDeep);
       if (elements.length === 0 || howDeep > calculationDepthConstant) return [[]];
-
       const firstEl = elements[0];
       const rest = elements.slice(1);
       howDeep++;
@@ -364,14 +364,13 @@ export function loopCalculation(stockItems, cutItems, bladeSize, timeforCalculat
 
     return implement();
   }
-
-  for (let i = 5; i < 150; i++) {
+  for (let i = 5; i < 10; i++) {
     // i - how deep the recursive function gets. Iterates till time limit.
     cutInformationExport = JSON.parse(cutInformationString);
     stockInformationExport = JSON.parse(stockInformationString);
     const element = calculation(stockInformationExport, cutInformationExport, bladeSize, i);
+    //console.log('element');
     //console.log(element);
-
     if (!notEnoughStockItems) return checkIfEnoughStockItems();
 
     const totalUsedStockLengthCompare = element.reduce((a, b) => a + b.stockLength * b.quantity, 0);
@@ -395,26 +394,53 @@ export function loopCalculation(stockItems, cutItems, bladeSize, timeforCalculat
   console.log(totalUsedStockLength / 1000 + " m");
   //console.log(JSON.parse(stockInformationString));
   return answerExport;
-}
 
-export function checkMaxRatioStockAndCut(stockInfoElement, cutInfoElement) {
-  const maxStockSize = stockInfoElement.sizes[0];
-  const mixCutSize = cutInfoElement.sizes[cutInfoElement.sizes.length - 1];
-  if (maxStockSize / mixCutSize >= 1000) {
+  function checkMaxRatioStockAndCut(stockInfoElement, cutInfoElement) {
+    const maxStockSize = stockInfoElement.sizes[0];
+    const mixCutSize = cutInfoElement.sizes[cutInfoElement.sizes.length - 1];
+    if (maxStockSize / mixCutSize >= 1000) {
+      return {
+        error: 'Ration between stock and cut sizes is too big. Reduce to less than 1000.',
+      };
+    }
+  }
+  
+  function checkIfInteger() {
     return {
-      error: "Ration between stock and cut sizes is too big. Reduce to less than 1000.",
+      error: 'Inputs must be integer numbers.',
     };
   }
+  
+  function checkIfEnoughStockItems() {
+    return {
+      error: 'Not enough stock items.',
+    };
+  }
+  
+  
 }
 
-export function checkIfInteger() {
-  return {
-    error: "Inputs must be integer numbers.",
-  };
-}
+// export function checkMaxRatioStockAndCut(stockInfoElement, cutInfoElement) {
+//   const maxStockSize = stockInfoElement.sizes[0];
+//   const mixCutSize = cutInfoElement.sizes[cutInfoElement.sizes.length - 1];
+//   if (maxStockSize / mixCutSize >= 1000) {
+//     return {
+//       error: 'Ration between stock and cut sizes is too big. Reduce to less than 1000.',
+//     };
+//   }
+// }
 
-export function checkIfEnoughStockItems() {
-  return {
-    error: "Not enough stock items.",
-  };
+// export function checkIfInteger() {
+//   return {
+//     error: 'Inputs must be integer numbers.',
+//   };
+// }
+
+// export function checkIfEnoughStockItems() {
+//   return {
+//     error: 'Not enough stock items.',
+//   };
+// }
+export function skaiciavimams(a,b,c,d){
+  return {a,b,c,d}
 }

@@ -1,14 +1,15 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-import React from "react";
-import { Box, Stack, Button, Text, Input, Checkbox } from "@chakra-ui/react";
-import { Layout } from "../components";
-import XLSX from "xlsx";
-import { StockSheet, CutsSheet } from "../components/sheets";
-import dynamic from "next/dynamic";
-import Script from "next/script";
+import React from 'react';
+import { Box, Stack, Button, Text, Input, Checkbox } from '@chakra-ui/react';
+import { Layout } from '../components';
+import XLSX from 'xlsx';
+import { StockSheet, CutsSheet } from '../components/sheets';
+import dynamic from 'next/dynamic';
+import Script from 'next/script';
+import '../node_modules/jspreadsheet-ce/dist/jexcel.css';
 
-import { useWorker } from "../utils/hooks";
-import Head from "next/head";
+//import { useWorker } from '../utils/hooks';
+import { useWebworker} from '../utils/hooks/use-webworker'
 
 const PDFDocument1DNOSSR = dynamic(
   () => import("../components/PDFDocument1D"),
@@ -26,9 +27,8 @@ export default function App() {
   const [constantD, setconstantD] = React.useState(4); // Time limit for calculation, s
   const [stockItems, setStockTableValues] = React.useState([]);
   const [cutItems, setCutsTableValues] = React.useState([]);
-  const [result, setResult] = React.useState([]);
   const [isLoading, setIsLoading] = React.useState(false);
-  const { data, handlePostMessage } = useWorker();
+  const {result, run} = useWebworker();
 
   const defaultData = {
     bladeSize: bladeSize,
@@ -38,22 +38,21 @@ export default function App() {
     showNames: showNames,
   };
 
-  React.useEffect(() => {
-    if (data) setResult(data);
-  }, [data]);
-
   const handleClick = async () => {
     try {
       setIsLoading(true);
       // @ts-ignore
-      handlePostMessage({
+      await run({
         stockItems,
         cutItems,
         bladeSize,
         constantD,
       });
+     // console.log(result);
+      
     } catch (e) {
-      setResult([]);
+      //setResult([]);
+      console.log(e);
       setIsLoading(false);
     }
   };
@@ -65,9 +64,9 @@ export default function App() {
       {/* <Text marginTop="20px" marginBottom="5px" fontStyle="myriad-pro-1" fontSize="lg" fontWeight="semibold">
         YOMPTI Your optimisation tool 
       </Text> */}
-      <Box as="main" mx="auto" width="full" py={["6"]} height="full">
-        <Stack direction={["column", "row"]} spacing="6" width="full">
-          <Box width={["100%", "40%"]}>
+      <Box as="main" mx="auto" width="full" py={['6']} height="full">
+        <Stack direction={['column', 'row']} spacing="6" width="full">
+          <Box width={['100%', '40%']} >
             <Stack bg="white" p="6" rounded="md" boxShadow="base">
               <Stack spacing="10px" direction="row">
                 <Checkbox size="sm" isChecked={groupIndentical} onChange={(e) => setGroupIndentical(!groupIndentical)}>
@@ -84,7 +83,7 @@ export default function App() {
                 </Checkbox>
               </Stack>
               <Box spacing="10px">
-                <Text fontSize="lg" fontWeight="semibold">
+                <Text fontSize="lg" fontWeight="semibold" >
                   Project Name
                 </Text>
               </Box>
@@ -115,11 +114,13 @@ export default function App() {
               </Box>
 
               <Box width="full">
+                {/* <Button width="full" bg="gray.900" color="white" _hover={{}} margin="0px">
+                  Get result
+                </Button> */}
                 <Button width="full" bg="gray.900" color="white" _hover={{}} onClick={handleClick} margin="0px">
                   Get result
                 </Button>
-
-                {/* <ButtonsResultExport resultXLS={result} defaultData={defaultData}></ButtonsResultExport> */}
+                <ButtonsResultExport resultXLS={result} defaultData={defaultData}></ButtonsResultExport>
               </Box>
               {/* <h2>Result</h2>
                 <div>
@@ -145,14 +146,12 @@ export default function App() {
                     <pre>{JSON.stringify(result, null, 2)}</pre>
                   )}/> */}
             {/* </PDFViewer>  */}
-            {/* <ButtonsResultExport /> */}
           </Stack>
         </Stack>
       </Box>
     </Layout>
   );
 }
-
 function ButtonsResultExport({ resultXLS, defaultData }) {
   const ExportData = () => {
     // angle1Item1,nameItem1,lengthItem1,quantityItem1,angle2Item1, cut 10,waste
