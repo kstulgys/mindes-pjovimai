@@ -1,5 +1,5 @@
-import { Layout } from "../components";
-import { Stack, Box, Text, Button } from "@chakra-ui/react";
+import { Layout } from '../components';
+import { Stack, Box, Text, Button } from '@chakra-ui/react';
 
 export default function Pricing() {
   return (
@@ -15,7 +15,7 @@ export default function Pricing() {
   );
 }
 
-function PricingCard({ price, type, width, height = "64" }) {
+function PricingCard({ price, type, width, height = '64' }) {
   return (
     <Stack p="6" rounded="xl" boxShadow="2xl" width={width} bg="white" height={height}>
       <Box flex="1">

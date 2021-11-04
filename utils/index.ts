@@ -13,7 +13,7 @@ export function useAuthUser() {
   React.useEffect(() => {
     Auth.currentAuthenticatedUser()
       .then((user) => setUser(user))
-      .catch(() => router.push("/auth"))
+      .catch(() => router.push("/app"))
       .finally(() => setIsLoading(false));
   }, []);
   return { isLoading, user };
@@ -251,15 +251,13 @@ export function loopCalculation(stockItems, cutItems, bladeSize, timeforCalculat
           //const quantityIndex = cutInformation.sizes.indexOf(length[3]);
           const quantityIndex1 = length[1];
           // for (i = 0; i < quantityInCombo; i++) {
-          itemsToExport.push([
-            {
-              cutQuantity: quantityInCombo,
-              cutLength: length[3],
-              cutName: cutInformation.names[quantityIndex1],
-              angle1: cutInformation.angle1[quantityIndex1],
-              angle2: cutInformation.angle2[quantityIndex1],
-            },
-          ]);
+          itemsToExport.push({
+            cutQuantity: quantityInCombo,
+            cutLength: length[3],
+            cutName: cutInformation.names[quantityIndex1],
+            angle1: cutInformation.angle1[quantityIndex1],
+            angle2: cutInformation.angle2[quantityIndex1],
+          });
           // }
           cutInformation.quantities[quantityIndex1] = cutInformation.quantities[quantityIndex1] - cutNumberFloor * quantityInCombo;
         }
@@ -372,31 +370,31 @@ export function loopCalculation(stockItems, cutItems, bladeSize, timeforCalculat
     cutInformationExport = JSON.parse(cutInformationString);
     stockInformationExport = JSON.parse(stockInformationString);
     const element = calculation(stockInformationExport, cutInformationExport, bladeSize, i);
+    //console.log(element);
 
     if (!notEnoughStockItems) return checkIfEnoughStockItems();
 
     const totalUsedStockLengthCompare = element.reduce((a, b) => a + b.stockLength * b.quantity, 0);
     console.log(totalUsedStockLengthCompare / 1000 + " m");
     if (totalUsedStockLengthCompare < totalUsedStockLength) {
+      //var leftOversCompare =stockInformationExport;
       totalUsedStockLength = totalUsedStockLengthCompare;
       answerExport = element;
     }
     if (Date.now() - t0 > timeforCalculation * 1000 && answerExport.length) {
-      console.log("Time limit " + timeforCalculation + "seconds");
-      console.log("best result");
-      console.log(totalUsedStockLength / 1000 + " m");
-
-      return answerExport;
+      console.log("Time limit " + timeforCalculation + " seconds time limit has been reached");
+      break;
+      //return answerExport;
     }
   }
 
   const t1 = Date.now();
   timeTakenOnMachine = t1 - t0 + " milliseconds.";
   console.log("It took " + (t1 - t0) + " milliseconds.");
-  console.log("best result");
-  console.log(totalUsedStockLength / 1000);
+  console.log("Best result");
+  console.log(totalUsedStockLength / 1000 + " m");
   //console.log(JSON.parse(stockInformationString));
-  return { timeTakenOnMachine, ...answerExport };
+  return answerExport;
 }
 
 export function checkMaxRatioStockAndCut(stockInfoElement, cutInfoElement) {
@@ -404,19 +402,19 @@ export function checkMaxRatioStockAndCut(stockInfoElement, cutInfoElement) {
   const mixCutSize = cutInfoElement.sizes[cutInfoElement.sizes.length - 1];
   if (maxStockSize / mixCutSize >= 1000) {
     return {
-      error: "Ration between stock and cut sizes is too big. Reduce to less than 1000",
+      error: "Ration between stock and cut sizes is too big. Reduce to less than 1000.",
     };
   }
 }
 
 export function checkIfInteger() {
   return {
-    error: "Inputs must be integer numbers",
+    error: "Inputs must be integer numbers.",
   };
 }
 
 export function checkIfEnoughStockItems() {
   return {
-    error: "Not enough stock items",
+    error: "Not enough stock items.",
   };
 }

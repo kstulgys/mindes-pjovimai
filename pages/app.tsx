@@ -1,41 +1,51 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 import React from "react";
-import { Box, Stack, Button, Text, Input, Table, Thead, Tbody, Tr, Th, Td, useToast, Checkbox, Icon } from "@chakra-ui/react";
-// import { Layout } from "../components";
-// import { useAuthUser } from "../utils";
-// import { useStore } from "../store";
-// import { DragHandleIcon, CloseIcon } from "@chakra-ui/icons";
-// import { PDFDocument1D } from "../components/PDFDocument1D";
-// import XLSX from "xlsx";
-// import { PDFDownloadLink, PDFViewer } from "@react-pdf/renderer";
-// import { ListStockItems } from "../components/ListStockItems";
-// import { ListCutItems } from "../components/ListCutItems";
+import { Box, Stack, Button, Text, Input, Checkbox } from "@chakra-ui/react";
+import { Layout } from "../components";
+import XLSX from "xlsx";
 import { StockSheet, CutsSheet } from "../components/sheets";
+import dynamic from "next/dynamic";
+import Script from "next/script";
 import "../node_modules/jspreadsheet-ce/dist/jexcel.css";
+import { useWorker } from "../utils/hooks";
+
+const PDFDocument1DNOSSR = dynamic(
+  () => import("../components/PDFDocument1D"),
+  { ssr: false }, // NO Server side render
+);
+//PDFDocument1D
 
 export default function App() {
+  const [groupIndentical, setGroupIndentical] = React.useState(true);
+  const [showNames, setShowNames] = React.useState(true);
+  const [showAngles, setShowAngles] = React.useState(true);
+  const [count, setCount] = React.useState(1);
+  const [projectName, setProjectName] = React.useState("Project-01");
   const [bladeSize, setBladeSize] = React.useState(10);
-  const [constantD, setconstantD] = React.useState(3);
+  const [constantD, setconstantD] = React.useState(4); // Time limit for calculation, s
   const [stockItems, setStockTableValues] = React.useState([]);
   const [cutItems, setCutsTableValues] = React.useState([]);
   const [result, setResult] = React.useState([]);
   const [isLoading, setIsLoading] = React.useState(false);
-  const workerRef = React.useRef<Worker>();
+  const { data, handlePostMessage } = useWorker();
+
+  const defaultData = {
+    bladeSize: bladeSize,
+    projectName: projectName,
+    groupIndentical: groupIndentical,
+    showAngles: showAngles,
+    showNames: showNames,
+  };
 
   React.useEffect(() => {
-    workerRef.current = new Worker(new URL("../worker.js", import.meta.url));
-    workerRef.current.onmessage = (event) => {
-      setResult(event.data);
-      setIsLoading(false);
-    };
-    return () => {
-      workerRef.current.terminate();
-    };
-  }, []);
+    if (data) setResult(data);
+  }, [data]);
 
   const handleClick = async () => {
     try {
       setIsLoading(true);
-      workerRef.current.postMessage({
+      // @ts-ignore
+      handlePostMessage({
         stockItems,
         cutItems,
         bladeSize,
@@ -48,207 +58,153 @@ export default function App() {
   };
 
   return (
-    <div>
-      <h2>Blade</h2>
-      <input type="number" value={bladeSize} onChange={(e) => setBladeSize(e.target.valueAsNumber)} />
-      <h2>Time limit for optimisation, s</h2>
-      <input type="number" value={constantD} onChange={(e) => setconstantD(e.target.valueAsNumber)} />
-      <h2>Stock (Max 20 rows)</h2>
-      <Box disabled={isLoading}>
-        <StockSheet setStockTableValues={setStockTableValues} />
-      </Box>
-      <h2>Cuts (Max 100 rows)</h2>
-      <Box disabled={isLoading}>
-        <CutsSheet setCutsTableValues={setCutsTableValues} />
-      </Box>
+    <Layout>
+      <Script src="https://bossanova.uk/jspreadsheet/v4/jexcel.js"></Script>
+      <Script src="https://jsuites.net/v4/jsuites.js"></Script>
+      {/* <Text marginTop="20px" marginBottom="5px" fontStyle="myriad-pro-1" fontSize="lg" fontWeight="semibold">
+        YOMPTI Your optimisation tool 
+      </Text> */}
+      <Box as="main" mx="auto" width="full" py={["6"]} height="full">
+        <Stack direction={["column", "row"]} spacing="6" width="full">
+          <Box width={["100%", "40%"]}>
+            <Stack bg="white" p="6" rounded="md" boxShadow="base">
+              <Stack spacing="10px" direction="row">
+                <Checkbox size="sm" isChecked={groupIndentical} onChange={(e) => setGroupIndentical(!groupIndentical)}>
+                  {" "}
+                  Group indentical parts{" "}
+                </Checkbox>
+                <Checkbox size="sm" isChecked={showAngles} onChange={(e) => setShowAngles(!showAngles)}>
+                  {" "}
+                  Show angles{" "}
+                </Checkbox>
+                <Checkbox size="sm" isChecked={showNames} onChange={(e) => setShowNames(!showNames)}>
+                  {" "}
+                  Show names{" "}
+                </Checkbox>
+              </Stack>
+              <Box spacing="10px">
+                <Text fontSize="lg" fontWeight="semibold">
+                  Project Name
+                </Text>
+              </Box>
+              <Input type="string" value={projectName} placeholder={projectName} onChange={(e) => setProjectName(e.target.value)} />
+              <Text fontSize="lg" fontWeight="semibold">
+                Blade size
+              </Text>
+              <Input type="number" value={bladeSize} onChange={(e) => setBladeSize(e.target.valueAsNumber)} />
+              {/* <h2>Time limit for optimisation, s</h2>
+                <input
+                  type="number"
+                  value={constantD}
+                  onChange={(e) => setconstantD(e.target.valueAsNumber)}
+                /> */}
 
-      <div>
-        <button onClick={handleClick}>Get result</button>
-      </div>
-      <h2>Result</h2>
-      <div>{isLoading ? <h1>Loading...</h1> : <pre>{JSON.stringify(result, null, 2)}</pre>}</div>
-    </div>
+              <Text fontSize="lg" fontWeight="semibold">
+                Stock (Max 20 rows)
+              </Text>
+              {/* <ListCutItems></ListCutItems> */}
+              <Box disabled={isLoading}>
+                <StockSheet setStockTableValues={setStockTableValues} />
+              </Box>
+              <Text fontSize="lg" fontWeight="semibold">
+                Cuts (Max 100 rows)
+              </Text>
+              <Box disabled={isLoading}>
+                <CutsSheet setCutsTableValues={setCutsTableValues} />
+              </Box>
+
+              <Box width="full">
+                <Button width="full" bg="gray.900" color="white" _hover={{}} onClick={handleClick} margin="0px">
+                  Get result
+                </Button>
+
+                {/* <ButtonsResultExport resultXLS={result} defaultData={defaultData}></ButtonsResultExport> */}
+              </Box>
+              {/* <h2>Result</h2>
+                <div>
+                   {isLoading ? (
+                    <h1>Loading...</h1>
+                  ) 
+                  : (
+                    <pre>{JSON.stringify(result, null, 2)}</pre>
+                  )
+                  }
+                </div> */}
+            </Stack>
+          </Box>
+          <Stack spacing="2" width={["100%", "60%"]} minH="100vh">
+            {/* <PDFViewer style={{ width: "100%", height: "100%" }}> */}
+            {/* key={count} */}
+
+            <PDFDocument1DNOSSR something={result} defaultData={defaultData} />
+            {/* something={JSON.stringify(result, null, 2)}
+            {/* something={isLoading ? (
+                    <h1></h1>
+                  ) : (
+                    <pre>{JSON.stringify(result, null, 2)}</pre>
+                  )}/> */}
+            {/* </PDFViewer>  */}
+            {/* <ButtonsResultExport /> */}
+          </Stack>
+        </Stack>
+      </Box>
+    </Layout>
   );
 }
 
-// // import { FiCheckSquare, FiSquare } from 'react-icons/fi'
-// function AppPage() {
-//   const [count, setCount] = React.useState(1);
-//   const { isLoading: isUserLoading, user } = useAuthUser();
-
-//   const [bladeSize, setBladeSize] = React.useState(10);
-//   const [constantD, setconstantD] = React.useState(3);
-//   const [stockItems, setStockTableValues] = React.useState([]);
-//   const [cutItems, setCutsTableValues] = React.useState([]);
-//   const [result, setResult] = React.useState([]);
-//   const [isLoading, setIsLoading] = React.useState(false);
-
-//   const handleClick = async () => {
-//     try {
-//       setIsLoading(true);
-//       const response = await fetch("/api/calculate", {
-//         method: "POST", // *GET, POST, PUT, DELETE, etc.
-//         headers: {
-//           "Content-Type": "application/json",
-//         },
-//         body: JSON.stringify({ stockItems, cutItems, bladeSize, constantD }), // body data type must match "Content-Type"
-//       });
-
-//       const result = await response.json(); // parses JSON response into native JavaScript objects
-//       // console.log({ result });
-//       setResult(result);
-//     } catch (e) {
-//       setResult([]);
-//     } finally {
-//       setIsLoading(false);
-//     }
-//   };
-
-//   React.useEffect(() => {
-//     setCount((prev) => prev++);
-//   }, [result]);
-
-//   if (isUserLoading) return null;
-
-//   return (
-//     <Layout>
-//       <Box as="main" mx="auto" width="full" py={["12"]} height="full">
-//         {/* <ButtonsSwitch1D2D /> */}
-//         <Stack direction={["column", "row"]} spacing="12" width="full">
-//           <Box width={["100%", "40%"]}>
-//             <Stack bg="white" p="6" rounded="md" boxShadow="base">
-//               <Cut1DInputs />
-//               <Text fontSize="lg" fontWeight="semibold">
-//                 Cuts
-//               </Text>
-//               <ListCutItems />
-//               <Box width="full">
-//                 <Button
-//                   isDisabled={!!errors.inputMessage}
-//                   onClick={handleGetResult}
-//                   width="32"
-//                   bg="gray.900"
-//                   color="white"
-//                   _hover={{}}
-//                 >
-//                   Get Result
-//                 </Button>
-//               </Box>
-//             </Stack>
-//           </Box>
-
-//           <Stack spacing="6" width={["100%", "60%"]} minH="100vh">
-//             <PDFViewer key={count} style={{ width: "100%", height: "100%" }}>
-//               <PDFDocument1D />
-//             </PDFViewer>
-//             {/* <ButtonsResultExport /> */}
-//           </Stack>
-//         </Stack>
-//       </Box>
-//     </Layout>
-//   );
-// }
-
-// function Cut1DInputs() {
-//   const bladeSize = useStore((store) => store.bladeSize);
-//   const projectName = useStore((store) => store.projectName);
-
-//   const handleBladeSizeChange = useStore(
-//     (store) => store.handleBladeSizeChange
-//   );
-
-//   const handleProjectNameChange = useStore(
-//     (store) => store.handleProjectNameChange
-//   );
-
-//   return (
-//     <Stack spacing="6" pb="4">
-//       <Stack>
-//         <Text fontWeight="semibold" fontSize="lg">
-//           Project name
-//         </Text>
-//         <Input
-//           value={projectName}
-//           placeholder="project name"
-//           onChange={handleProjectNameChange}
-//         />
-//       </Stack>
-//       <Stack>
-//         <Text fontWeight="semibold" fontSize="lg">
-//           Blade Size
-//         </Text>
-//         <Input
-//           type="number"
-//           value={bladeSize}
-//           placeholder="blade size"
-//           onChange={handleBladeSizeChange}
-//         />
-//       </Stack>
-//       <Stack spacing="2">
-//         <Text fontWeight="semibold" fontSize="lg">
-//           Stock
-//         </Text>
-//         <ListStockItems />
-//       </Stack>
-//     </Stack>
-//   );
-// }
-
-// function ButtonsResultExport() {
-//   const { result } = useStore();
-
-//   const ExportData = () => {
-//     if (!result.length) return;
-
-//     const data = result.map(
-//       ([key, { count, capacity, items, stockLength }]) => {
-//         const reducer = (acc, { name, size }, index) => {
-//           const innerText = name ? ` ([${name}] ${size}) ` : ` ${size} `;
-//           return acc.concat(innerText);
-//         };
-
-//         const cutList = items.reduce(reducer, "");
-
-//         return {
-//           Quantity: count,
-//           "Stock length": stockLength,
-//           "Cut list": cutList,
-//           "Waste (mm)": capacity,
-//         };
-//       }
-//     );
-//     const ws = XLSX.utils.json_to_sheet(data);
-//     const wb = XLSX.utils.book_new();
-//     XLSX.utils.book_append_sheet(wb, ws, "Data");
-//     XLSX.writeFile(wb, "stock_cut_result_" + Date.now().toString() + ".xlsx");
-//   };
-
-//   return (
-//     <Stack isInline spacing="4">
-//       <Box>
-//         <Button
-//           onClick={ExportData}
-//           width="32"
-//           bg="gray.900"
-//           color="white"
-//           boxShadow="base"
-//           _hover={{}}
-//         >
-//           Export XLS
-//         </Button>
-//       </Box>
-//       {/* <Box>
-//         <PDFDownloadLink
-//           document={<PDFDocument1D />}
-//           fileName={'stock_cut_result_' + Date.now().toString()}
-//         >
-//           <Button width="32" bg="gray.900" color="white" boxShadow="base" _hover={{}}>
-//             Export PDF
-//           </Button>
-//         </PDFDownloadLink>
-//       </Box> */}
-//     </Stack>
-//   );
-// }
-
-// export default AppPage;
+function ButtonsResultExport({ resultXLS, defaultData }) {
+  const ExportData = () => {
+    // angle1Item1,nameItem1,lengthItem1,quantityItem1,angle2Item1, cut 10,waste
+    const dataB = () => {
+      const transformedForXLS = [];
+      function isPositive(e) {
+        if (e < 0) return 0;
+        return e;
+      }
+      resultXLS.forEach((element, index) => {
+        let index2 = 1;
+        transformedForXLS[index] = {
+          stockName: element.stockName,
+          stockLength: element.stockLength,
+          quantity: element.quantity,
+          waste: isPositive(element.waste),
+          "cuts->": "",
+        };
+        element.items.forEach((item) => {
+          if (!defaultData.groupIndentical) {
+            for (let i = 0; i < item.cutQuantity; i++) {
+              if (defaultData.showAngles) transformedForXLS[index]["cut" + index2 + "Angle1"] = item.angle1;
+              if (defaultData.showNames) transformedForXLS[index]["cut" + index2 + "Name"] = item.cutName;
+              transformedForXLS[index]["cut" + index2 + "Length"] = item.cutLength;
+              if (defaultData.showAngles) transformedForXLS[index]["cut" + index2 + "Angle2"] = item.angle2;
+              transformedForXLS[index]["cut" + index2 + " Blade"] = defaultData.bladeSize;
+              index2++;
+            }
+          } else {
+            if (defaultData.showAngles) transformedForXLS[index]["cut" + index2 + "Angle1"] = item.angle1;
+            if (defaultData.showNames) transformedForXLS[index]["cut" + index2 + "Name"] = item.cutName;
+            transformedForXLS[index]["cut" + index2 + "Length"] = item.cutLength;
+            transformedForXLS[index]["cut" + index2 + "Quantity"] = item.cutQuantity;
+            if (defaultData.showAngles) transformedForXLS[index]["cut" + index2 + "Angle2"] = item.angle2;
+            transformedForXLS[index]["cut" + index2 + " Blade"] = defaultData.bladeSize;
+            index2++;
+          }
+        });
+      });
+      return transformedForXLS;
+    };
+    const ws = XLSX.utils.json_to_sheet(dataB());
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Data");
+    XLSX.writeFile(wb, "stock_cut_result_" + Date.now().toString() + ".xlsx");
+  };
+  return (
+    <Stack isInline spacing="10">
+      <Box width="full" marginTop="10px">
+        <Button onClick={ExportData} width="full" bg="gray.900" color="white" boxShadow="base" _hover={{}} margin="0px">
+          Export XLS
+        </Button>
+      </Box>
+    </Stack>
+  );
+}
