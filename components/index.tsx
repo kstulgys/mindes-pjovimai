@@ -17,20 +17,12 @@ import {
   ModalBody,
   ModalCloseButton,
   Spacer,
-<<<<<<< HEAD
-} from "@chakra-ui/react";
-import { useRouter } from "next/router";
-import React from "react";
-import { FiUser, FiSettings, FiFolder, FiLogOut, FiHome, FiAward, FiCoffee, FiInfo } from "react-icons/fi";
-import { Auth } from "aws-amplify";
-=======
 } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 import React from 'react';
 import { FiUser, FiSettings, FiFolder, FiLogOut, FiHome, FiAward, FiCoffee, FiInfo } from 'react-icons/fi';
 import { Auth } from 'aws-amplify';
 import ReactGa from 'react-ga'
->>>>>>> origin/deploy-on-Netlify
 
 export function Layout({ children }) {
   
@@ -69,11 +61,7 @@ function SideNavBar() {
       {/* <ManuItemModal icon={FiFolder} title="Projects" />
       <ManuItemModal icon={FiSettings} title="Settings" />
       <ManuItemModal icon={FiUser} title="User" /> */}
-<<<<<<< HEAD
-      <Button onClick={() => router.push("/")} variant="unstyled" title="Home page" _hover={{ bg: "blue.500" }}>
-=======
       {/* <Button onClick={() => router.push('/')} variant="unstyled" title="Home page" _hover={{ bg: 'blue.500' }}>
->>>>>>> origin/deploy-on-Netlify
         <Icon as={FiHome} fontSize="2xl" />
       </Button> */}
       <ManuItemModal icon={FiHome} title="Home page" buttonsText="Yes" text="Are you sure want to go back?" />
@@ -112,11 +100,7 @@ function ManuItemModal({ icon, title, buttonsText, text }) {
   }
   return (
     <>
-<<<<<<< HEAD
-      <Button title={title} onClick={onOpen} variant="unstyled" _hover={{ bg: "blue.500" }}>
-=======
       <Button title={title} onClick={handleOnOpen} variant="unstyled" _hover={{ bg: 'blue.500' }}>
->>>>>>> origin/deploy-on-Netlify
         <Icon as={icon} fontSize="2xl" />
       </Button>
       <Modal isOpen={isOpen} onClose={onClose} isCentered size="xl">

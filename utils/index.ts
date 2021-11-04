@@ -225,60 +225,6 @@ let timeTakenOnMachine: any = 0;
 //         //const cutLengthIndex = cutInformation.sizes.indexOf(element[3]);
 //         const cutNumberAccCutQuantity = Math.floor(cutInformation.quantities[cutLengthIndex] / element[2]);
 
-<<<<<<< HEAD
-        if (cutNumberAccCutQuantity <= 0 || isNaN(cutNumberAccCutQuantity)) {
-          hasAtLeastOneCut = false;
-          cutNumberFloor = 0;
-          return {
-            klaida: "nera pjuviu",
-            importedCutCombination: getSums(importedCutCombination),
-            lengthToUse1: lengthToUse1,
-          };
-        }
-        if (cutNumberFloor > cutNumberAccCutQuantity && hasAtLeastOneCut === true && cutNumberAccCutQuantity > 0) {
-          if (cutNumberAccCutQuantity <= stockInformation.quantities[stockLengthIndex]) {
-            cutNumberFloor = cutNumberAccCutQuantity; // Quantity number according cut number
-          } else {
-            cutNumberFloor = stockInformation.quantities[stockLengthIndex]; // Quantity number according stock number
-          }
-        }
-      }
-      //Subtract components with the number of how many certain cut combinations can be made.
-      const itemsToExport = [];
-      if (hasAtLeastOneCut === true) {
-        for (let j = 0; j < importedCutCombination.length; j++) {
-          const length = importedCutCombination[j];
-          const quantityInCombo = length[2];
-          //const quantityIndex = cutInformation.sizes.indexOf(length[3]);
-          const quantityIndex1 = length[1];
-          // for (i = 0; i < quantityInCombo; i++) {
-          itemsToExport.push({
-            cutQuantity: quantityInCombo,
-            cutLength: length[3],
-            cutName: cutInformation.names[quantityIndex1],
-            angle1: cutInformation.angle1[quantityIndex1],
-            angle2: cutInformation.angle2[quantityIndex1],
-          });
-          // }
-          cutInformation.quantities[quantityIndex1] = cutInformation.quantities[quantityIndex1] - cutNumberFloor * quantityInCombo;
-        }
-      }
-      //Subtracts used stocks
-      stockInformation.quantities[stockLengthIndex] = stockInformation.quantities[stockLengthIndex] - cutNumberFloor;
-      if (stockInformation.quantities[stockLengthIndex] === 0) {
-        stockInformation.quantities.splice(stockLengthIndex, 1);
-        stockInformation.sizes.splice(stockLengthIndex, 1);
-        stockInformation.names.splice(stockLengthIndex, 1);
-      }
-      return {
-        quantity: cutNumberFloor,
-        stockLength: lengthToUse1,
-        stockName: stockName,
-        waste: lengthToUse1 - getSums(importedCutCombination),
-        items: itemsToExport,
-      };
-    }
-=======
 //         if (cutNumberAccCutQuantity <= 0 || isNaN(cutNumberAccCutQuantity)) {
 //           hasAtLeastOneCut = false;
 //           cutNumberFloor = 0;
@@ -332,7 +278,6 @@ let timeTakenOnMachine: any = 0;
 //         items: itemsToExport,
 //       };
 //     }
->>>>>>> origin/deploy-on-Netlify
 
 //     const timeA1 = Date.now();
 
@@ -383,42 +328,6 @@ let timeTakenOnMachine: any = 0;
 //           ];
 //         let combinationNew = combinations(cut);
 
-<<<<<<< HEAD
-        if (found === false) {
-          combinationNew = bestLastElement[0];
-          lengthToUse = lengthToUseNotFound[0];
-        } else {
-          combinationNew = matchedCombination[0];
-          lengthToUse = lengthToUseFound[0];
-        }
-        // console.log(combinationNew);
-        if (!combinationNew) {
-          // window.alert('Not enough stock items');
-          notEnoughStockItems = false;
-          answer[z] = ["Not enough stock items"];
-          return answer;
-        }
-        answer[z] = eliminate(combinationNew, lengthToUse);
-        cutInformation.quantities.forEach((element) => {
-          //Stops if all quantities are zero.
-          if (element > 0) {
-            hasCutAll = true;
-          }
-        });
-        z++; //Safety trigger
-      }
-      return answer;
-    }
-    function getSums(array) {
-      let returnSum = 0;
-      array.forEach((elements) => {
-        for (let z = 0; z < elements[2]; z++) {
-          returnSum = returnSum + bladeSize + elements[3];
-        }
-      });
-      return returnSum;
-    }
-=======
 //         if (found === false) {
 //           combinationNew = bestLastElement[0];
 //           lengthToUse = lengthToUseNotFound[0];
@@ -453,7 +362,6 @@ let timeTakenOnMachine: any = 0;
 //       });
 //       return returnSum;
 //     }
->>>>>>> origin/deploy-on-Netlify
 
 //     return implement();
 //   }
@@ -466,29 +374,6 @@ let timeTakenOnMachine: any = 0;
 //     //console.log(element);
 //     if (!notEnoughStockItems) return checkIfEnoughStockItems();
 
-<<<<<<< HEAD
-    const totalUsedStockLengthCompare = element.reduce((a, b) => a + b.stockLength * b.quantity, 0);
-    console.log(totalUsedStockLengthCompare / 1000 + " m");
-    if (totalUsedStockLengthCompare < totalUsedStockLength) {
-      //var leftOversCompare =stockInformationExport;
-      totalUsedStockLength = totalUsedStockLengthCompare;
-      answerExport = element;
-    }
-    if (Date.now() - t0 > timeforCalculation * 1000 && answerExport.length) {
-      console.log("Time limit " + timeforCalculation + " seconds time limit has been reached");
-      break;
-      //return answerExport;
-    }
-  }
-
-  const t1 = Date.now();
-  timeTakenOnMachine = t1 - t0 + " milliseconds.";
-  console.log("It took " + (t1 - t0) + " milliseconds.");
-  console.log("Best result");
-  console.log(totalUsedStockLength / 1000 + " m");
-  //console.log(JSON.parse(stockInformationString));
-  return answerExport;
-=======
 //     const totalUsedStockLengthCompare = element.reduce((a, b) => a + b.stockLength * b.quantity, 0);
 //     console.log(totalUsedStockLengthCompare / 1000 + ' m');
 //     if (totalUsedStockLengthCompare < totalUsedStockLength) {
@@ -510,7 +395,6 @@ let timeTakenOnMachine: any = 0;
 //   console.log(totalUsedStockLength / 1000 + ' m');
 //   //console.log(JSON.parse(stockInformationString));
 //   return answerExport;
->>>>>>> origin/deploy-on-Netlify
 
 //   function checkMaxRatioStockAndCut(stockInfoElement, cutInfoElement) {
 //     const maxStockSize = stockInfoElement.sizes[0];
@@ -547,16 +431,6 @@ let timeTakenOnMachine: any = 0;
 // //   }
 // // }
 
-<<<<<<< HEAD
-// export function checkIfEnoughStockItems() {
-//   return {
-//     error: 'Not enough stock items.',
-//   };
-// }
-export function skaiciavimams(a,b,c,d){
-  return {a,b,c,d}
-}
-=======
 // // export function checkIfInteger() {
 // //   return {
 // //     error: 'Inputs must be integer numbers.',
@@ -571,4 +445,3 @@ export function skaiciavimams(a,b,c,d){
 // export function skaiciavimams(a,b,c,d){
 //   return {a,b,c,d}
 // }
->>>>>>> origin/deploy-on-Netlify

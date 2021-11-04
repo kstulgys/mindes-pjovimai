@@ -1,17 +1,4 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-<<<<<<< HEAD
-import React from "react";
-import { Box, Stack, Button, Text, Input, Checkbox } from "@chakra-ui/react";
-import { Layout } from "../components";
-import XLSX from "xlsx";
-import { StockSheet, CutsSheet } from "../components/sheets";
-import dynamic from "next/dynamic";
-import Script from "next/script";
-
-//import { useWorker } from '../utils/hooks';
-import { useWebworker } from "../utils/hooks/use-webworker";
-
-=======
 import React from 'react';
 import ReactGa from 'react-ga'
 import { Box, Stack, Button, Text, Input, Checkbox } from '@chakra-ui/react';
@@ -24,7 +11,6 @@ import '../node_modules/jspreadsheet-ce/dist/jexcel.css';
 import { useWebworker} from '../utils/hooks/use-webworker'
 import { RiFileExcel2Line, RiCalculatorLine } from 'react-icons/ri';
 //import PDFDocument1D from "../components/PDFDocument1D/index"
->>>>>>> origin/deploy-on-Netlify
 const PDFDocument1DNOSSR = dynamic(
   () => import("../components/PDFDocument1D"),
   { ssr: false }, // NO Server side render
@@ -42,14 +28,9 @@ export default function App() {
   const [stockItems, setStockTableValues] = React.useState([]);
   const [cutItems, setCutsTableValues] = React.useState([]);
   const [isLoading, setIsLoading] = React.useState(false);
-<<<<<<< HEAD
-  const { result, run } = useWebworker();
-
-=======
   const {result, run} = useWebworker();
   const [timeInterval, setTimeInterval] = React.useState(true);
  
->>>>>>> origin/deploy-on-Netlify
   const defaultData = {
     bladeSize: bladeSize,
     projectName: projectName,
@@ -65,17 +46,6 @@ export default function App() {
 
   const handleClick = async () => {
     try {
-<<<<<<< HEAD
-      setIsLoading(true);
-      // @ts-ignore
-      await run({
-        stockItems,
-        cutItems,
-        bladeSize,
-        constantD,
-      });
-      // console.log(result);
-=======
       if(timeInterval){
         setTimeInterval(false);
         setIsLoading(true);
@@ -96,7 +66,6 @@ export default function App() {
         setTimeout(() => {setTimeInterval(true)
         }, 3000);
       } 
->>>>>>> origin/deploy-on-Netlify
     } catch (e) {
       //setResult([]);
       console.log(e);
@@ -187,16 +156,8 @@ export default function App() {
                 </div> */}
             </Stack>
           </Box>
-<<<<<<< HEAD
-          <Stack spacing="2" width={["100%", "60%"]} minH="100vh">
-            {/* <PDFViewer style={{ width: "100%", height: "100%" }}> */}
-            {/* key={count} */}
-
-            <PDFDocument1DNOSSR something={result} defaultData={defaultData} />
-=======
           <Stack spacing="2" width={['100%', '60%']} minH="100vh">
              <PDFDocument1DNOSSR something={result} defaultData={defaultData} />
->>>>>>> origin/deploy-on-Netlify
             {/* something={JSON.stringify(result, null, 2)}
             {/* something={isLoading ? (
                     <h1></h1>
