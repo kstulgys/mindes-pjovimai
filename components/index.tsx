@@ -35,6 +35,7 @@ export function Layout({ children }) {
         width="full"
         minWidth="1500px" // to have nice jspreadsheets
         spacing="0"
+        color='gray.900'
       >
         <SideNavBar />
         <Box width="full" px={[2, 6]} minH="100vh">

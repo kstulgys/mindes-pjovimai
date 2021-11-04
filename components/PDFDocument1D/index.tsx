@@ -1,16 +1,16 @@
 //export default {};
 
-import { styles } from './PDF_Styles'; // Styles of PDF
-import React from 'react';
-import { useStore } from '../../store';
-import { Page, Text as TextPDF, View, Document, Font } from '@react-pdf/renderer';
-import { PDFDownloadLink, PDFViewer } from '@react-pdf/renderer';
-import { arrayMove } from '@dnd-kit/sortable';
+import { styles } from "./PDF_Styles"; // Styles of PDF
+import React from "react";
+import { useStore } from "../../store";
+import { Page, Text as TextPDF, View, Document, Font } from "@react-pdf/renderer";
+import { PDFDownloadLink, PDFViewer } from "@react-pdf/renderer";
+import { arrayMove } from "@dnd-kit/sortable";
 //import { error } from "console";
 
 Font.register({
-  family: 'Montserrat',
-  src: 'https://fonts.gstatic.com/s/montserrat/v15/JTUSjIg1_i6t8kCHKm459WlhyyTh89Y.woff2',
+  family: "Montserrat",
+  src: "https://fonts.gstatic.com/s/montserrat/v15/JTUSjIg1_i6t8kCHKm459WlhyyTh89Y.woff2",
 });
 
 export default function PDFDocument1D({ something, defaultData }) {
@@ -19,21 +19,21 @@ export default function PDFDocument1D({ something, defaultData }) {
 
   if (!something || something.length === 0 || something.error) {
     return (
-      <PDFViewer key={1} style={{ width: '100%', height: '100%', maxHeight: '2000px' }}>
+      <PDFViewer key={1} style={{ width: "100%", height: "100%", maxHeight: "2000px" }}>
         <Document>
-          <Page size="A4" style={{ marginLeft: '2cm', marginTop: '0.5cm', marginBottom: '1cm', width: '3cm' }}>
-            <TextPDF style={{ fontSize: 10, color: 'gray', lineHeight: 1.6, marginLeft: '30%', marginBottom: '10px' }}>
+          <Page size="A4" style={{ marginLeft: "2cm", marginTop: "0.5cm", marginBottom: "1cm", width: "3cm" }}>
+            <TextPDF style={{ fontSize: 10, color: "gray", lineHeight: 1.6, marginLeft: "30%", marginBottom: "10px" }}>
               Made by www.yompti.com
             </TextPDF>
             <DefaultPageView defaultData={defaultData} />
             <TableHead />
             <View
               style={{
-                width: '85%',
-                flexDirection: 'row',
+                width: "85%",
+                flexDirection: "row",
                 //margin: 12,
                 fontSize: 24,
-                textAlign: 'justify',
+                textAlign: "justify",
                 // fontFamily: "Montserrat",
               }}
               fixed
@@ -62,13 +62,10 @@ export default function PDFDocument1D({ something, defaultData }) {
   //const date = new Date().toLocaleDateString();
 
   return (
-    <PDFViewer key={1} style={{ width: '100%', height: '100%', maxHeight: '2000px' }}>
+    <PDFViewer key={1} style={{ width: "100%", height: "100%", maxHeight: "2000px" }}>
       <Document>
-        <Page size="A4" style={{ marginLeft: '2cm', marginTop: '0.5cm', marginBottom: '10cm', marginRight: '6cm' }}>
-          <TextPDF
-            style={{ fontSize: 10, color: 'gray', lineHeight: 1.6, marginLeft: '30%', marginBottom: '10px' }}
-            fixed
-          >
+        <Page size="A4" style={{ marginLeft: "2cm", marginTop: "0.5cm", marginBottom: "10cm", marginRight: "6cm" }}>
+          <TextPDF style={{ fontSize: 10, color: "gray", lineHeight: 1.6, marginLeft: "30%", marginBottom: "10px" }} fixed>
             Made by www.yompti.com
           </TextPDF>
           <DefaultPageView defaultData={defaultData} />
@@ -76,14 +73,12 @@ export default function PDFDocument1D({ something, defaultData }) {
           {something.map((value, index) => {
             return <TableRow key={index} {...value} index={index} defaultData={defaultData} />;
           })}
-          <TextPDF style={{ fontSize: 12, lineHeight: 1.6, marginTop: 10 }}>
-            Total stock length: {totalStockLength} mm
-          </TextPDF>
+          <TextPDF style={{ fontSize: 12, lineHeight: 1.6, marginTop: 10 }}>Total stock length: {totalStockLength} mm</TextPDF>
           <TextPDF style={{ fontSize: 12, lineHeight: 1.6 }}>Total waste: {totalWaste} mm</TextPDF>
           <TextPDF style={{ fontSize: 12, lineHeight: 1.6 }}>Percentage of waste: {percentageWaste} %</TextPDF>
           {/* <Box style={{top:"0cm"}}> */}
           <TextPDF
-            style={{ fontSize: 12, lineHeight: 1.6, marginLeft: '40%', marginBottom: '1cm', marginTop: '3mm' }}
+            style={{ fontSize: 12, lineHeight: 1.6, marginLeft: "40%", marginBottom: "1cm", marginTop: "3mm" }}
             render={({ pageNumber, totalPages }) => `${pageNumber} / ${totalPages}`}
             fixed
           />
@@ -103,20 +98,18 @@ function DefaultPageView({ defaultData }) {
   return (
     <View
       style={{
-        width: '85%',
-        flexDirection: 'row',
+        width: "85%",
+        flexDirection: "row",
         //margin: 12,
         fontSize: 24,
-        textAlign: 'justify',
+        textAlign: "justify",
         // fontFamily: "Montserrat",
       }}
       fixed
     >
       <TextPDF style={{ fontSize: 12, lineHeight: 1 }}>{defaultData.projectName}</TextPDF>
-      <TextPDF style={{ fontSize: 12, lineHeight: 1.6, marginLeft: '30%' }}>
-        Blade size: {defaultData.bladeSize}
-      </TextPDF>
-      <TextPDF style={{ fontSize: 12, lineHeight: 1.6, marginLeft: 'auto' }}>{todayDateEurope()}</TextPDF>
+      <TextPDF style={{ fontSize: 12, lineHeight: 1.6, marginLeft: "30%" }}>Blade size: {defaultData.bladeSize}</TextPDF>
+      <TextPDF style={{ fontSize: 12, lineHeight: 1.6, marginLeft: "auto" }}>{todayDateEurope()}</TextPDF>
     </View>
   );
 }
@@ -124,24 +117,24 @@ function TableHead() {
   return (
     <View
       style={{
-        width: '85%',
-        display: 'flex',
-        flexDirection: 'row',
-        justifyContent: 'space-around',
-        borderStyle: 'solid',
+        width: "85%",
+        display: "flex",
+        flexDirection: "row",
+        justifyContent: "space-around",
+        borderStyle: "solid",
         fontSize: 12,
-        border: '1px solid',
+        border: "1px solid",
         borderWidth: 1,
-        borderColor: 'black',
+        borderColor: "black",
         paddingHorizontal: 5,
         paddingVertical: 5,
       }}
       fixed
     >
-      <TextPDF style={{ width: '15%' }}>Quantity</TextPDF>
-      <TextPDF style={{ width: '20%' }}>Stock length</TextPDF>
-      <TextPDF style={{ width: '60%' }}>Cut list</TextPDF>
-      <TextPDF style={{ width: '10%' }}>Waste</TextPDF>
+      <TextPDF style={{ width: "15%" }}>Quantity</TextPDF>
+      <TextPDF style={{ width: "20%" }}>Stock length</TextPDF>
+      <TextPDF style={{ width: "60%" }}>Cut list</TextPDF>
+      <TextPDF style={{ width: "10%" }}>Waste</TextPDF>
     </View>
   );
 }
@@ -150,23 +143,23 @@ function TableRow({ quantity, stockLength, items, waste, stockName, defaultData 
   return (
     <View
       style={{
-        width: '85%',
-        display: 'flex',
-        flexDirection: 'row',
-        justifyContent: 'space-around',
-        borderStyle: 'solid',
+        width: "85%",
+        display: "flex",
+        flexDirection: "row",
+        justifyContent: "space-around",
+        borderStyle: "solid",
         fontSize: 11,
-        border: '1px solid',
+        border: "1px solid",
         borderWidth: 1,
-        borderColor: 'black',
+        borderColor: "black",
         borderTopWidth: 0,
         paddingHorizontal: 5,
         paddingVertical: 5,
       }}
     >
-      <TextPDF style={{ width: '15%' }}>{quantity}</TextPDF>
-      <TextPDF style={{ width: '20%' }}>{formatStockValue({ stockLength, stockName })}</TextPDF>
-      <View style={{ flexDirection: 'row', flexWrap: 'wrap', width: '60%' }}>
+      <TextPDF style={{ width: "15%" }}>{quantity}</TextPDF>
+      <TextPDF style={{ width: "20%" }}>{formatStockValue({ stockLength, stockName })}</TextPDF>
+      <View style={{ flexDirection: "row", flexWrap: "wrap", width: "60%" }}>
         {items.map(({ cutQuantity, cutLength, cutName, angle1, angle2 }, index) => {
           return (
             <TextPDF key={index}>
@@ -182,7 +175,7 @@ function TableRow({ quantity, stockLength, items, waste, stockName, defaultData 
           );
         })}
       </View>
-      <TextPDF style={{ width: '10%' }}>{checkIfPositive(waste)}</TextPDF>
+      <TextPDF style={{ width: "10%" }}>{checkIfPositive(waste)}</TextPDF>
     </View>
   );
 }
@@ -196,7 +189,7 @@ function formatStockValue({ stockLength, stockName }) {
 
 function formatCutValue({ cutQuantity, cutLength, cutName, angle1, angle2, defaultData }) {
   if (!defaultData.groupIndentical) {
-    let name = '';
+    let name = "";
     for (let index = 0; index < cutQuantity; index++) {
       if (defaultData.showNames && defaultData.showAngles && cutName && cutLength && (angle1 || angle2)) {
         name += `|${angle1 || 0}°([${cutName}] ${cutLength})${angle2 || 0}°| `;
@@ -232,8 +225,8 @@ function todayDateEurope() {
   const mm = d.getMonth() + 1;
   const dd = d.getDate();
   const yy = d.getFullYear();
-  if (mm < 10 && dd < 10) return yy + '-0' + mm + '-0' + dd;
-  if (mm < 10) return yy + '-0' + mm + '-' + dd;
-  if (dd < 10) return yy + '-' + mm + '-0' + dd;
-  return yy + '-' + mm + '-' + dd; //(LT :))
+  if (mm < 10 && dd < 10) return yy + "-0" + mm + "-0" + dd;
+  if (mm < 10) return yy + "-0" + mm + "-" + dd;
+  if (dd < 10) return yy + "-" + mm + "-0" + dd;
+  return yy + "-" + mm + "-" + dd; //(LT :))
 }
