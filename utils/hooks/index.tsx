@@ -30,29 +30,3 @@ export function useOnClickOutside(ref, handler) {
   );
 }
 
-export function useWorker () {
-  const workerRef = React.useRef(null);
-  const [data, setData] = React.useState([]);
-
-  React.useEffect(() => {
-    const worker = new Worker(new URL('../../worker.tsx', import.meta.url));
-    workerRef.current = worker;
-    worker.onmessage = (event) => {
-      setData(event.data);
-    };
-    return () => {
-      worker.terminate();
-    };
-  }, []);
-
-  const handlePostMessage = ({ stockItems, cutItems, bladeSize, constantD }) => {
-    workerRef.current.postMessage({
-      stockItems,
-      cutItems,
-      bladeSize,
-      constantD,
-    });
-  };
-
-  return { handlePostMessage, data };
-}

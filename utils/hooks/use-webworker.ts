@@ -22,7 +22,7 @@ export const useWebworker = () =>{
         workerRef.current = worker;
         worker.onmessage = async(event) => {
             //console.log('pagaliau kazkoks rezas');;
-            await console.log(event.data);
+            //await console.log(event.data);
             await setResult(event.data);
         }
         return ()=>{

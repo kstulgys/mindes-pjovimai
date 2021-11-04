@@ -22,8 +22,10 @@ import { useRouter } from 'next/router';
 import React from 'react';
 import { FiUser, FiSettings, FiFolder, FiLogOut, FiHome, FiAward, FiCoffee, FiInfo } from 'react-icons/fi';
 import { Auth } from 'aws-amplify';
+import ReactGa from 'react-ga'
 
 export function Layout({ children }) {
+  
   return (
     <Box>
       <Stack
@@ -67,10 +69,10 @@ function SideNavBar() {
       {/* <ManuItemModal icon={FiFolder} title="Projects" />
       <ManuItemModal icon={FiSettings} title="Settings" />
       <ManuItemModal icon={FiUser} title="User" /> */}
-      <Button onClick={() => router.push('/')} variant="unstyled" title="Home page" _hover={{ bg: 'blue.500' }}>
+      {/* <Button onClick={() => router.push('/')} variant="unstyled" title="Home page" _hover={{ bg: 'blue.500' }}>
         <Icon as={FiHome} fontSize="2xl" />
-      </Button>
-      {/* <ManuItemModal icon={FiLogOut} title="Logout" buttonsText="Yes" text="Are you sure want to log out?" /> */}
+      </Button> */}
+      <ManuItemModal icon={FiHome} title="Home page" buttonsText="Yes" text="Are you sure want to go back?" />
       {/* <ManuItemModal icon={FiSettings} title="How to use it" buttonsText="" text="Watch the video to find out what you can do in the app"/> */}
       <ManuItemModal
         icon={FiInfo}
@@ -83,7 +85,7 @@ function SideNavBar() {
         icon={FiCoffee}
         title="Contact Yompti team!"
         buttonsText=""
-        text="Send us a message if you have any questions. Email: hello@kastproductions.com"
+        text="Our email address: hello@kastproductions.com"
       />
       <Text
         textAlign="center"
@@ -101,26 +103,18 @@ function SideNavBar() {
 function ManuItemModal({ icon, title, buttonsText, text }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const router = useRouter();
-  // const [symbolsNumber, setSymbolsNumber] = React.useState(0);
-  // const [messageText, setMessageText] = React.useState('');
-
-  // const handleLogout = async () => {
-  //   await Auth.signOut();
-  //   router.push('/');
-  // };
-
-  // function handleTextInsert(el) {
-  //   if (el.length <= 250) {
-  //     setMessageText(el);
-  //     setSymbolsNumber(el.length);
-  //   }
-  // }
-  // function sendAMessage(msg) {
-  //   console.log('a message has been sent to the developer');
-  // }
+  
+  const handleLogout = async () => {
+    //await Auth.signOut();
+    router.push('/');
+  };
+  const handleOnOpen = () =>{
+    onOpen();
+    ReactGa.modalview(title); // Sends a pageview to GA 
+  }
   return (
     <>
-      <Button title={title} onClick={onOpen} variant="unstyled" _hover={{ bg: 'blue.500' }}>
+      <Button title={title} onClick={handleOnOpen} variant="unstyled" _hover={{ bg: 'blue.500' }}>
         <Icon as={icon} fontSize="2xl" />
       </Button>
       <Modal isOpen={isOpen} onClose={onClose} isCentered size="xl">
@@ -147,19 +141,19 @@ function ManuItemModal({ icon, title, buttonsText, text }) {
             )}
           </ModalBody>
           <ModalFooter>
-            {/* {buttonsText ? (
+            {buttonsText ? (
               <Button
                 _hover={{}}
                 bg="gray.900"
                 color="white"
                 mr={3}
-                onClick={title == 'Contacts' ? sendAMessage : handleLogout}
+                onClick={handleLogout}
               >
                 {buttonsText}
               </Button>
             ) : (
               <></>
-            )} */}
+            )}
           </ModalFooter>
         </ModalContent>
       </Modal>

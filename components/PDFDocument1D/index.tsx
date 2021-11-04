@@ -17,6 +17,7 @@ export default function PDFDocument1D({ something, defaultData }) {
   //   const result = useStore((store) => store.result);
   const projectName = useStore((store) => store.projectName);
 
+
   if (!something || something.length === 0 || something.error) {
     return (
       <PDFViewer key={1} style={{ width: '100%', height: '100%', maxHeight: '2000px' }}>

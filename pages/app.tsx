@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import React from 'react';
+import ReactGa from 'react-ga'
 import { Box, Stack, Button, Text, Input, Checkbox } from '@chakra-ui/react';
 import { Layout } from '../components';
 import XLSX from 'xlsx';
@@ -7,10 +8,9 @@ import { StockSheet, CutsSheet } from '../components/sheets';
 import dynamic from 'next/dynamic';
 import Script from 'next/script';
 import '../node_modules/jspreadsheet-ce/dist/jexcel.css';
-
-//import { useWorker } from '../utils/hooks';
 import { useWebworker} from '../utils/hooks/use-webworker'
-
+import { RiFileExcel2Line, RiCalculatorLine } from 'react-icons/ri';
+//import PDFDocument1D from "../components/PDFDocument1D/index"
 const PDFDocument1DNOSSR = dynamic(
   () => import('../components/PDFDocument1D'),
   { ssr: false } // NO Server side render
@@ -29,7 +29,8 @@ export default function App() {
   const [cutItems, setCutsTableValues] = React.useState([]);
   const [isLoading, setIsLoading] = React.useState(false);
   const {result, run} = useWebworker();
-
+  const [timeInterval, setTimeInterval] = React.useState(true);
+ 
   const defaultData = {
     bladeSize: bladeSize,
     projectName: projectName,
@@ -37,19 +38,34 @@ export default function App() {
     showAngles: showAngles,
     showNames: showNames,
   };
+  React.useEffect(() => {
+    ReactGa.initialize('UA-210625338-1');
+    ReactGa.pageview('/app'); // Sends a pageview to GA
+  }, [])
+
 
   const handleClick = async () => {
     try {
-      setIsLoading(true);
-      // @ts-ignore
-      await run({
-        stockItems,
-        cutItems,
-        bladeSize,
-        constantD,
-      });
-     // console.log(result);
-      
+      if(timeInterval){
+        setTimeInterval(false);
+        setIsLoading(true);
+        // @ts-ignore
+        const data ={
+          stockItems,
+          cutItems,
+          bladeSize,
+          constantD,
+        }
+        run(data);
+        const stringifiedData=JSON.stringify(data)
+        ReactGa.event({ // Sends data to GA
+          category:'Get result',
+          label:'Get result',
+          action:stringifiedData,
+        })
+        setTimeout(() => {setTimeInterval(true)
+        }, 3000);
+      } 
     } catch (e) {
       //setResult([]);
       console.log(e);
@@ -103,11 +119,16 @@ export default function App() {
                   value={constantD}
                   onChange={(e) => setconstantD(e.target.valueAsNumber)}
                 /> */}
-
-              <Text fontSize="lg" fontWeight="semibold">
-                Stock (Max 20 rows)
-              </Text>
-              {/* <ListCutItems></ListCutItems> */}
+              <Stack direction="row" align="center" >
+                <Text fontSize="lg" fontWeight="semibold">
+                  Stock (Max 20 rows)
+                </Text>
+                  {/* <Button size="xs" marginRight="auto" variant="outline" justify="center"
+                  onClick={() => {setStockTableValues([]); console.log('veikia');}
+                  }>
+                  Clear table
+                  </Button> */}
+              </Stack>
               <Box disabled={isLoading}>
                 <StockSheet setStockTableValues={setStockTableValues} />
               </Box>
@@ -122,7 +143,8 @@ export default function App() {
                 {/* <Button width="full" bg="gray.900" color="white" _hover={{}} margin="0px">
                   Get result
                 </Button> */}
-                <Button width="full" bg="gray.900" color="white" _hover={{}} onClick={handleClick} margin="0px">
+                <Button width="full" bg="gray.900" color="white" _hover={{}} onClick={handleClick} margin="0px" 
+                id="getResult" leftIcon={<RiCalculatorLine />}>
                   Get result
                 </Button>
                 <ButtonsResultExport resultXLS={result} defaultData={defaultData}></ButtonsResultExport>
@@ -140,10 +162,7 @@ export default function App() {
             </Stack>
           </Box>
           <Stack spacing="2" width={['100%', '60%']} minH="100vh">
-            {/* <PDFViewer style={{ width: "100%", height: "100%" }}> */}
-            {/* key={count} */}
-
-            <PDFDocument1DNOSSR something={result} defaultData={defaultData} />
+             <PDFDocument1DNOSSR something={result} defaultData={defaultData} />
             {/* something={JSON.stringify(result, null, 2)}
             {/* something={isLoading ? (
                     <h1></h1>
@@ -160,6 +179,16 @@ export default function App() {
 function ButtonsResultExport({ resultXLS, defaultData }) {
   const ExportData = () => {
     // angle1Item1,nameItem1,lengthItem1,quantityItem1,angle2Item1, cut 10,waste
+      const dataUsed = JSON.stringify({
+        groupIndentical:defaultData.groupIndentical,
+        showAngles:defaultData.showAngles,
+        showNames:defaultData.showNames
+      })
+        ReactGa.event({ // Sends data to GA
+          category:'Export XLS',
+          label:'Export XLS',
+          action: dataUsed,
+        })
     const dataB = () => {
       const transformedForXLS = [];
       function isPositive(e) {
@@ -206,10 +235,20 @@ function ButtonsResultExport({ resultXLS, defaultData }) {
   return (
     <Stack isInline spacing="10">
       <Box width="full" marginTop="10px">
-        <Button onClick={ExportData} width="full" bg="gray.900" color="white" boxShadow="base" _hover={{}} margin="0px">
+        <Button onClick={ExportData} width="full" bg="gray.900" color="white" boxShadow="base" _hover={{}} margin="0px"
+        id="exportXls" leftIcon={<RiFileExcel2Line />}>
           Export XLS
         </Button>
       </Box>
     </Stack>
   );
+}
+
+function startTimer(time){
+ let timeNow=Date.now()
+ 
+  function timer(){
+    let a = false
+    setTimeout(() => {return true}, 5000);
+  }
 }

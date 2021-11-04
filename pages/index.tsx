@@ -2,8 +2,14 @@ import React from 'react';
 import { Box, Stack, Button, Text, Image, AspectRatio } from '@chakra-ui/react';
 import { Layout } from '../components';
 import NextLink from 'next/link';
+import ReactGa from "react-ga"
+import { useEffect } from 'react';
 
 export default function IndexPage() {
+  useEffect(() => {
+    ReactGa.initialize('UA-210625338-1');
+    ReactGa.pageview('/'); // Landing page gets a pageview
+  }, [])
   return (
     <Layout>
       <Stack
