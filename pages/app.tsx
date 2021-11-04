@@ -13,8 +13,8 @@ const PDFDocument1DNOSSR = dynamic(
   () => import('../components/PDFDocument1D'),
   { ssr: false } // NO Server side render
 );
-
 //PDFDocument1D
+
 export default function App() {
   const [groupIndentical, setGroupIndentical] = React.useState(true);
   const [showNames, setShowNames] = React.useState(true);
@@ -123,7 +123,7 @@ export default function App() {
                   Get result
                 </Button>
 
-                <ButtonsResultExport resultXLS={result} defaultData={defaultData}></ButtonsResultExport>
+                {/* <ButtonsResultExport resultXLS={result} defaultData={defaultData}></ButtonsResultExport> */}
               </Box>
               {/* <h2>Result</h2>
                 <div>
@@ -203,7 +203,6 @@ function ButtonsResultExport({ resultXLS, defaultData }) {
     XLSX.utils.book_append_sheet(wb, ws, 'Data');
     XLSX.writeFile(wb, 'stock_cut_result_' + Date.now().toString() + '.xlsx');
   };
-
   return (
     <Stack isInline spacing="10">
       <Box width="full" marginTop="10px">
