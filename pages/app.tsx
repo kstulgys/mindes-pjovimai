@@ -1,15 +1,14 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-import React from 'react';
-import { Box, Stack, Button, Text, Input, Checkbox } from '@chakra-ui/react';
-import { Layout } from '../components';
-import XLSX from 'xlsx';
-import { StockSheet, CutsSheet } from '../components/sheets';
-import dynamic from 'next/dynamic';
-import Script from 'next/script';
-import '../node_modules/jspreadsheet-ce/dist/jexcel.css';
+import React from "react";
+import { Box, Stack, Button, Text, Input, Checkbox } from "@chakra-ui/react";
+import { Layout } from "../components";
+import XLSX from "xlsx";
+import { StockSheet, CutsSheet } from "../components/sheets";
+import dynamic from "next/dynamic";
+import Script from "next/script";
 
 //import { useWorker } from '../utils/hooks';
-import { useWebworker} from '../utils/hooks/use-webworker'
+import { useWebworker } from "../utils/hooks/use-webworker";
 
 const PDFDocument1DNOSSR = dynamic(
   () => import("../components/PDFDocument1D"),
@@ -28,7 +27,7 @@ export default function App() {
   const [stockItems, setStockTableValues] = React.useState([]);
   const [cutItems, setCutsTableValues] = React.useState([]);
   const [isLoading, setIsLoading] = React.useState(false);
-  const {result, run} = useWebworker();
+  const { result, run } = useWebworker();
 
   const defaultData = {
     bladeSize: bladeSize,
@@ -48,8 +47,7 @@ export default function App() {
         bladeSize,
         constantD,
       });
-     // console.log(result);
-      
+      // console.log(result);
     } catch (e) {
       //setResult([]);
       console.log(e);
@@ -64,9 +62,9 @@ export default function App() {
       {/* <Text marginTop="20px" marginBottom="5px" fontStyle="myriad-pro-1" fontSize="lg" fontWeight="semibold">
         YOMPTI Your optimisation tool 
       </Text> */}
-      <Box as="main" mx="auto" width="full" py={['6']} height="full">
-        <Stack direction={['column', 'row']} spacing="6" width="full">
-          <Box width={['100%', '40%']} >
+      <Box as="main" mx="auto" width="full" py={["6"]} height="full">
+        <Stack direction={["column", "row"]} spacing="6" width="full">
+          <Box width={["100%", "40%"]}>
             <Stack bg="white" p="6" rounded="md" boxShadow="base">
               <Stack spacing="10px" direction="row">
                 <Checkbox size="sm" isChecked={groupIndentical} onChange={(e) => setGroupIndentical(!groupIndentical)}>
@@ -83,7 +81,7 @@ export default function App() {
                 </Checkbox>
               </Stack>
               <Box spacing="10px">
-                <Text fontSize="lg" fontWeight="semibold" >
+                <Text fontSize="lg" fontWeight="semibold">
                   Project Name
                 </Text>
               </Box>

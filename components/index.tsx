@@ -77,13 +77,7 @@ function SideNavBar() {
         buttonsText=""
         text="Send us a message if you have any questions. Email: hello@kastproductions.com"
       />
-      <Text
-        textAlign="center"
-        fontSize="2xl"
-        fontWeight="bold"
-        bgGradient="linear(to-r,blue.300,gray.100)"
-        bgClip="text"
-      >
+      <Text textAlign="center" fontSize="2xl" fontWeight="bold" bgGradient="linear(to-r,blue.300,gray.100)" bgClip="text">
         Y <br />O<br />M<br />P<br />T<br />I
       </Text>
     </Stack>
@@ -123,16 +117,20 @@ function ManuItemModal({ icon, title, buttonsText, text }) {
           <ModalBody>
             {text}
 
-            {title == 'Info' ? (
+            {title == "Info" ? (
               <>
                 <Text>◉ What is Yompti?</Text>
-                <Text>Web-based automatic stock cutting optimisation software. 
-                  The cutting software can be used for obtaining optimal cutting layouts for one (1D) dimensional pieces, 
-                such as bars, pipes, tubes, steel bars, metal profiles, extrusions, tubes, lineal wood boards or other materials.</Text>
+                <Text>
+                  Web-based automatic stock cutting optimisation software. The cutting software can be used for obtaining optimal cutting
+                  layouts for one (1D) dimensional pieces, such as bars, pipes, tubes, steel bars, metal profiles, extrusions, tubes, lineal
+                  wood boards or other materials.
+                </Text>
                 <Text>◉ How it works?</Text>
-                <Text>It generates optimized cutting patterns based on the available stock sheets by nesting the required cuts. 
-                Cut and stock information can be copied directly to the input sheets from any spreadsheet software.
-                The results can be exported in XLS and PDF formats in your preferred grouping.</Text>
+                <Text>
+                  It generates optimized cutting patterns based on the available stock sheets by nesting the required cuts. Cut and stock
+                  information can be copied directly to the input sheets from any spreadsheet software. The results can be exported in XLS
+                  and PDF formats in your preferred grouping.
+                </Text>
               </>
             ) : (
               <></>
