@@ -20,9 +20,10 @@ import {
 } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 import React from 'react';
-import { FiUser, FiSettings, FiFolder, FiLogOut, FiHome, FiAward, FiCoffee, FiInfo } from 'react-icons/fi';
+import { FiUser, FiSettings, FiFolder, FiLogOut, FiHome, FiAward, FiCoffee, FiInfo, FiSave } from 'react-icons/fi';
 import { Auth } from 'aws-amplify';
 import ReactGa from 'react-ga'
+import { getByTitle } from "@testing-library/react";
 
 export function Layout({ children }) {
   
@@ -30,17 +31,17 @@ export function Layout({ children }) {
     <Box>
       <Stack
         fontFamily="Montserrat"
-        isInline
+        //isInline
         bg="gray.200"
-        minH="100vh"
-        // height="full"
+        height="full"
         width="full"
-        minWidth="1500px" // to have nice jspreadsheets
+        //minWidth="500px" // to have nice jspreadsheets
         spacing="0"
         color="gray.900"
       >
         <SideNavBar />
-        <Box width="full" px={[2, 6]} minH="100vh">
+        <Box width="full">
+        
           {children}
         </Box>
       </Stack>
@@ -56,32 +57,38 @@ function SideNavBar() {
 
   if (router.pathname === "/") return null;
 
+  
+
   return (
-    <Stack display={["none", "flex"]} width="16" boxShadow="base" bg="gray.900" alignItems="center" pt="10" color="white" spacing="8">
-      {/* <ManuItemModal icon={FiFolder} title="Projects" />
+    <Stack direction={"row"} height = "14" boxShadow="base" bg="gray.900"  color="white" px="2%" alignItems="center">
+      {/* <ManuItemModal icon={FiFolder} title="Projects" display={["none", "flex"]} alignItems="center"/>
       <ManuItemModal icon={FiSettings} title="Settings" />
       <ManuItemModal icon={FiUser} title="User" /> */}
       {/* <Button onClick={() => router.push('/')} variant="unstyled" title="Home page" _hover={{ bg: 'blue.500' }}>
         <Icon as={FiHome} fontSize="2xl" />
       </Button> */}
-      <ManuItemModal icon={FiHome} title="Home page" buttonsText="Yes" text="Are you sure want to go back?" />
-      {/* <ManuItemModal icon={FiSettings} title="How to use it" buttonsText="" text="Watch the video to find out what you can do in the app"/> */}
-      <ManuItemModal
-        icon={FiInfo}
-        title="Info"
-        buttonsText=""
-        text="
-   "
-      />
-      <ManuItemModal
-        icon={FiCoffee}
-        title="Contact Yompti team!"
-        buttonsText=""
-        text="Our email address: hello@kastproductions.com"
-      />
-      <Text textAlign="center" fontSize="2xl" fontWeight="bold" bgGradient="linear(to-r,blue.300,gray.100)" bgClip="text">
-        Y <br />O<br />M<br />P<br />T<br />I
+       <Text textAlign="center" fontSize="3xl" fontWeight="bold" bgGradient="linear(to-r,blue.100,gray.100)" bgClip="text" pl="2%">
+        {/* Y <br />O<br />M<br />P<br />T<br />I */}
+        Yompti
       </Text>
+      <Stack width={'full'} alignItems={"Left"} direction={"row"} justify={"right"} spacing="10%">
+        <ManuItemModal icon={FiHome} title="Home page" buttonsText="Yes" text="Are you sure want to go back?" />
+        {/* <ManuItemModal icon={FiSettings} title="How to use it" buttonsText="" text="Watch the video to find out what you can do in the app"/> */}
+        <ManuItemModal
+          icon={FiInfo}
+          title="Info"
+          buttonsText=""
+          text="
+    "
+        />
+        <ManuItemModal
+          icon={FiCoffee}
+          title="Contacts"
+          buttonsText=""
+          text="Contact Yompti team! Our email address: hello@kastproductions.com"
+        />
+        {/* <ManuItemModal icon={FiSave} title="Save Result" buttonsText="Yes" text="Are you sure want to save result?" /> */}
+      </Stack>
     </Stack>
   );
 }
@@ -89,7 +96,8 @@ function SideNavBar() {
 function ManuItemModal({ icon, title, buttonsText, text }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const router = useRouter();
-  
+  const [IconTitle, setIconTitle] = React.useState('');
+
   const handleLogout = async () => {
     //await Auth.signOut();
     router.push('/');
@@ -98,10 +106,29 @@ function ManuItemModal({ icon, title, buttonsText, text }) {
     onOpen();
     ReactGa.modalview(title); // Sends a pageview to GA 
   }
+
+ const showIconNames=()=>{
+   if(window.innerWidth>=600){
+     setIconTitle(title)
+   } else{
+     setIconTitle('')
+   }
+ }
+
+ React.useEffect(() => {
+  window.addEventListener("resize", showIconNames);
+  window.addEventListener("DOMContentLoaded", showIconNames);
+ }, [])
+
+
   return (
     <>
-      <Button title={title} onClick={handleOnOpen} variant="unstyled" _hover={{ bg: 'blue.500' }}>
-        <Icon as={icon} fontSize="2xl" />
+      <Button title={title} onClick={handleOnOpen} variant="unstyled" _hover={{ bg: 'blue.200' }}>
+        <Stack direction={"row"}>
+            <Icon as={icon} fontSize="2xl" />
+            <Text justify="center">{IconTitle}
+             </Text>
+        </Stack>
       </Button>
       <Modal isOpen={isOpen} onClose={onClose} isCentered size="xl">
         <ModalOverlay />

@@ -1,7 +1,8 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import React from 'react';
 import ReactGa from 'react-ga'
-import { Box, Stack, Button, Text, Input, Checkbox } from '@chakra-ui/react';
+import { Box, Stack, VStack, HStack, Button, Text, Input, Checkbox } from '@chakra-ui/react';
+import { PDFDownloadLink, PDFViewer } from "@react-pdf/renderer";
 import { Layout } from '../components';
 import XLSX from 'xlsx';
 import { StockSheet, CutsSheet } from '../components/sheets';
@@ -9,14 +10,12 @@ import dynamic from 'next/dynamic';
 import Script from 'next/script';
 import '../node_modules/jspreadsheet-ce/dist/jexcel.css';
 import { useWebworker} from '../utils/hooks/use-webworker'
-import { RiFileExcel2Line, RiCalculatorLine } from 'react-icons/ri';
-//import PDFDocument1D from "../components/PDFDocument1D/index"
+import { RiFileExcel2Line, RiCalculatorLine, RiFilePdfFill } from 'react-icons/ri';
+import testNo1 from '../utils/tests';
 const PDFDocument1DNOSSR = dynamic(
   () => import("../components/PDFDocument1D"),
   { ssr: false }, // NO Server side render
 );
-//PDFDocument1D
-
 export default function App() {
   const [groupIndentical, setGroupIndentical] = React.useState(true);
   const [showNames, setShowNames] = React.useState(true);
@@ -30,6 +29,7 @@ export default function App() {
   const [isLoading, setIsLoading] = React.useState(false);
   const {result, run} = useWebworker();
   const [timeInterval, setTimeInterval] = React.useState(true);
+  const [isClient, setIsClient] = React.useState(false);
  
   const defaultData = {
     bladeSize: bladeSize,
@@ -41,6 +41,40 @@ export default function App() {
   React.useEffect(() => {
     ReactGa.initialize('UA-210625338-1');
     ReactGa.pageview('/app'); // Sends a pageview to GA
+    setIsClient(true)// No SSR
+    const changeTableFonstSize = () =>{
+      if(window.innerWidth<=1000){
+        const aba =document.getElementsByTagName('td');
+        for (const key in aba) {
+          if (Object.prototype.hasOwnProperty.call(aba, key)) {
+            const element = aba[key];
+            element.style.fontSize="8px";
+          }
+        }
+    } else {
+        const aba =document.getElementsByTagName('td');
+        for (const key in aba) {
+          if (Object.prototype.hasOwnProperty.call(aba, key)) {
+            const element = aba[key];
+            element.style.fontSize="16px";
+          }
+        }
+    }
+   };
+  //  const changeTableColumnWidth =() =>{
+  //   const abi =document.getElementsByTagName('col');
+  //   abi[1].style.width="40px"
+  //   abi[2].style.width="40px"
+  //   abi[4].style.width="20px"
+  //   abi[6].style.width="40px"
+  //   abi[7].style.width="40px"
+  //   abi[11].style.width="20px"
+  //   //console.log(abi);
+  //  }
+    window.addEventListener("load", changeTableFonstSize);   
+    //window.addEventListener("load", changeTableColumnWidth); 
+    window.addEventListener("resize", changeTableFonstSize);
+    window.addEventListener("click", changeTableFonstSize);
   }, [])
 
 
@@ -72,19 +106,58 @@ export default function App() {
       setIsLoading(false);
     }
   };
+  // const handleTest1 = async () => {
+  //   try {
+  //     if(timeInterval){
+  //       setTimeInterval(false);
+  //       setIsLoading(true);
+  //       // @ts-ignore
+  //       const stockItems=testNo1().stockItems
+  //       const cutItems=testNo1().cutItems
+  //       const data1 ={
+  //         stockItems,
+  //         cutItems,
+  //         bladeSize,
+  //         constantD,
+  //       }
+  //       console.log(data1);
+  //       run(data1);
+  //       setTimeout(() => {setTimeInterval(true)
+  //       }, 3000);
+  //     } 
+  //   } catch (e) {
+  //     console.log(e);
+  //     setIsLoading(false);
+  //   }
+  // };
 
   return (
     <Layout>
       <Script src="https://bossanova.uk/jspreadsheet/v4/jexcel.js"></Script>
       <Script src="https://jsuites.net/v4/jsuites.js"></Script>
-      {/* <Text marginTop="20px" marginBottom="5px" fontStyle="myriad-pro-1" fontSize="lg" fontWeight="semibold">
-        YOMPTI Your optimisation tool 
-      </Text> */}
-      <Box as="main" mx="auto" width="full" py={["6"]} height="full">
-        <Stack direction={["column", "row"]} spacing="6" width="full">
-          <Box width={["100%", "40%"]}>
-            <Stack bg="white" p="6" rounded="md" boxShadow="base">
-              <Stack spacing="10px" direction="row">
+      <Box as="main" width="full" height="full">
+        <Stack direction={["column", "row"]} width="full" height="full" p="3">
+          <Box width={["100%", "50%"]} minWidth={"350px"} >
+            <Stack bg="white" rounded="md" boxShadow="base" p="2">
+              
+              <Box spacing="10px">
+                <Text fontSize="lg" fontWeight="semibold">
+                  Project Name
+                </Text>
+              </Box>
+              <Input type="string" value={projectName} placeholder={projectName} onChange={(e) => setProjectName(e.target.value)} />
+              <Text fontSize="lg" fontWeight="semibold">
+                Blade size
+              </Text>
+              
+              <Input type="number" value={bladeSize} onChange={(e) => setBladeSize(e.target.valueAsNumber)} />
+              {/* <h2>Time limit for optimisation, s</h2>
+                <input
+                  type="number"
+                  value={constantD}
+                  onChange={(e) => setconstantD(e.target.valueAsNumber)}
+                /> */}
+                <Stack justifyContent="space-between" direction="row" >
                 <Checkbox size="sm" isChecked={groupIndentical} onChange={(e) => setGroupIndentical(!groupIndentical)}>
                   {" "}
                   Group indentical parts{" "}
@@ -98,66 +171,35 @@ export default function App() {
                   Show names{" "}
                 </Checkbox>
               </Stack>
-              <Box spacing="10px">
-                <Text fontSize="lg" fontWeight="semibold">
-                  Project Name
-                </Text>
-              </Box>
-              <Input type="string" value={projectName} placeholder={projectName} onChange={(e) => setProjectName(e.target.value)} />
-              <Text fontSize="lg" fontWeight="semibold">
-                Blade size
-              </Text>
-              <Input type="number" value={bladeSize} onChange={(e) => setBladeSize(e.target.valueAsNumber)} />
-              {/* <h2>Time limit for optimisation, s</h2>
-                <input
-                  type="number"
-                  value={constantD}
-                  onChange={(e) => setconstantD(e.target.valueAsNumber)}
-                /> */}
-              <Stack direction="row" align="center" >
-                <Text fontSize="lg" fontWeight="semibold">
-                  Stock (Max 20 rows)
-                </Text>
-                  {/* <Button size="xs" marginRight="auto" variant="outline" justify="center"
-                  onClick={() => {setStockTableValues([]); console.log('veikia');}
-                  }>
-                  Clear table
-                  </Button> */}
-              </Stack>
-              <Box disabled={isLoading}>
+              <Box disabled={isLoading} pb="5">
                 <StockSheet setStockTableValues={setStockTableValues} />
               </Box>
-              <Text fontSize="lg" fontWeight="semibold">
-                Cuts (Max 100 rows)
-              </Text>
               <Box disabled={isLoading}>
                 <CutsSheet setCutsTableValues={setCutsTableValues} />
               </Box>
-
-              <Box width="full">
-                {/* <Button width="full" bg="gray.900" color="white" _hover={{}} margin="0px">
-                  Get result
-                </Button> */}
-                <Button width="full" bg="gray.900" color="white" _hover={{}} onClick={handleClick} margin="0px" 
-                id="getResult" leftIcon={<RiCalculatorLine />}>
-                  Get result
-                </Button>
-                <ButtonsResultExport resultXLS={result} defaultData={defaultData}></ButtonsResultExport>
-              </Box>
-              {/* <h2>Result</h2>
-                <div>
-                   {isLoading ? (
-                    <h1>Loading...</h1>
-                  ) 
-                  : (
-                    <pre>{JSON.stringify(result, null, 2)}</pre>
-                  )
-                  }
-                </div> */}
+              <VStack direction="column" spacing="5px">  
+                  <Button width="full" bg="gray.900" color="white" _hover={{}} onClick={handleClick} p="5" leftIcon={<RiCalculatorLine />}>
+                    Calculate
+                  </Button>
+                  {/* <Button id="Test1" onClick={handleTest1}> Test1</Button> */}
+                  <ButtonsResultExport resultXLS={result} defaultData={defaultData}></ButtonsResultExport>
+                  <Button width="full" bg="gray.900" color="white" _hover={{}} margin="0px" leftIcon={<RiFilePdfFill/>}>
+                    <>{isClient && <PDFDownloadLink document={<PDFDocument1DNOSSR something={result} defaultData={defaultData} />} 
+                    fileName={"cut_result_" + todayDateForExport() + ".pdf"}>
+                      {/* <Button bg="red" width="full" leftIcon={<RiFilePdfFill/>}>  */}
+                      {({ blob, url, loading, error }) => loading ? 'Loading document...' : 'Download PDF'}
+                      {/* </Button> */}
+                    </PDFDownloadLink> } </>
+                  </Button>
+              </VStack>  
             </Stack>
           </Box>
-          <Stack spacing="2" width={['100%', '60%']} minH="100vh">
-             <PDFDocument1DNOSSR something={result} defaultData={defaultData} />
+          <Stack width={['100%', '50%']} height={['700px', 'auto']} minH="full"maxH="1500px" >
+            <>
+              {isClient && <PDFViewer key={1} style={{ width: "100%", height: "100%", maxHeight: "2000px" }}>
+               <PDFDocument1DNOSSR something={result} defaultData={defaultData} />
+              </PDFViewer>}
+            </>
             {/* something={JSON.stringify(result, null, 2)}
             {/* something={isLoading ? (
                     <h1></h1>
@@ -225,25 +267,24 @@ function ButtonsResultExport({ resultXLS, defaultData }) {
     const ws = XLSX.utils.json_to_sheet(dataB());
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, "Data");
-    XLSX.writeFile(wb, "stock_cut_result_" + Date.now().toString() + ".xlsx");
+    XLSX.writeFile(wb, "cut_result_" + todayDateForExport() + ".xlsx");
   };
   return (
-    <Stack isInline spacing="10">
-      <Box width="full" marginTop="10px">
+    <Stack isInline width="full">
         <Button onClick={ExportData} width="full" bg="gray.900" color="white" boxShadow="base" _hover={{}} margin="0px"
-        id="exportXls" leftIcon={<RiFileExcel2Line />}>
-          Export XLS
+        id="exportXls" leftIcon={<RiFileExcel2Line />}  >
+          Download XLS
         </Button>
-      </Box>
     </Stack>
   );
 }
-
-function startTimer(time){
- let timeNow=Date.now()
- 
-  function timer(){
-    let a = false
-    setTimeout(() => {return true}, 5000);
-  }
+function todayDateForExport() {
+  const d = new Date();
+  const mm = d.getMonth() + 1;
+  const dd = d.getDate();
+  const yy = d.getFullYear();
+  if (mm < 10 && dd < 10) return yy + "-0" + mm + "-0" + dd;
+  if (mm < 10) return yy + "-0" + mm + "-" + dd;
+  if (dd < 10) return yy + "-" + mm + "-0" + dd;
+  return yy + "-" + mm + "-" + dd; //(LT :))
 }

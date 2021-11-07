@@ -40,20 +40,20 @@ table[class~="jexcel"]{
 }
 
 iframe{
+  height:fit-content;
   border-radius: 10px 10px 10px 10px;
 }
 
-/* td[title="Length"],
+td[title="Length"],
 td[title="Quantity"],
 td[title="Name"],
 td[title="Use"],
 td[title="Angle 1"],
 td[title="Angle 2"],
 td[class="jexcel_selectall"],
-td[class="jexcel_row"],
-td[data-x="0"]{
-  background-color: #ffffff ;
-} */
+td td:first-child{
+  background-color: #dee4d9 ;
+} 
 
 td[title="Use"]{
   border-radius: 0 10px 0 0;
@@ -74,6 +74,11 @@ input[type='checkbox']{
   background: #FFF;
 }
 
+
 .jexcel_toolbar{
   background-color: #099ac8 ;
+}
+
+col{
+  width: 30px;
 }

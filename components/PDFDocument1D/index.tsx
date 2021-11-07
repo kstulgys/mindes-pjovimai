@@ -3,8 +3,7 @@
 import { styles } from "./PDF_Styles"; // Styles of PDF
 import React from "react";
 import { useStore } from "../../store";
-import { Page, Text as TextPDF, View, Document, Font } from "@react-pdf/renderer";
-import { PDFDownloadLink, PDFViewer } from "@react-pdf/renderer";
+import { Page, Text as TextPDF, View, Document, Font, StyleSheet } from "@react-pdf/renderer";
 import { arrayMove } from "@dnd-kit/sortable";
 //import { error } from "console";
 
@@ -13,82 +12,6 @@ Font.register({
   src: "https://fonts.gstatic.com/s/montserrat/v15/JTUSjIg1_i6t8kCHKm459WlhyyTh89Y.woff2",
 });
 
-export default function PDFDocument1D({ something, defaultData }) {
-  //   const result = useStore((store) => store.result);
-  const projectName = useStore((store) => store.projectName);
-
-
-  if (!something || something.length === 0 || something.error) {
-    return (
-      <PDFViewer key={1} style={{ width: "100%", height: "100%", maxHeight: "2000px" }}>
-        <Document>
-          <Page size="A4" style={{ marginLeft: "2cm", marginTop: "0.5cm", marginBottom: "1cm", width: "3cm" }}>
-            <TextPDF style={{ fontSize: 10, color: "gray", lineHeight: 1.6, marginLeft: "30%", marginBottom: "10px" }}>
-              Made by www.yompti.com
-            </TextPDF>
-            <DefaultPageView defaultData={defaultData} />
-            <TableHead />
-            <View
-              style={{
-                width: "85%",
-                flexDirection: "row",
-                //margin: 12,
-                fontSize: 24,
-                textAlign: "justify",
-                // fontFamily: "Montserrat",
-              }}
-              fixed
-            >
-              <TextPDF>{something.error}</TextPDF>
-            </View>
-          </Page>
-        </Document>
-      </PDFViewer>
-    );
-  }
-  // console.log(something);
-  // console.log('1');
-  const totalStockLength = something.reduce((a, b) => a + b.stockLength * b.quantity, 0);
-  const totalWaste = something.reduce((a, b) => a + checkIfPositive(b.waste) * b.quantity, 0);
-  const percentageWaste = roundToTwo((totalWaste / totalStockLength) * 100);
-  function roundToTwo(num) {
-    return Math.round((num + Number.EPSILON) * 100) / 100;
-  }
-  //   const totalStockLength = result.reduce(
-  //     (acc, [key, { stockLength, stockQuantity }]) => {
-  //       return (acc += Math.round(stockLength * stockQuantity));
-  //     },
-  //     0
-  //   );
-  //const date = new Date().toLocaleDateString();
-
-  return (
-    <PDFViewer key={1} style={{ width: "100%", height: "100%", maxHeight: "2000px" }}>
-      <Document>
-        <Page size="A4" style={{ marginLeft: "2cm", marginTop: "0.5cm", marginBottom: "10cm", marginRight: "6cm" }}>
-          <TextPDF style={{ fontSize: 10, color: "gray", lineHeight: 1.6, marginLeft: "30%", marginBottom: "10px" }} fixed>
-            Made by www.yompti.com
-          </TextPDF>
-          <DefaultPageView defaultData={defaultData} />
-          <TableHead />
-          {something.map((value, index) => {
-            return <TableRow key={index} {...value} index={index} defaultData={defaultData} />;
-          })}
-          <TextPDF style={{ fontSize: 12, lineHeight: 1.6, marginTop: 10 }}>Total stock length: {totalStockLength} mm</TextPDF>
-          <TextPDF style={{ fontSize: 12, lineHeight: 1.6 }}>Total waste: {totalWaste} mm</TextPDF>
-          <TextPDF style={{ fontSize: 12, lineHeight: 1.6 }}>Percentage of waste: {percentageWaste} %</TextPDF>
-          {/* <Box style={{top:"0cm"}}> */}
-          <TextPDF
-            style={{ fontSize: 12, lineHeight: 1.6, marginLeft: "40%", marginBottom: "1cm", marginTop: "3mm" }}
-            render={({ pageNumber, totalPages }) => `${pageNumber} / ${totalPages}`}
-            fixed
-          />
-          {/* </Box> */}
-        </Page>
-      </Document>
-    </PDFViewer>
-  );
-}
 
 function checkIfPositive(number) {
   if (number < 0) return 0;
@@ -230,4 +153,66 @@ function todayDateEurope() {
   if (mm < 10) return yy + "-0" + mm + "-" + dd;
   if (dd < 10) return yy + "-" + mm + "-0" + dd;
   return yy + "-" + mm + "-" + dd; //(LT :))
+}
+export default function PDFDocument1D({ something, defaultData }) {
+  //   const result = useStore((store) => store.result);
+  //const projectName = useStore((store) => store.projectName);
+
+
+  if (!something || something.length === 0 || something.error) {
+    return (
+        <Document>
+          <Page size="A4" style={{ marginLeft: "2cm", marginTop: "0.5cm", marginBottom: "1cm", width: "3cm" }}>
+            <TextPDF style={{ fontSize: 10, color: "gray", lineHeight: 1.6, marginLeft: "30%", marginBottom: "10px" }}>
+              Made by www.yompti.com
+            </TextPDF>
+            <DefaultPageView defaultData={defaultData} />
+            <TableHead />
+            <View
+              style={{
+                width: "85%",
+                flexDirection: "row",
+                //margin: 12,
+                fontSize: 24,
+                textAlign: "justify",
+                // fontFamily: "Montserrat",
+              }}
+              fixed
+            >
+              <TextPDF>{something.error}</TextPDF>
+            </View>
+          </Page>
+        </Document>
+    );
+  }
+  const totalStockLength = something.reduce((a, b) => a + b.stockLength * b.quantity, 0);
+  const totalWaste = something.reduce((a, b) => a + checkIfPositive(b.waste) * b.quantity, 0);
+  const percentageWaste = roundToTwo((totalWaste / totalStockLength) * 100);
+  function roundToTwo(num) {
+    return Math.round((num + Number.EPSILON) * 100) / 100;
+  }
+  return (
+      <Document>
+        <Page size="A4" style={{ marginLeft: "2cm", marginTop: "0.5cm", marginBottom: "10cm", marginRight: "6cm" }}>
+          <TextPDF style={{ fontSize: 10, color: "gray", lineHeight: 1.6, marginLeft: "30%", marginBottom: "10px" }} fixed>
+            Made by www.yompti.com
+          </TextPDF>
+          <DefaultPageView defaultData={defaultData} />
+          <TableHead />
+          {something.map((value, index) => {
+            return <TableRow key={index} {...value} index={index} defaultData={defaultData} />;
+          })}
+          <TextPDF style={{ fontSize: 12, lineHeight: 1.6, marginTop: 10 }}>Total stock length: {totalStockLength} mm</TextPDF>
+          <TextPDF style={{ fontSize: 12, lineHeight: 1.6 }}>Total waste: {totalWaste} mm</TextPDF>
+          <TextPDF style={{ fontSize: 12, lineHeight: 1.6 }}>Percentage of waste: {percentageWaste} %</TextPDF>
+          {/* <Box style={{top:"0cm"}}> */}
+          <TextPDF
+            style={{ fontSize: 12, lineHeight: 1.6, marginLeft: "40%", marginBottom: "1cm", marginTop: "3mm" }}
+            render={({ pageNumber, totalPages }) => `${pageNumber} / ${totalPages}`}
+            fixed
+          />
+          {/* </Box> */}
+        </Page>
+      </Document>
+  );
 }

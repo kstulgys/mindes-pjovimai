@@ -12,19 +12,20 @@ export default function IndexPage() {
   }, [])
   return (
     <Layout>
-      <Stack alignItems={["center"]} justifyContent={["center"]} maxW="8xl" width="full" mx="auto" pt={[20, 48]} pb="10">
+      {/* <Stack alignItems={["center"]} justifyContent={["center"]} maxW="8xl" width="full" mx="auto" pt={[20, 48]} pb="10"> */}
+      <Stack alignItems={["center"]}  pt={[5, 4]} pb="10" >
         <Box>
           <Text as="h1" maxW="xxl" textAlign="center" fontSize="5xl" fontWeight="bold">
             YOMPTI
           </Text>
         </Box>
         <Box>
-          <Text as="h3" minW="30%" textAlign="center" fontSize="2xl">
+          <Text as="h3" minW="30%" textAlign="center" fontSize="xl">
             Web-based automatic stock cutting optimisation software. The cutting software can be used for obtaining optimal cutting layouts
             for one (1D) dimensional pieces, such as bars, pipes, tubes, steel bars, metal profiles, extrusions, tubes, lineal wood boards
             or other materials.
           </Text>
-          <Text as="h3" maxW="xxl" textAlign="justify" fontSize="2xl"></Text>
+          {/* <Text as="h3" maxW="xxl" textAlign="justify" fontSize="2xl"></Text> */}
         </Box>
         <Box pt="4">
           <NextLink href="/app" passHref={true}>
@@ -36,8 +37,8 @@ export default function IndexPage() {
         </Box>
       </Stack>
       <Stack isInline justifyContent="center" pb="20">
-        <Box maxW="1000px">
-          <Image src="/background_2021-09-26.jpg" objectFit="cover" />
+        <Box >
+          <Image src="/background_2021-09-26.jpg" />
           {/* <AspectRatio maxW="560px" ratio={1}> */}
           {/* <Box
                 as="iframe"

@@ -1,4 +1,7 @@
 import React, { useRef, useEffect, useState } from "react";
+import { Box, Stack, HStack, Button, Text, Input, Checkbox } from '@chakra-ui/react';
+import { FcDeleteRow, FcAddRow } from 'react-icons/Fc';
+import { getDefaultLibFileName } from "typescript";
 
 export function StockSheet({ setStockTableValues }) {
   const defaultOptions = {
@@ -10,10 +13,10 @@ export function StockSheet({ setStockTableValues }) {
       [2000, 4000, "a4", true],
     ],
     columns: [
-      { type: "number", title: "Length", width: 80 },
-      { type: "number", title: "Quantity", width: 80 },
-      { type: "text", title: "Name", width: 120 },
-      { type: "checkbox", title: "Use", width: 30 },
+      { type: "number", title: "Length"},
+      { type: "number", title: "Quantity"},
+      { type: "text", title: "Name"},
+      { type: "checkbox", title: "Use"},
     ],
     onbeforeinsertrow: ({ jspreadsheet }) => {
       const data = jspreadsheet.getData();
@@ -73,26 +76,46 @@ export function StockSheet({ setStockTableValues }) {
   };
   const [options, setOptions] = React.useState(defaultOptions);
   const jRef = useRef(null);
+  
   useJspreadsheet({ options, jRef });
-  return <div ref={jRef} />;
+
+  const addRow = () => {
+    jRef.current.jexcel.insertRow([,,,true]);
+  };
+  const deleteRow = () => {
+    jRef.current.jexcel.deleteRow();
+  };
+  const clearTable = () => {
+    const clearedData = jRef.current.jexcel.getData().map(x=>[, , , true]);
+    jRef.current.jexcel.setData(clearedData);
+  };
+
+  return <>
+  <HStack justifyContent="space-between">
+      <Text fontSize="lg" fontWeight="semibold">
+        Stock (Max 20 rows)
+      </Text>
+    <Button size="xs" variant="outline" className="testas" onClick={clearTable}>
+          Clear table
+    </Button>
+  </HStack>
+  <div ref={jRef} /> 
+  <HStack justifyContent="space-between">
+    <Button size="xs" variant="outline" className="testas" onClick={addRow} leftIcon={<FcAddRow />}>
+       Row +
+    </Button>
+    <Button size="xs" variant="outline" className="testas" onClick={deleteRow} leftIcon={<FcDeleteRow />}>
+       Row -
+    </Button>
+  </HStack>
+  </>;
 }
 
 export function CutsSheet({ setCutsTableValues }) {
-  const hi = function inputX() {
-    return <input type="checkbox"> hi</input>;
-  };
   const defaultOptions = {
     columnResize: false,
     style: {
       // A1:'background-color: red;',
-      // B1:'background-color: orange;',
-      // C1:"color: #9ccc65",
-      // //F1:"color: #9ccc65",
-      // //F1:"size:lg",
-      // F1:":colorScheme:blackAlpha",
-      // jexcel_header_background: "#212121",
-      // cell: "background-color:#212121;",
-      // table:"background-color: orange;",
     },
     data: [
       [1560, 25, -90, 90, "b1", true],
@@ -101,12 +124,12 @@ export function CutsSheet({ setCutsTableValues }) {
       [1000, 52, 0, 0, "", true],
     ],
     columns: [
-      { type: "number", title: "Length", width: 75 },
-      { type: "number", title: "Quantity", width: 80 },
-      { type: "number", title: "Angle 1", width: 70 },
-      { type: "number", title: "Angle 2", width: 70 },
-      { type: "string", title: "Name", width: 100 },
-      { type: "checkbox", title: "Use", width: 35 },
+      { type: "number", title: "Length", width:60},
+      { type: "number", title: "Quantity", width:120},
+      { type: "number", title: "Angle1"},
+      { type: "number", title: "Angle2"},
+      { type: "string", title: "Name"},
+      { type: "checkbox", title: "Use"},
     ],
     onbeforeinsertrow: ({ jspreadsheet }) => {
       const data = jspreadsheet.getData();
@@ -166,21 +189,44 @@ export function CutsSheet({ setCutsTableValues }) {
       }
     },
     oninsertrow: ({ jspreadsheet }, cell, col, row, val, label, cellName, ha) => {
-      // console.log('oninsertrow');
-      // //console.log(cell, col, row, val, label, cellName, ha);
-      // console.log('jspreadsheet');
-      // console.log(jspreadsheet);
-      // console.log(jspreadsheet.getStyle("F1"));
-      // // if (!jspreadsheet.getData()[row][5]){ // If USE unchecked
-      // //   cell.style.opacity = "0.3";
-      // // } else {cell.style.opacity = "1";}
     },
   };
-
+  
   const [options, setOptions] = React.useState(defaultOptions);
   const jRef = useRef(null);
+ 
   useJspreadsheet({ options, jRef });
-  return <div ref={jRef} />;
+
+  const addRow = () => {
+    jRef.current.jexcel.insertRow([0,0,0,0,'',true]);
+  };
+  const deleteRow = () => {
+    jRef.current.jexcel.deleteRow();
+  };
+  const clearTable = () => {
+    const clearedData = jRef.current.jexcel.getData().map(x=>[, , , ,,true]);
+    jRef.current.jexcel.setData(clearedData);
+  };
+
+  return <>
+          <HStack justifyContent="space-between">
+              <Text fontSize="lg" fontWeight="semibold">
+                Cuts (Max 100 rows)
+              </Text>
+            <Button size="xs" variant="outline" className="testas" onClick={clearTable}>
+                  Clear table
+            </Button>
+          </HStack>
+          <div ref={jRef} /> 
+          <HStack justifyContent="space-between">
+            <Button size="xs" variant="outline" className="testas" onClick={addRow} leftIcon={<FcAddRow />}>
+               Row +
+            </Button>
+            <Button size="xs" variant="outline" className="testas" onClick={deleteRow} leftIcon={<FcDeleteRow />}>
+               Row -
+            </Button>
+          </HStack>
+          </>;
 }
 
 // Hook
