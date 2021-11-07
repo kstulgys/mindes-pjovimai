@@ -8,7 +8,7 @@ import XLSX from 'xlsx';
 import { StockSheet, CutsSheet } from '../components/sheets';
 import dynamic from 'next/dynamic';
 import Script from 'next/script';
-import '../node_modules/jspreadsheet-ce/dist/jexcel.css';
+import "../node_modules/jspreadsheet-ce/dist/jspreadsheet.css"
 import { useWebworker} from '../utils/hooks/use-webworker'
 import { RiFileExcel2Line, RiCalculatorLine, RiFilePdfFill } from 'react-icons/ri';
 import testNo1 from '../utils/tests';
@@ -183,14 +183,12 @@ export default function App() {
                   </Button>
                   {/* <Button id="Test1" onClick={handleTest1}> Test1</Button> */}
                   <ButtonsResultExport resultXLS={result} defaultData={defaultData}></ButtonsResultExport>
-                  <Button width="full" bg="gray.900" color="white" _hover={{}} margin="0px" leftIcon={<RiFilePdfFill/>}>
+                  {/* <Button width="full" bg="gray.900" color="white" _hover={{}} margin="0px" leftIcon={<RiFilePdfFill/>}>
                     <>{isClient && <PDFDownloadLink document={<PDFDocument1DNOSSR something={result} defaultData={defaultData} />} 
                     fileName={"cut_result_" + todayDateForExport() + ".pdf"}>
-                      {/* <Button bg="red" width="full" leftIcon={<RiFilePdfFill/>}>  */}
                       {({ blob, url, loading, error }) => loading ? 'Loading document...' : 'Download PDF'}
-                      {/* </Button> */}
                     </PDFDownloadLink> } </>
-                  </Button>
+                  </Button> */}
               </VStack>  
             </Stack>
           </Box>
