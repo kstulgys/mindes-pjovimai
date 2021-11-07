@@ -1,6 +1,6 @@
 import React, { useRef, useEffect, useState } from "react";
 import { Box, Stack, HStack, Button, Text, Input, Checkbox } from '@chakra-ui/react';
-import { FcDeleteRow, FcAddRow } from 'react-icons/Fc';
+import { FcDeleteRow, FcAddRow } from 'react-icons/fc';
 import { getDefaultLibFileName } from "typescript";
 
 export function StockSheet({ setStockTableValues }) {
