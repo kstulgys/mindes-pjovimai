@@ -1,21 +1,34 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import React from 'react';
 import ReactGa from 'react-ga'
+import dynamic from 'next/dynamic';
 import { Box, Stack, VStack, HStack, Button, Text, Input, Checkbox } from '@chakra-ui/react';
 import { PDFDownloadLink, PDFViewer } from "@react-pdf/renderer";
+const RenderPDFViewer = dynamic(() =>import('../components/PDFDocument1D') ,
+ { ssr: false },);
+import { PDFDocument } from '../components/PDFDocument1D'; // NO Server side render);
+// const DownloadPDF = dynamic(() =>
+// import('../components/PDFDocument1D/index').then((mod) => mod.DownloadPDF() ),
+// { ssr: false }, // NO Server side render
+// )
+// const DynamicComponent = dynamic(() =>
+//   import('../components/hello').then((mod) => mod.Hello)
+// )
 import { Layout } from '../components';
 import XLSX from 'xlsx';
 import { StockSheet, CutsSheet } from '../components/sheets';
-import dynamic from 'next/dynamic';
+
 import Script from 'next/script';
 import '../node_modules/jspreadsheet-ce/dist/jspreadsheet.css';
 import { useWebworker} from '../utils/hooks/use-webworker'
 import { RiFileExcel2Line, RiCalculatorLine, RiFilePdfFill } from 'react-icons/ri';
 import testNo1 from '../utils/tests';
-const PDFDocument1DNOSSR = dynamic(
-  () => import("../components/PDFDocument1D"),
-  { ssr: false }, // NO Server side render
-);
+import { todayDateEurope } from '../components/PDFDocument1D';
+// const PDFDocument1DNOSSR = dynamic(
+//   () => import("../components/PDFDocument1D"),
+//   { ssr: false }, // NO Server side render
+// );
+
 export default function App() {
   const [groupIndentical, setGroupIndentical] = React.useState(true);
   const [showNames, setShowNames] = React.useState(true);
@@ -183,21 +196,24 @@ export default function App() {
                   </Button>
                   {/* <Button id="Test1" onClick={handleTest1}> Test1</Button> */}
                   <ButtonsResultExport resultXLS={result} defaultData={defaultData}></ButtonsResultExport>
-                  {/* <Button width="full" bg="gray.900" color="white" _hover={{}} margin="0px" leftIcon={<RiFilePdfFill/>}>
-                    <>{isClient && <PDFDownloadLink document={<PDFDocument1DNOSSR something={result} defaultData={defaultData} />} 
+                  <Button width="full" bg="gray.900" color="white" _hover={{}} margin="0px" leftIcon={<RiFilePdfFill/>}>
+                  <RenderPDFViewer something={result} defaultData={defaultData} buttonView={true}/>
+                    {/* <>{isClient && <PDFDownloadLink document={<PDFDocument something={result} defaultData={defaultData} />} 
                     fileName={"cut_result_" + todayDateForExport() + ".pdf"}>
                       {({ blob, url, loading, error }) => loading ? 'Loading document...' : 'Download PDF'}
                     </PDFDownloadLink> } </>
-                  </Button> */}
+                     */}
+                  </Button>
               </VStack>  
             </Stack>
           </Box>
           <Stack width={['100%', '50%']} height={['700px', 'auto']} minH="full"maxH="1500px" >
-            <>
+            <RenderPDFViewer something={result} defaultData={defaultData} buttonView={false}/>
+            {/* <>
               {isClient && <PDFViewer key={1} style={{ width: "100%", height: "100%", maxHeight: "2000px" }}>
                <PDFDocument1DNOSSR something={result} defaultData={defaultData} />
               </PDFViewer>}
-            </>
+            </> */}
             {/* something={JSON.stringify(result, null, 2)}
             {/* something={isLoading ? (
                     <h1></h1>
@@ -265,7 +281,7 @@ function ButtonsResultExport({ resultXLS, defaultData }) {
     const ws = XLSX.utils.json_to_sheet(dataB());
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, "Data");
-    XLSX.writeFile(wb, "cut_result_" + todayDateForExport() + ".xlsx");
+    XLSX.writeFile(wb, "cut_result_" + todayDateEurope() + ".xlsx");
   };
   return (
     <Stack isInline width="full">
@@ -275,14 +291,4 @@ function ButtonsResultExport({ resultXLS, defaultData }) {
         </Button>
     </Stack>
   );
-}
-function todayDateForExport() {
-  const d = new Date();
-  const mm = d.getMonth() + 1;
-  const dd = d.getDate();
-  const yy = d.getFullYear();
-  if (mm < 10 && dd < 10) return yy + "-0" + mm + "-0" + dd;
-  if (mm < 10) return yy + "-0" + mm + "-" + dd;
-  if (dd < 10) return yy + "-" + mm + "-0" + dd;
-  return yy + "-" + mm + "-" + dd; //(LT :))
 }

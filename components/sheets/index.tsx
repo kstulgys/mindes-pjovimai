@@ -198,13 +198,13 @@ export function CutsSheet({ setCutsTableValues }) {
   useJspreadsheet({ options, jRef });
 
   const addRow = () => {
-    jRef.current.jexcel.insertRow([0,0,0,0,'',true]);
+    jRef.current.jexcel.insertRow([,,,,,true]);
   };
   const deleteRow = () => {
     jRef.current.jexcel.deleteRow();
   };
   const clearTable = () => {
-    const clearedData = jRef.current.jexcel.getData().map(x=>[, , , ,,true]);
+    const clearedData = jRef.current.jexcel.getData().map(x=>[,,,,,true]);
     jRef.current.jexcel.setData(clearedData);
   };
 

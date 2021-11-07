@@ -3,7 +3,8 @@
 import { styles } from "./PDF_Styles"; // Styles of PDF
 import React from "react";
 import { useStore } from "../../store";
-import { Page, Text as TextPDF, View, Document, Font, StyleSheet } from "@react-pdf/renderer";
+import { Page, Text as TextPDF, View, Document, Font, 
+  StyleSheet, PDFDownloadLink, PDFViewer } from "@react-pdf/renderer";
 import { arrayMove } from "@dnd-kit/sortable";
 //import { error } from "console";
 
@@ -144,7 +145,7 @@ function formatCutValue({ cutQuantity, cutLength, cutName, angle1, angle2, defau
   return `|${cutLength} x ${cutQuantity}| `;
 }
 
-function todayDateEurope() {
+export function todayDateEurope() {
   const d = new Date();
   const mm = d.getMonth() + 1;
   const dd = d.getDate();
@@ -154,11 +155,31 @@ function todayDateEurope() {
   if (dd < 10) return yy + "-" + mm + "-0" + dd;
   return yy + "-" + mm + "-" + dd; //(LT :))
 }
-export default function PDFDocument1D({ something, defaultData }) {
+
+export default function RenderPDFViewer({ something, defaultData,buttonView }){
+  if(buttonView){return(<PDFDownloadLink document={<PDFDocument something={something} defaultData={defaultData} />} 
+    fileName={"cut_result_" + todayDateEurope() + ".pdf"}>
+      {({ blob, url, loading, error }) => loading ? 'Loading document...' : 'Download PDF'}
+    </PDFDownloadLink> )
+  }else{return(
+  <PDFViewer key={1} style={{ width: "100%", height: "100%", maxHeight: "2000px" }}>
+    <PDFDocument something={something} defaultData={defaultData} />
+  </PDFViewer>
+  )
+  }
+}
+
+export function DownloadPDF({ something, defaultData }){
+  return(
+    <PDFDownloadLink document={<PDFDocument something={something} defaultData={defaultData} />} 
+    fileName={"cut_result_" + todayDateEurope() + ".pdf"}>
+    {({ blob, url, loading, error }) => loading ? 'Loading document...' : 'Download PDF'}
+    </PDFDownloadLink>
+  )
+}
+export function PDFDocument({ something, defaultData }) {
   //   const result = useStore((store) => store.result);
   //const projectName = useStore((store) => store.projectName);
-
-
   if (!something || something.length === 0 || something.error) {
     return (
         <Document>

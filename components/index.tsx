@@ -106,18 +106,18 @@ function ManuItemModal({ icon, title, buttonsText, text }) {
     onOpen();
     ReactGa.modalview(title); // Sends a pageview to GA 
   }
-
- const showIconNames=()=>{
-   if(window.innerWidth>=600){
-     setIconTitle(title)
-   } else{
-     setIconTitle('')
-   }
- }
-
  React.useEffect(() => {
+  if(window.innerWidth>=600){
+    setIconTitle(title)
+  }
+  const showIconNames=()=>{
+    if(window.innerWidth>=600){
+      setIconTitle(title)
+    } else{
+      setIconTitle('')
+    }
+  }
   window.addEventListener("resize", showIconNames);
-  window.addEventListener("DOMContentLoaded", showIconNames);
  }, [])
 
 
