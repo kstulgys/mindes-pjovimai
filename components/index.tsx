@@ -71,7 +71,7 @@ function SideNavBar() {
         {/* Y <br />O<br />M<br />P<br />T<br />I */}
         Yompti
       </Text>
-      <Stack width={'full'} alignItems={"Left"} direction={"row"} justify={"right"} spacing="10%">
+      <Stack width={'full'} alignItems={"Left"} direction={"row"} justify={"right"} spacing="10%" pl="10%">
         <ManuItemModal icon={FiHome} title="Home page" buttonsText="Yes" text="Are you sure want to go back?" />
         {/* <ManuItemModal icon={FiSettings} title="How to use it" buttonsText="" text="Watch the video to find out what you can do in the app"/> */}
         <ManuItemModal

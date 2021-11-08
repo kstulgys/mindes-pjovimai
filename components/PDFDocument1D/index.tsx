@@ -157,7 +157,8 @@ export function todayDateEurope() {
 }
 
 export default function RenderPDFViewer({ something, defaultData,buttonView }){
-  if(buttonView){return(<PDFDownloadLink document={<PDFDocument something={something} defaultData={defaultData} />} 
+  if(buttonView){return(
+  <PDFDownloadLink document={<PDFDocument something={something} defaultData={defaultData} />} 
     fileName={"cut_result_" + todayDateEurope() + ".pdf"}>
       {({ blob, url, loading, error }) => loading ? 'Loading document...' : 'Download PDF'}
     </PDFDownloadLink> )
@@ -172,8 +173,10 @@ export default function RenderPDFViewer({ something, defaultData,buttonView }){
 export function DownloadPDF({ something, defaultData }){
   return(
     <PDFDownloadLink document={<PDFDocument something={something} defaultData={defaultData} />} 
-    fileName={"cut_result_" + todayDateEurope() + ".pdf"}>
+    fileName={"cut_result_" + todayDateEurope() + ".pdf"} >
     {({ blob, url, loading, error }) => loading ? 'Loading document...' : 'Download PDF'}
+    <div>
+    </div>
     </PDFDownloadLink>
   )
 }

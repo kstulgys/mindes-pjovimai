@@ -82,12 +82,20 @@ export default function App() {
   //   abi[6].style.width="40px"
   //   abi[7].style.width="40px"
   //   abi[11].style.width="20px"
-  //   //console.log(abi);
+     //console.log(abi);
   //  }
+  const downloadPDF_GA=()=>{
+    ReactGa.event({ // Sends data to GA
+      category:'Button',
+      label:'DownloadPDF',
+      action:'DownloadPDF',
+    })
+  }
+    document.getElementById('downloadPDF').addEventListener("click", downloadPDF_GA);
     window.addEventListener("load", changeTableFonstSize);   
     //window.addEventListener("load", changeTableColumnWidth); 
     window.addEventListener("resize", changeTableFonstSize);
-    window.addEventListener("click", changeTableFonstSize);
+    //window.addEventListener("click", changeTableFonstSize);
   }, [])
 
 
@@ -106,8 +114,8 @@ export default function App() {
         run(data);
         const stringifiedData=JSON.stringify(data)
         ReactGa.event({ // Sends data to GA
-          category:'Get result',
-          label:'Get result',
+          category:'Button',
+          label:'Calculate',
           action:stringifiedData,
         })
         setTimeout(() => {setTimeInterval(true)
@@ -197,12 +205,9 @@ export default function App() {
                   {/* <Button id="Test1" onClick={handleTest1}> Test1</Button> */}
                   <ButtonsResultExport resultXLS={result} defaultData={defaultData}></ButtonsResultExport>
                   <Button width="full" bg="gray.900" color="white" _hover={{}} margin="0px" leftIcon={<RiFilePdfFill/>}>
-                  <RenderPDFViewer something={result} defaultData={defaultData} buttonView={true}/>
-                    {/* <>{isClient && <PDFDownloadLink document={<PDFDocument something={result} defaultData={defaultData} />} 
-                    fileName={"cut_result_" + todayDateForExport() + ".pdf"}>
-                      {({ blob, url, loading, error }) => loading ? 'Loading document...' : 'Download PDF'}
-                    </PDFDownloadLink> } </>
-                     */}
+                    <Box id="downloadPDF"> 
+                      <RenderPDFViewer something={result} defaultData={defaultData} buttonView={true}/>
+                    </Box>
                   </Button>
               </VStack>  
             </Stack>
@@ -236,8 +241,8 @@ function ButtonsResultExport({ resultXLS, defaultData }) {
         showNames:defaultData.showNames
       })
         ReactGa.event({ // Sends data to GA
-          category:'Export XLS',
-          label:'Export XLS',
+          category:'Button',
+          label:'Download XLS',
           action: dataUsed,
         })
     const dataB = () => {
