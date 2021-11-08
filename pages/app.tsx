@@ -86,7 +86,7 @@ export default function App() {
   //  }
   const downloadPDF_GA=()=>{
     ReactGa.event({ // Sends data to GA
-      category:'Button',
+      category:'DownloadPDF',
       label:'DownloadPDF',
       action:'DownloadPDF',
     })
@@ -114,7 +114,7 @@ export default function App() {
         run(data);
         const stringifiedData=JSON.stringify(data)
         ReactGa.event({ // Sends data to GA
-          category:'Button',
+          category:'Calculate',
           label:'Calculate',
           action:stringifiedData,
         })
@@ -241,8 +241,8 @@ function ButtonsResultExport({ resultXLS, defaultData }) {
         showNames:defaultData.showNames
       })
         ReactGa.event({ // Sends data to GA
-          category:'Button',
-          label:'Download XLS',
+          category:'DownloadXLS',
+          label:'DownloadXLS',
           action: dataUsed,
         })
     const dataB = () => {

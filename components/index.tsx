@@ -21,6 +21,7 @@ import {
 import { useRouter } from 'next/router';
 import React from 'react';
 import { FiUser, FiSettings, FiFolder, FiLogOut, FiHome, FiAward, FiCoffee, FiInfo, FiSave } from 'react-icons/fi';
+import {AiOutlineLike, AiOutlineDislike} from 'react-icons/ai';
 import { Auth } from 'aws-amplify';
 import ReactGa from 'react-ga'
 import { getByTitle } from "@testing-library/react";
@@ -84,8 +85,8 @@ function SideNavBar() {
         <ManuItemModal
           icon={FiCoffee}
           title="Contacts"
-          buttonsText=""
-          text="Contact Yompti team! Our email address: hello@kastproductions.com"
+          buttonsText="Send a message"
+          text="How did you enjoy the app? Send us a message!"
         />
         {/* <ManuItemModal icon={FiSave} title="Save Result" buttonsText="Yes" text="Are you sure want to save result?" /> */}
       </Stack>
@@ -97,6 +98,9 @@ function ManuItemModal({ icon, title, buttonsText, text }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const router = useRouter();
   const [IconTitle, setIconTitle] = React.useState('');
+  const [symbolCount, setSymbolCount] = React.useState(0);
+  const [messageText, setMessageText] = React.useState('');
+  const [liked, setLiked]= React.useState(true);
 
   const handleLogout = async () => {
     //await Auth.signOut();
@@ -118,7 +122,40 @@ function ManuItemModal({ icon, title, buttonsText, text }) {
     }
   }
   window.addEventListener("resize", showIconNames);
+  window.addEventListener("onload", showIconNames);
  }, [])
+
+ function handleTextInsert(el) {
+  if (el.length <= 250) {
+    setMessageText(el);
+    setSymbolCount(el.length);
+  }
+}
+function sendAMessage() {
+  //console.log("This message has been sent: "+ messageText);
+  ReactGa.event({ // Sends data to GA
+    category:'Message',
+    label:'Message',
+    action: messageText,
+  })
+  setMessageText('Your message has been sent!')
+}
+const sendLike=()=>{
+  setLiked(false);
+  ReactGa.event({ // Sends data to GA
+    category:'LikeButton',
+    label:'Liked',
+    action: 'Liked',
+  })
+}
+const sendDislike=()=>{
+  setLiked(false);
+  ReactGa.event({ // Sends data to GA
+    category:'DislikeButton',
+    label:'Disliked',
+    action: 'Disliked',
+  })
+}
 
 
   return (
@@ -137,7 +174,15 @@ function ManuItemModal({ icon, title, buttonsText, text }) {
           <ModalCloseButton />
           <ModalBody>
             {text}
-
+            {title == 'Contacts' ? (
+              <>
+                {/* <Text>Yompti team</Text> */}
+                <Textarea onChange={(e)=>handleTextInsert(e.target.value)} value={messageText} placeholder={"Hi..."}></Textarea>
+                <Text mr="1">{symbolCount}/250</Text>
+              </>
+            ) : (
+              <></>
+            )}
             {title == "Info" ? (
               <>
                 <Text>◉ What is Yompti?</Text>
@@ -156,15 +201,35 @@ function ManuItemModal({ icon, title, buttonsText, text }) {
             ) : (
               <></>
             )}
+            
+            {title=="Contacts"&& liked ?(
+                <Stack justifyContent="space-evenly" direction="row" py="3" width ="full ">
+                <Button variant="ghost" leftIcon={<AiOutlineLike size={42}/>} onClick={sendLike}/>
+                <Button variant="ghost" leftIcon={<AiOutlineDislike size={42}/>} onClick={sendDislike}/>
+                </Stack>
+                ):
+                (<></>)
+            }
+            {title=="Contacts"&& !liked ?(
+                <Stack justifyContent="space-evenly" direction="row" py="3" width ="full ">
+                <Text> Thank you!
+                </Text>
+                </Stack>
+                ):
+                (<></>)
+            }
+             
           </ModalBody>
-          <ModalFooter>
+          <ModalFooter >
+            
+
             {buttonsText ? (
               <Button
                 _hover={{}}
                 bg="gray.900"
                 color="white"
-                mr={3}
-                onClick={handleLogout}
+                
+                onClick={title == 'Contacts' ? sendAMessage : handleLogout}
               >
                 {buttonsText}
               </Button>
