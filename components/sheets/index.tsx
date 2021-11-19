@@ -1,6 +1,6 @@
 import React, { useRef, useEffect, useState } from "react";
-import { Box, Stack, HStack, Button, Text, Input, Checkbox } from '@chakra-ui/react';
-import { FcDeleteRow, FcAddRow } from 'react-icons/fc';
+import { Box, Stack, HStack, Button, Text, Input, Checkbox } from "@chakra-ui/react";
+import { FcDeleteRow, FcAddRow } from "react-icons/fc";
 import { getDefaultLibFileName } from "typescript";
 
 export function StockSheet({ setStockTableValues }) {
@@ -13,10 +13,10 @@ export function StockSheet({ setStockTableValues }) {
       [2000, 4000, "a4", true],
     ],
     columns: [
-      { type: "number", title: "Length"},
-      { type: "number", title: "Quantity"},
-      { type: "text", title: "Name"},
-      { type: "checkbox", title: "Use"},
+      { type: "number", title: "Length" },
+      { type: "number", title: "Quantity" },
+      { type: "text", title: "Name" },
+      { type: "checkbox", title: "Use" },
     ],
     onbeforeinsertrow: ({ jspreadsheet }) => {
       const data = jspreadsheet.getData();
@@ -76,39 +76,41 @@ export function StockSheet({ setStockTableValues }) {
   };
   const [options, setOptions] = React.useState(defaultOptions);
   const jRef = useRef(null);
-  
+
   useJspreadsheet({ options, jRef });
 
   const addRow = () => {
-    jRef.current.jexcel.insertRow([,,,true]);
+    jRef.current.jexcel.insertRow([, , , true]);
   };
   const deleteRow = () => {
     jRef.current.jexcel.deleteRow();
   };
   const clearTable = () => {
-    const clearedData = jRef.current.jexcel.getData().map(x=>[, , , true]);
+    const clearedData = jRef.current.jexcel.getData().map((x) => [, , , true]);
     jRef.current.jexcel.setData(clearedData);
   };
 
-  return <>
-  <HStack justifyContent="space-between">
-      <Text fontSize="lg" fontWeight="semibold">
-        Stock (Max 20 rows)
-      </Text>
-    <Button size="xs" variant="outline" className="testas" onClick={clearTable}>
+  return (
+    <>
+      <HStack justifyContent="space-between">
+        <Text fontSize="lg" fontWeight="semibold">
+          Stock (Max 20 rows)
+        </Text>
+        <Button size="xs" variant="outline" className="testas" onClick={clearTable}>
           Clear table
-    </Button>
-  </HStack>
-  <div ref={jRef} /> 
-  <HStack justifyContent="space-between">
-    <Button size="xs" variant="outline" className="testas" onClick={addRow} leftIcon={<FcAddRow />}>
-       Row +
-    </Button>
-    <Button size="xs" variant="outline" className="testas" onClick={deleteRow} leftIcon={<FcDeleteRow />}>
-       Row -
-    </Button>
-  </HStack>
-  </>;
+        </Button>
+      </HStack>
+      <div ref={jRef} />
+      <HStack justifyContent="space-between">
+        <Button size="xs" variant="outline" className="testas" onClick={addRow} leftIcon={<FcAddRow />}>
+          Row +
+        </Button>
+        <Button size="xs" variant="outline" className="testas" onClick={deleteRow} leftIcon={<FcDeleteRow />}>
+          Row -
+        </Button>
+      </HStack>
+    </>
+  );
 }
 
 export function CutsSheet({ setCutsTableValues }) {
@@ -124,12 +126,12 @@ export function CutsSheet({ setCutsTableValues }) {
       [1000, 52, 0, 0, "", true],
     ],
     columns: [
-      { type: "number", title: "Length", width:60},
-      { type: "number", title: "Quantity", width:120},
-      { type: "number", title: "Angle1"},
-      { type: "number", title: "Angle2"},
-      { type: "string", title: "Name"},
-      { type: "checkbox", title: "Use"},
+      { type: "number", title: "Length", width: 60 },
+      { type: "number", title: "Quantity", width: 120 },
+      { type: "number", title: "Angle1" },
+      { type: "number", title: "Angle2" },
+      { type: "string", title: "Name" },
+      { type: "checkbox", title: "Use" },
     ],
     onbeforeinsertrow: ({ jspreadsheet }) => {
       const data = jspreadsheet.getData();
@@ -188,45 +190,46 @@ export function CutsSheet({ setCutsTableValues }) {
         cell.style.opacity = "1";
       }
     },
-    oninsertrow: ({ jspreadsheet }, cell, col, row, val, label, cellName, ha) => {
-    },
+    oninsertrow: ({ jspreadsheet }, cell, col, row, val, label, cellName, ha) => {},
   };
-  
+
   const [options, setOptions] = React.useState(defaultOptions);
   const jRef = useRef(null);
- 
+
   useJspreadsheet({ options, jRef });
 
   const addRow = () => {
-    jRef.current.jexcel.insertRow([,,,,,true]);
+    jRef.current.jexcel.insertRow([, , , , , true]);
   };
   const deleteRow = () => {
     jRef.current.jexcel.deleteRow();
   };
   const clearTable = () => {
-    const clearedData = jRef.current.jexcel.getData().map(x=>[,,,,,true]);
+    const clearedData = jRef.current.jexcel.getData().map((x) => [, , , , , true]);
     jRef.current.jexcel.setData(clearedData);
   };
 
-  return <>
-          <HStack justifyContent="space-between">
-              <Text fontSize="lg" fontWeight="semibold">
-                Cuts (Max 100 rows)
-              </Text>
-            <Button size="xs" variant="outline" className="testas" onClick={clearTable}>
-                  Clear table
-            </Button>
-          </HStack>
-          <div ref={jRef} /> 
-          <HStack justifyContent="space-between">
-            <Button size="xs" variant="outline" className="testas" onClick={addRow} leftIcon={<FcAddRow />}>
-               Row +
-            </Button>
-            <Button size="xs" variant="outline" className="testas" onClick={deleteRow} leftIcon={<FcDeleteRow />}>
-               Row -
-            </Button>
-          </HStack>
-          </>;
+  return (
+    <>
+      <HStack justifyContent="space-between">
+        <Text fontSize="lg" fontWeight="semibold">
+          Cuts (Max 100 rows)
+        </Text>
+        <Button size="xs" variant="outline" className="testas" onClick={clearTable}>
+          Clear table
+        </Button>
+      </HStack>
+      <div ref={jRef} />
+      <HStack justifyContent="space-between">
+        <Button size="xs" variant="outline" className="testas" onClick={addRow} leftIcon={<FcAddRow />}>
+          Row +
+        </Button>
+        <Button size="xs" variant="outline" className="testas" onClick={deleteRow} leftIcon={<FcDeleteRow />}>
+          Row -
+        </Button>
+      </HStack>
+    </>
+  );
 }
 
 // Hook

@@ -3,8 +3,7 @@
 import { styles } from "./PDF_Styles"; // Styles of PDF
 import React from "react";
 import { useStore } from "../../store";
-import { Page, Text as TextPDF, View, Document, Font, 
-  StyleSheet, PDFDownloadLink, PDFViewer } from "@react-pdf/renderer";
+import { Page, Text as TextPDF, View, Document, Font, StyleSheet, PDFDownloadLink, PDFViewer } from "@react-pdf/renderer";
 import { arrayMove } from "@dnd-kit/sortable";
 //import { error } from "console";
 
@@ -12,7 +11,6 @@ Font.register({
   family: "Montserrat",
   src: "https://fonts.gstatic.com/s/montserrat/v15/JTUSjIg1_i6t8kCHKm459WlhyyTh89Y.woff2",
 });
-
 
 function checkIfPositive(number) {
   if (number < 0) return 0;
@@ -156,57 +154,63 @@ export function todayDateEurope() {
   return yy + "-" + mm + "-" + dd; //(LT :))
 }
 
-export default function RenderPDFViewer({ something, defaultData,buttonView }){
-  if(buttonView){return(
-  <PDFDownloadLink document={<PDFDocument something={something} defaultData={defaultData} />} 
-    fileName={"cut_result_" + todayDateEurope() + ".pdf"}>
-      {({ blob, url, loading, error }) => loading ? 'Loading document...' : 'Download PDF'}
-    </PDFDownloadLink> )
-  }else{return(
-  <PDFViewer key={1} style={{ width: "100%", height: "100%", maxHeight: "2000px" }}>
-    <PDFDocument something={something} defaultData={defaultData} />
-  </PDFViewer>
-  )
+export default function RenderPDFViewer({ something, defaultData, buttonView }) {
+  if (buttonView) {
+    return (
+      <PDFDownloadLink
+        document={<PDFDocument something={something} defaultData={defaultData} />}
+        fileName={"cut_result_" + todayDateEurope() + ".pdf"}
+      >
+        {({ blob, url, loading, error }) => (loading ? "Loading document..." : "Download PDF")}
+      </PDFDownloadLink>
+    );
+  } else {
+    return (
+      <PDFViewer key={1} style={{ width: "100%", height: "100%", maxHeight: "2000px" }}>
+        <PDFDocument something={something} defaultData={defaultData} />
+      </PDFViewer>
+    );
   }
 }
 
-export function DownloadPDF({ something, defaultData }){
-  return(
-    <PDFDownloadLink document={<PDFDocument something={something} defaultData={defaultData} />} 
-    fileName={"cut_result_" + todayDateEurope() + ".pdf"} >
-    {({ blob, url, loading, error }) => loading ? 'Loading document...' : 'Download PDF'}
-    <div>
-    </div>
+export function DownloadPDF({ something, defaultData }) {
+  return (
+    <PDFDownloadLink
+      document={<PDFDocument something={something} defaultData={defaultData} />}
+      fileName={"cut_result_" + todayDateEurope() + ".pdf"}
+    >
+      {({ blob, url, loading, error }) => (loading ? "Loading document..." : "Download PDF")}
+      <div></div>
     </PDFDownloadLink>
-  )
+  );
 }
 export function PDFDocument({ something, defaultData }) {
   //   const result = useStore((store) => store.result);
   //const projectName = useStore((store) => store.projectName);
   if (!something || something.length === 0 || something.error) {
     return (
-        <Document>
-          <Page size="A4" style={{ marginLeft: "2cm", marginTop: "0.5cm", marginBottom: "1cm", width: "3cm" }}>
-            <TextPDF style={{ fontSize: 10, color: "gray", lineHeight: 1.6, marginLeft: "30%", marginBottom: "10px" }}>
-              Made by www.yompti.com
-            </TextPDF>
-            <DefaultPageView defaultData={defaultData} />
-            <TableHead />
-            <View
-              style={{
-                width: "85%",
-                flexDirection: "row",
-                //margin: 12,
-                fontSize: 24,
-                textAlign: "justify",
-                // fontFamily: "Montserrat",
-              }}
-              fixed
-            >
-              <TextPDF>{something.error}</TextPDF>
-            </View>
-          </Page>
-        </Document>
+      <Document>
+        <Page size="A4" style={{ marginLeft: "2cm", marginTop: "0.5cm", marginBottom: "1cm", width: "3cm" }}>
+          <TextPDF style={{ fontSize: 10, color: "gray", lineHeight: 1.6, marginLeft: "30%", marginBottom: "10px" }}>
+            Made by www.yompti.com
+          </TextPDF>
+          <DefaultPageView defaultData={defaultData} />
+          <TableHead />
+          <View
+            style={{
+              width: "85%",
+              flexDirection: "row",
+              //margin: 12,
+              fontSize: 24,
+              textAlign: "justify",
+              // fontFamily: "Montserrat",
+            }}
+            fixed
+          >
+            <TextPDF>{something.error}</TextPDF>
+          </View>
+        </Page>
+      </Document>
     );
   }
   const totalStockLength = something.reduce((a, b) => a + b.stockLength * b.quantity, 0);
@@ -216,27 +220,27 @@ export function PDFDocument({ something, defaultData }) {
     return Math.round((num + Number.EPSILON) * 100) / 100;
   }
   return (
-      <Document>
-        <Page size="A4" style={{ marginLeft: "2cm", marginTop: "0.5cm", marginBottom: "10cm", marginRight: "6cm" }}>
-          <TextPDF style={{ fontSize: 10, color: "gray", lineHeight: 1.6, marginLeft: "30%", marginBottom: "10px" }} fixed>
-            Made by www.yompti.com
-          </TextPDF>
-          <DefaultPageView defaultData={defaultData} />
-          <TableHead />
-          {something.map((value, index) => {
-            return <TableRow key={index} {...value} index={index} defaultData={defaultData} />;
-          })}
-          <TextPDF style={{ fontSize: 12, lineHeight: 1.6, marginTop: 10 }}>Total stock length: {totalStockLength} mm</TextPDF>
-          <TextPDF style={{ fontSize: 12, lineHeight: 1.6 }}>Total waste: {totalWaste} mm</TextPDF>
-          <TextPDF style={{ fontSize: 12, lineHeight: 1.6 }}>Percentage of waste: {percentageWaste} %</TextPDF>
-          {/* <Box style={{top:"0cm"}}> */}
-          <TextPDF
-            style={{ fontSize: 12, lineHeight: 1.6, marginLeft: "40%", marginBottom: "1cm", marginTop: "3mm" }}
-            render={({ pageNumber, totalPages }) => `${pageNumber} / ${totalPages}`}
-            fixed
-          />
-          {/* </Box> */}
-        </Page>
-      </Document>
+    <Document>
+      <Page size="A4" style={{ marginLeft: "2cm", marginTop: "0.5cm", marginBottom: "10cm", marginRight: "6cm" }}>
+        <TextPDF style={{ fontSize: 10, color: "gray", lineHeight: 1.6, marginLeft: "30%", marginBottom: "10px" }} fixed>
+          Made by www.yompti.com
+        </TextPDF>
+        <DefaultPageView defaultData={defaultData} />
+        <TableHead />
+        {something.map((value, index) => {
+          return <TableRow key={index} {...value} index={index} defaultData={defaultData} />;
+        })}
+        <TextPDF style={{ fontSize: 12, lineHeight: 1.6, marginTop: 10 }}>Total stock length: {totalStockLength} mm</TextPDF>
+        <TextPDF style={{ fontSize: 12, lineHeight: 1.6 }}>Total waste: {totalWaste} mm</TextPDF>
+        <TextPDF style={{ fontSize: 12, lineHeight: 1.6 }}>Percentage of waste: {percentageWaste} %</TextPDF>
+        {/* <Box style={{top:"0cm"}}> */}
+        <TextPDF
+          style={{ fontSize: 12, lineHeight: 1.6, marginLeft: "40%", marginBottom: "1cm", marginTop: "3mm" }}
+          render={({ pageNumber, totalPages }) => `${pageNumber} / ${totalPages}`}
+          fixed
+        />
+        {/* </Box> */}
+      </Page>
+    </Document>
   );
 }

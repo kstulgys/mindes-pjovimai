@@ -1,19 +1,19 @@
-import React from 'react';
-import { Box, Stack, Button, Text, Image, AspectRatio } from '@chakra-ui/react';
-import { Layout } from '../components';
-import NextLink from 'next/link';
-import ReactGa from "react-ga"
-import { useEffect } from 'react';
+import React from "react";
+import { Box, Stack, Button, Text, Image, AspectRatio } from "@chakra-ui/react";
+import { Layout } from "../components";
+import NextLink from "next/link";
+import ReactGa from "react-ga";
+import { useEffect } from "react";
 
 export default function IndexPage() {
   useEffect(() => {
-    ReactGa.initialize('UA-210625338-1');
-    ReactGa.pageview('/'); // Landing page gets a pageview
-  }, [])
+    ReactGa.initialize("UA-210625338-1");
+    ReactGa.pageview("/"); // Landing page gets a pageview
+  }, []);
   return (
     <Layout>
       {/* <Stack alignItems={["center"]} justifyContent={["center"]} maxW="8xl" width="full" mx="auto" pt={[20, 48]} pb="10"> */}
-      <Stack alignItems={["center"]}  pt={[5, 4]} pb="10" >
+      <Stack alignItems={["center"]} pt={[5, 4]} pb="10">
         <Box>
           <Text as="h1" maxW="xxl" textAlign="center" fontSize="5xl" fontWeight="bold">
             YOMPTI
@@ -37,7 +37,7 @@ export default function IndexPage() {
         </Box>
       </Stack>
       <Stack isInline justifyContent="center" pb="20">
-        <Box >
+        <Box>
           <Image src="/background_2021-09-26.jpg" />
           {/* <AspectRatio maxW="560px" ratio={1}> */}
           {/* <Box
