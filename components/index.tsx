@@ -28,24 +28,10 @@ import { getByTitle } from "@testing-library/react";
 
 export function Layout({ children }) {
   return (
-    <Box>
-      <Stack
-        fontFamily="Montserrat"
-        //isInline
-        bg="gray.200"
-        height="full"
-        width="full"
-        //minWidth="500px" // to have nice jspreadsheets
-        spacing="0"
-        color="gray.900"
-      >
-        <SideNavBar />
-        <Box width="full">{children}</Box>
-      </Stack>
-      {/* <Box position='fixed' bottom='0' right='0'>
-        <AmplifyChatbot/>
-      </Box> */}
-    </Box>
+    <Stack minH="100vh" fontFamily="Montserrat" bg="gray.200" height="full" width="full" spacing="0" color="gray.900">
+      <SideNavBar />
+      <Box width="full">{children}</Box>
+    </Stack>
   );
 }
 

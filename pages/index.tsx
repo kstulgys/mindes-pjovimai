@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Stack, Button, Text, Image, AspectRatio } from "@chakra-ui/react";
+import { Box, Stack, Button, Text, Image } from "@chakra-ui/react";
 import { Layout } from "../components";
 import NextLink from "next/link";
 import ReactGa from "react-ga";
@@ -12,46 +12,32 @@ export default function IndexPage() {
   }, []);
   return (
     <Layout>
-      {/* <Stack alignItems={["center"]} justifyContent={["center"]} maxW="8xl" width="full" mx="auto" pt={[20, 48]} pb="10"> */}
-      <Stack alignItems={["center"]} pt={[5, 4]} pb="10">
-        <Box>
-          <Text as="h1" maxW="xxl" textAlign="center" fontSize="5xl" fontWeight="bold">
-            YOMPTI
-          </Text>
-        </Box>
-        <Box>
-          <Text as="h3" minW="30%" textAlign="center" fontSize="xl">
-            Web-based automatic stock cutting optimisation software. The cutting software can be used for obtaining optimal cutting layouts
-            for one (1D) dimensional pieces, such as bars, pipes, tubes, steel bars, metal profiles, extrusions, tubes, lineal wood boards
-            or other materials.
-          </Text>
-          {/* <Text as="h3" maxW="xxl" textAlign="justify" fontSize="2xl"></Text> */}
-        </Box>
-        <Box pt="4">
-          <NextLink href="/app" passHref={true}>
-            {/* passHref */}
-            <Button bg="gray.900" color="white" size="lg" _hover={{}}>
-              TRY IT FOR FREE
-            </Button>
-          </NextLink>
-        </Box>
-      </Stack>
-      <Stack isInline justifyContent="center" pb="20">
-        <Box>
-          <Image src="/background_2021-09-26.jpg" />
-          {/* <AspectRatio maxW="560px" ratio={1}> */}
-          {/* <Box
-                as="iframe"
-                title="naruto"
-                src="https://www.youtube.com/embed/QhBnZ6NPOY0"
-                allowFullScreen
-              /> */}
-          {/* <video controls>
-                <source src="/public/appVideo.mp4" type="video/mp4" ></source>
-              </video> */}
-          {/* </AspectRatio> */}
-        </Box>
-      </Stack>
+      <Box maxW="3xl" mx="auto" pt={[10, 20]} px={2}>
+        <Stack alignItems={["center"]} pt={[5, 4]} pb="10">
+          <Box>
+            <Text as="h1" maxW="xxl" textAlign="center" fontSize="5xl" fontWeight="bold">
+              YOMPTI
+            </Text>
+          </Box>
+          <Box>
+            <Text as="h3" minW="30%" textAlign="center" fontSize="xl">
+              Web-based automatic stock cutting optimisation software. The cutting software can be used for obtaining optimal cutting
+              layouts for one (1D) dimensional pieces, such as bars, pipes, tubes, steel bars, metal profiles, extrusions, tubes, lineal
+              wood boards or other materials.
+            </Text>
+          </Box>
+          <Box pt="4">
+            <NextLink href="/app" passHref={true}>
+              <Button bg="gray.900" color="white" size="lg" _hover={{}}>
+                TRY IT FOR FREE
+              </Button>
+            </NextLink>
+          </Box>
+        </Stack>
+      </Box>
+      <Box>
+        <Image mx="auto" src="background_2021-09-26.jpg" alt="app preview" />
+      </Box>
     </Layout>
   );
 }
